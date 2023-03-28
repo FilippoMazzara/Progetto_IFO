@@ -2,7 +2,7 @@ Package: geneApp
 Title: geneApp - Exploratory data analysis in genetic studies
 Version: 0.0.0.9000
 Authors@R: 
-    person("Filippo", "Mazzara", "mazzara.1742740@studenti.uniroma1.it", role = c("aut", "cre"))
+    person(given="Filippo Mazzara", ,,"mazzara.1742740@studenti.uniroma1.it", role = c("aut", "cre"))
 Description: Package containing geneApp, an application for exploratory data analysis in genetic studies. All the app is self contained, you should launch it using run_geneApp().
 License: file LICENSE
 Encoding: UTF-8

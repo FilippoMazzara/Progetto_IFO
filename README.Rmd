@@ -1,0 +1,19 @@
+---
+output: github_document
+---
+
+# <strong>PROGETTO IFO<strong>
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## About the app
+
+**PROGETTO IFO** qualcosa
+
+## Links
++ GitHub: [PROGETTOIFO - Github](https://github.com/FilippoMazzara/Progetto_IFO)
+
+foto tanto per trovata su internet
+
+![](inst/shinyapps/shiny_geneApp/www/img/logo.jpg)
