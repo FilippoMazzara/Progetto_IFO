@@ -16,6 +16,7 @@ ui <- fluidPage(
     position = "static-top",
     header = NULL,
     footer = NULL,
+    collapsible = TRUE,
     id = "topnavbar",
     fluid = TRUE,
     tabPanel(title = "Home",id = "home", class = "topchoice"),
