@@ -1,0 +1,21 @@
+### TOOLTIPS
+lo span cambia la posizione
+<span data-toggle="tooltip" style="float:right" data-placement="right" title="" data-original-title="A tooltip">
+  <i class="far fa-circle-question" role="presentation" aria-label="circle-question icon"></i>
+</span>
+altro modo
+span(
+  style="float:right;margin-right:5%;margin-top:2%;",
+  `data-toggle` = "tooltip", `data-placement` = "left",
+  title = "A tooltip",
+  icon("question-circle")
+)
+###helptext panel
+help_text_panel <- tagList(
+  wellPanel(
+    HTML("<label>Text menu: <i id='help_text_all' title='Check all' href='#' class='action-button glyphicon glyphicon-ok'></i>
+    <i id='help_text_none' title='Uncheck all' href='#' class='action-button glyphicon glyphicon-remove'></i></label>"),
+    checkboxGroupInput("help_text", NULL, help_text,
+                       selected = state_group("help_text"), inline = TRUE)
+  )
+)

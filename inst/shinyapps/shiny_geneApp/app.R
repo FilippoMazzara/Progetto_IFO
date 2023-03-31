@@ -1,44 +1,44 @@
-ui <- fluidPage(
+ui <- shiny::fluidPage(
   id = "mainpage",
   #Styling
-  tags$head(
-    tags$link(rel = "stylesheet", type = "text/css", href = "style.css")
-  ),
+  shiny::includeCSS("www/style.css"),
+  shiny::includeScript("www/myscript.js"),
   # title header (hidden)
-  div(
+  shiny::tags$div(
     style = "display: none",
-    titlePanel(title = "", windowTitle = "geneApp")
+    shiny::titlePanel(title = "", windowTitle = "geneApp")
   ),
   #top header
-  navbarPage(
-    #logo
-    title = div(id = "logo1", a(href = "/", img(src = "img/logo.jpg", height = "75px"))),
+  shiny::navbarPage(
     position = "static-top",
     header = NULL,
     footer = NULL,
     collapsible = TRUE,
     id = "topnavbar",
     fluid = TRUE,
-    tabPanel(title = "Home",id = "home", class = "topchoice"),
-    tabPanel(title = "GERSOM",id = "gersom",class = "topchoice",
-    # Application body
-    # navbar page start
-      navbarPage(
-        "GERSOM",
-        position = c("static-top"), #cambia qui se vuoi che solo la navbar sia sticky
-        #panel1 contains graph and it's menu
-        ##### FIRST TAB #####
-        homepanel_ui("overview"),
-        ##### END FIRST TAB #####
-        # second and third set of nav tabs
-        navbarMenu(title = "tab1", menuName = "tab1", "panel 1.1", tabPanel("1.1"), "panel 1.2", tabPanel("1.2")),
-        navbarMenu(title = "tab2", menuName = "tab2", tabPanel("2.1"), tabPanel("2.2")),
-        #END FLUID ROW AND NAV PAG
+    #logo
+    title = shiny::tags$div(
+      id = "logo1",
+      shiny::tags$a(
+        href = "/",
+        shiny::tags$img(
+          src = "img/logo.jpg",
+          height = "75px"
+        )
       )
     ),
-    tabPanel(title = "About us", id = "about", class = "topchoice"),
-  )
+    #### HOME ####
+    homePanel_ui("homepage"),
+    #### OVERVIEW ####
+    mainGenePanel_ui("overview"),
+    #### ABOUT ####
+    about_ui("about")
   #END UI
+  ),
+  shiny::tags$div(
+    class = "footer",
+    shiny::includeHTML("www/footer.html")
+  )
 )
 
 #' Main geneApp content
@@ -50,10 +50,16 @@ ui <- fluidPage(
 #' @param output
 #' the output vector
 #' @return the running gene app
-server <- function(input, output) {
+server <- function(input, output, session) {
+  #modulo home
+  homePanel_server("homepage")
   #modulo overview
-  homepanel_server("overview")
+  mainGenePanel_server("overview")
+  shiny::observeEvent(input$linkapp, {
+    shiny::updateNavbarPage(session, "topnavbar", "overview-gersom")
+  })
+  about_server("about")
 }
 
 # Run the application
-shinyApp(ui = ui, server = server)
+shiny::shinyApp(ui = ui, server = server)

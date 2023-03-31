@@ -1,0 +1,22 @@
+---
+title: "aboutx"
+date: "`r Sys.Date()`"
+output: 
+  html_fragment
+fontsize: 8pt
+---
+# ABOUT
+
+---
+
+## REGOLAMENTO
+
+  - descrizione
+  
+---
+
+## CONTATTI
+
+  - links
+  
+---

@@ -1,0 +1,22 @@
+---
+title: "insert1"
+date: "`r Sys.Date()`"
+output: 
+  html_fragment
+fontsize: 8pt
+---
+
+## INFO
+  - Sono state escluse mutazioni che non hanno effetto sulla sequenza amminoacidica o sullo splicing
+  
+  - La VAF è da essere considerata su una scala scala 0-100 che rappresenta la percentuale. Valori della VAF aggiustata         superiori a 100 sono da interpretarsi come un'incoerenza con la cellularità segnalata per il campione.
+  
+  - Sono state escluse mutazioni somatiche con vaf non aggiustata < 5 %  
+  
+  - Sono state escluse le mutazioni in geni problematici:
+  
+    - Iperpolimorfici (HLA, RECQL4)
+    - Rumorosi (Mucine)
+    
+  - Sono state considerate per il germinale solo i geni elencati nelle 4 tabelle dei geni rilevanti per lo studio
+  - Le azionabilità riportate sono relative all'annotazione disponibile sul database civic

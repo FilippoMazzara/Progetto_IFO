@@ -10,6 +10,6 @@
 - GitHub: [PROGETTOIFO -
   Github](https://github.com/FilippoMazzara/Progetto_IFO)
 
-foto tanto per
+foto tanto per trovata su internet
 
 ![](inst/shinyapps/shiny_geneApp/www/img/logo.jpg)

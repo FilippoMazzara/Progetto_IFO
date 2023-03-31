@@ -1,10 +1,46 @@
+html{height:100%;
+  display:flex;
+}
 body {
+  position:relative;
   display: flex;
   width:100%;
   overflow:auto;
   resize: horizontal;
   min-width: 230px;
 }
+
+h2 {margin-top:10px;}
+
+.tooltip {
+  pointer-events: none;
+}
+.tooltip > .tooltip-inner {
+  pointer-events: none;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -webkit-text-size-adjust: 100%;
+  background-color: #f5f5f5;
+  border:1px solid #e3e3e3;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgb(0 0 0 / 5%);
+  box-shadow: inset 0 1px 1px rgb(0 0 0 / 5%);
+  padding: 10px;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color:#333;
+  text-align: justify;
+  margin-left: 0;
+  max-width: 1000px;
+}
+.tooltip.right .tooltip-arrow {
+  border-right-color: #e3e3e3;
+}
+.tooltip.left .tooltip-arrow {
+  border-left-color: #e3e3e3;
+}
+
 div.container-fluid > nav > div > div > button{
     margin-left: 0;
     margin-right: 0;
@@ -69,6 +105,73 @@ div.container-fluid > nav > div{
 }
 #topnavbar>li>a:hover{
   text-decoration:underline !important;
+}
+#linkapp:hover{
+  text-decoration:underline !important;
+}
+#linkapp:active{
+  text-decoration:underline !important;
+}
+#linkapp{
+  font-weight: 500;
+  letter-spacing: 2px;
+  word-spacing: 8.50px;
+  font-size:30px !important;
+  display:flex;
+  justify-content:center;
+  line-height:1.5 !important;
+  transition-duration: 0.25s;
+  white-space: nowrap;
+  font-family: 'Open Sans', sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  border-radius: 3px;
+  cursor: pointer;
+  background-color: transparent !important;
+}
+#about{
+  width:100%;
+  font-family: 'Open Sans', sans-serif !important;
+  white-space: nowrap;
+}
+#mainpage > div.container-fluid {height:100%;}
+.footer {
+    position: static;
+    bottom: 0;
+    width: 100%;
+    box-shadow: 0 6px 5px -7px grey inset;
+    height: 70px;
+    background-color: red;
+    bottom: 0;
+    left: 0px;
+    right: 0px;
+    margin-bottom: 0px;
+    background-color: #FFFFFF;
+    text-align: center;
+}
+
+.img_footer{
+    padding-top: 10px;
+    padding-right: 100px;
+    padding-left: 100px;
+}
+
+.imgContainerFooter{
+    padding-top: 20px;
+    float: right;
+}
+
+.imgContainerFooter img {
+   height: 40px;
+   padding: 5px 5px 5px 5px;
+}
+
+.logoContainerFooter{
+   padding-top: 0px;
+   float: left;
+}
+
+.logoContainerFooter img {
+   height: 50px;
 }
 
 div.navbar-header > span {

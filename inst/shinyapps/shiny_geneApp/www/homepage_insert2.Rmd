@@ -1,0 +1,13 @@
+---
+title: "insert2"
+date: "`r Sys.Date()`"
+output: 
+  html_fragment
+fontsize: 8pt
+---
+
+## ALTRE INFO
+  - L'applicazione può visualizzare campioni di diversi soggetti provenienti da diversi dataset
+  - I campioni possono contenere mutazioni somatiche o germinali oppure entrambe
+  - I campioni provengono da tessuti tumorali estratti da OVAIO, MAMMELLA e COLON
+  
