@@ -51,6 +51,17 @@ homePanel_ui <- function(id) {
       shiny::tags$br()
     ),
     shiny::tags$br(),
+    shiny::tags$br(),
+    shiny::fluidRow(
+      style = "margin-right:4em;margin-left:4em;display:flex;justify-content:center;",
+      shiny::tags$br(),
+      shiny::wellPanel(
+        style = "margin-bottom:0;width:100%;",
+        shiny::includeHTML(rmarkdown::render('www/homepage_insert2.Rmd'))
+      ),
+      shiny::tags$br()
+    ),
+    shiny::tags$br(),
     shiny::tags$br()
   )
 }

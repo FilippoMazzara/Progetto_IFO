@@ -1,13 +1,24 @@
-html{height:100%;
-  display:flex;
+html{
+  padding: 0;
+  margin: 0;
+  height:100%;
+
 }
 body {
+  height:100%;
+  padding: 0;
+  margin: 0;
+  min-height:100%;
+  flex-direction: column;
   position:relative;
   display: flex;
   width:100%;
   overflow:auto;
   resize: horizontal;
   min-width: 230px;
+}
+.navbar{
+  min-height: auto;
 }
 
 h2 {margin-top:10px;}
@@ -49,14 +60,20 @@ div.container-fluid > nav > div > div > button{
 
   }
 #mainpage{
-  padding-right: 5px;
-  padding-left: 5px;
+  height:100%;
+  margin-right: 0;
+  margin-left: 0;
+  display: flex;
+  flex-direction: column;
+  padding-right: auto;
+  padding-left: auto;
   width:100%;
 }
 
 div.container-fluid > nav {
-  height: fit-content;
-  padding: 1% 5%;
+  height: auto;
+  padding: 0 5%;
+  padding-bottom: 5px;
   position: relative;
   margin-bottom:0;
   box-shadow: 0 -6px 7px -7px grey inset;
@@ -133,36 +150,38 @@ div.container-fluid > nav > div{
   font-family: 'Open Sans', sans-serif !important;
   white-space: nowrap;
 }
-#mainpage > div.container-fluid {height:100%;}
+#mainpage > div.container-fluid {
+  padding-right: 0;
+  flex:1;
+  padding-left: 0;
+  margin-right: 0;
+  margin-left: 0;
+  display: flex;
+  flex-direction: column;
+
+}
+#mainpage > div.container-fluid > div{
+  height:100%;
+}
 .footer {
-    position: static;
-    bottom: 0;
+    flex:0;
+    position: relative;
+    bottom:0;
     width: 100%;
     box-shadow: 0 6px 5px -7px grey inset;
-    height: 70px;
+    height: 80px;
     background-color: red;
-    bottom: 0;
-    left: 0px;
+    left: 0;
     right: 0px;
-    margin-bottom: 0px;
+    margin-bottom: 5px;
     background-color: #FFFFFF;
     text-align: center;
 }
 
 .img_footer{
-    padding-top: 10px;
+    padding-top: 5px;
     padding-right: 100px;
     padding-left: 100px;
-}
-
-.imgContainerFooter{
-    padding-top: 20px;
-    float: right;
-}
-
-.imgContainerFooter img {
-   height: 40px;
-   padding: 5px 5px 5px 5px;
 }
 
 .logoContainerFooter{
@@ -171,7 +190,7 @@ div.container-fluid > nav > div{
 }
 
 .logoContainerFooter img {
-   height: 50px;
+   height: 70px;
 }
 
 div.navbar-header > span {
@@ -182,6 +201,10 @@ div.navbar-header > span {
     height:auto;
     width:auto;
     margin-left: 0;
+}
+
+#logo1{
+  height: 5em;
 }
 
 .navbar-collapse{

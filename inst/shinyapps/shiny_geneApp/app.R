@@ -18,12 +18,11 @@ ui <- shiny::fluidPage(
     fluid = TRUE,
     #logo
     title = shiny::tags$div(
-      id = "logo1",
       shiny::tags$a(
         href = "/",
         shiny::tags$img(
-          src = "img/logo.jpg",
-          height = "75px"
+          id = "logo1",
+          src = "img/logo.jpg"
         )
       )
     ),
@@ -55,6 +54,7 @@ server <- function(input, output, session) {
   homePanel_server("homepage")
   #modulo overview
   mainGenePanel_server("overview")
+  #link
   shiny::observeEvent(input$linkapp, {
     shiny::updateNavbarPage(session, "topnavbar", "overview-gersom")
   })
