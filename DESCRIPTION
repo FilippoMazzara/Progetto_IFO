@@ -14,4 +14,4 @@ Imports:
     magrittr,
     purrr,
     shiny,
-    shinydashboard
+    shinyjs
