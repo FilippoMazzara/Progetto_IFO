@@ -9,44 +9,58 @@ geneOverview_ui<-function(id){
   ns <- shiny::NS(id) #id del modulo
   shiny::tabPanel(
     title = "Graph",
+    id="graph",
     value = shiny::NS(id, "graph"),
     #declare sidebars layout
-    shiny::sidebarLayout(
-      #side menu start
-      #this menu could be floating or shared across navbar options or unique to this
-      shiny::sidebarPanel(
-        #inputs panel
-        #option to hide the panel,hide only one of the inputs ,only allow from server,
-        #manage the inputs from file in another location, or by making user choose in advance
-        shiny::wellPanel(
-          tooltip_inutile(),
-          #input from filesystem
-          shiny::fileInput(
-            ns("fromfile"),
-            label=htmltools::HTML(
-              'Carica un file .tsv </label><span data-toggle="tooltip" style="float:right" data-placement="right" title="" data-original-title="A tooltip">
+        shiny::sidebarLayout(
+          #side menu start
+          #this menu could be floating or shared across navbar options or unique to this
+          shiny::tags$div( id = "sidebar",
+          shiny::sidebarPanel(
+
+            #inputs panel
+            #option to hide the panel,hide only one of the inputs ,only allow from server,
+            #manage the inputs from file in another location, or by making user choose in advance
+            shiny::wellPanel(
+              tooltip_inutile(),
+              #input from filesystem
+              shiny::fileInput(
+                ns("fromfile"),
+                label=htmltools::HTML(
+                  'Carica un file .tsv </label><span data-toggle="tooltip" style="float:right" data-placement="right" title="" data-original-title="A tooltip">
               <i class="far fa-circle-question" role="presentation" aria-label="circle-question icon"></i></span>'),
-            accept = ".tsv"),
-          #bottone per disabilitare il tasto enter fuori da i widget
-          #una pecionata pero funziona (attento a possibili errori)
-          #non lo puoi mettere statico senno non fa il render finche non lo premi
-          enterDisable_ui(ns("inutile")),
-          #input from DB/server
-          #guarda le opzioni di selectize
-          #anche questo panello puo essere reso interattivo e dinamico,compare diverso e compare solo per una certa condizione
-        )
-      ),
-    # Show a plot of the generated distribution, main panel
-      shiny::mainPanel(
-        shiny::tabsetPanel(
-          shiny::tabPanel("pannello1"),
-          shiny::tabPanel("pannello2")
-        )
+              accept = c(".tsv",".csv")
+              ),
+              #bottone per disabilitare il tasto enter fuori da i widget
+              #una pecionata pero funziona (attento a possibili errori)
+              #non lo puoi mettere statico senno non fa il render finche non lo premi
+              enterDisable_ui(ns("inutile")),
+              #input from DB/server
+              #guarda le opzioni di selectize
+              #anche questo panello puo essere reso interattivo e dinamico,compare diverso e compare solo per una certa condizione
+            )
+          )),
+          # Show a plot of the generated distribution, main panel
+          shiny::tags$div(id = "colcol",
+          shiny::mainPanel(
+            shiny::actionButton("toggleSidebar", "Toggle sidebar"),
+            shiny::tabsetPanel(
+              shiny::tabPanel(
+                "pannello1",
+                shiny::tags$h1("Il file che hai caricato:"),
+                shiny::fluidRow(
+                  id = "tabcontainer",
+                  style="display:flex;justify-content:center;",
+                  DT::dataTableOutput(ns("table"))
+                )
+              ),
+              shiny::tabPanel("pannello2")
+            )
+          ))
+          #END SIDEBAR LAYOUT
       )
-    #END SIDEBAR LAYOUT
     )
   #END TAB
-  )
 }
 
 #' geneOverview_server
@@ -60,6 +74,33 @@ geneOverview_server <- function(id) {
   shiny::moduleServer(
     id,
     function(input, output, session) {
+      data <- shiny::reactive({
+        shiny::req(input$fromfile)
+        data.table::fread(input$fromfile$datapath, data.table=TRUE)
+      })
+      cols <- shiny::reactive(names(data()))
+      selected <- shiny::reactive({
+        each_var <- purrr::map(cols(), ~ filter_var(data()[[.x]], input[[.x]]))
+        purrr::reduce(each_var, `&`)
+      })
+      output$table <- DT::renderDataTable(data() ,
+        rownames = FALSE,
+        filter = 'top',
+        selection = list(mode = "multiple"),
+        editable = T,
+        class = 'display',
+        extensions = 'Buttons',
+        options = list(
+          autoWidth = TRUE,
+          pageLength = 50,
+          pagingType = 'full_numbers',
+          scrollX = TRUE,
+          scrollCollapse = TRUE,
+          dom = 'Blfrtip',
+          buttons = c('copy', 'excel', 'pdf'),
+          lengthMenu = list(c(10,25,50,-1),c(10,25,50,"All")))
+      )
+
       #bottone inutile
       enterDisable_server("inutile")
     }
