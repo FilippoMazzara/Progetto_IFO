@@ -163,8 +163,15 @@ div.container-fluid > nav > div{
 #mainpage > div.container-fluid > div{
   height:100%;
 }
+
+#footertxt{
+  color:#777;
+}
+
 .footer {
-    flex:0;
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
     position: relative;
     bottom:0;
     width: 100%;
@@ -173,13 +180,11 @@ div.container-fluid > nav > div{
     background-color: red;
     left: 0;
     right: 0px;
-    margin-bottom: 5px;
     background-color: #FFFFFF;
     text-align: center;
 }
 
 .img_footer{
-    padding-top: 5px;
     padding-right: 100px;
     padding-left: 100px;
 }
