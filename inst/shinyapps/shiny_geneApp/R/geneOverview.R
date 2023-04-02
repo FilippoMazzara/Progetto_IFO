@@ -15,9 +15,9 @@ geneOverview_ui<-function(id){
         shiny::sidebarLayout(
           #side menu start
           #this menu could be floating or shared across navbar options or unique to this
-          shiny::tags$div( id = "sidebar",
+          shiny::tags$div( id = "sidebar", class="col-sm-3",
           shiny::sidebarPanel(
-
+            width = 3,
             #inputs panel
             #option to hide the panel,hide only one of the inputs ,only allow from server,
             #manage the inputs from file in another location, or by making user choose in advance
@@ -41,9 +41,9 @@ geneOverview_ui<-function(id){
             )
           )),
           # Show a plot of the generated distribution, main panel
-          shiny::tags$div(id = "colcol",
+          shiny::tags$div(id = "colcol",class="col-sm-9",
           shiny::mainPanel(
-            shiny::actionButton("toggleSidebar", "Toggle sidebar"),
+            width = 9,
             shiny::tabsetPanel(
               shiny::tabPanel(
                 "pannello1",
@@ -100,7 +100,6 @@ geneOverview_server <- function(id) {
           buttons = c('copy', 'excel', 'pdf'),
           lengthMenu = list(c(10,25,50,-1),c(10,25,50,"All")))
       )
-
       #bottone inutile
       enterDisable_server("inutile")
     }

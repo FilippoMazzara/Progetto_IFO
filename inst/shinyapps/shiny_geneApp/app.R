@@ -62,15 +62,20 @@ server <- function(input, output, session) {
     input$linkapp,
     {shiny::updateNavbarPage(session, "topnavbar", "overview-gersom")}
   )
-  shiny::observeEvent(input$toggleSidebar, {
+  shinyjs::onclick(id= "toggleSidebar", {
+    shinyjs::runjs('var x = document.querySelector("#mainpage > div > div.tab-content > div > nav > div > div");
+                   var y = document.querySelector("#colcol > div")
+                    if (x.style.width == "78px") {x.style.width="23.7%";y.style.width="75%";} else {x.style.width="78px";y.style.width="100%";}
+                    ')
     shinyjs::toggle(
       id = "sidebar",
       anim = TRUE,
       animType = "fade",
-      time = 0.5,)
+      time = 0.1)
   })
   #modulo about
   about_server("about")
+
 }
 
 # Run the application

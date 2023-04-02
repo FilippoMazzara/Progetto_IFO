@@ -17,8 +17,17 @@ mainGenePanel_ui<-function(id){
     # navbar page start
     #TUTTA QUESTA PARTE PUO ESSERE RIDOTTA SOLO AL PRIMO TAB
     shiny::navbarPage(
-      title = "GERSOM2",
-      position = c("static-top"), #cambia qui se vuoi che solo la navbar sia sticky
+      position = "static-top",
+      collapsible = TRUE,
+      id = "topnavbar2",
+        shiny::tags$a(
+          id = "toggleSidebar",
+          class = "toggleSidebar",
+          shiny::tags$span(class="toggleLine"),
+          shiny::tags$span(class="toggleLine"),
+          shiny::tags$span(class="toggleLine")
+        ),
+      #cambia qui se vuoi che solo la navbar sia sticky
       #panel1 contains graph and it's menu
       ##### FIRST TAB #####
       geneOverview_ui(ns("overview")),

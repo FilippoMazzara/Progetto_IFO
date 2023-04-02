@@ -162,6 +162,9 @@ div.container-fluid > nav > div{
 }
 #mainpage > div.container-fluid > div{
   height:100%;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
 }
 
 #footertxt{
@@ -216,10 +219,72 @@ div.navbar-header > span {
 .navbar-collapse{
   border:0;
 }
+#mainpage > div > div.tab-content > div > nav > div {display:content;}
+#mainpage > div > div.tab-content > div > nav {
+  margin-bottom: 5px !important;
+}
 
+#mainpage > div > div.tab-content > div > nav > div > div.navbar-header {
+ width: 24%;
+ transition: width 0.2s ease-out 0s;
+ display: flex;
+ flex-direction: row-reverse;
+ justify-content: flex-end;
+}
 
+.navbar-toggle{margin-left: 100%;}
+
+.toggleLine{
+    border-radius: 2px;
+    width: 70%;
+    height: 4px;
+    background-color: #808080;
+    margin: 3px;
+
+}
+.toggleSidebar{
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  cursor:pointer;
+  height:50px;
+  width:60px;
+}
+
+#mainpage > div > div.tab-content > div > div.container-fluid {height:100%;}
+#mainpage > div > div.tab-content > div > div.container-fluid > div.tab-content {height:100%;}
+#mainpage > div > div.tab-content > div > div.container-fluid > div.tab-content > div > div.row
+{
+  height:100%;flex-wrap: wrap;
+    flex-direction: column; display:flex;}
+
+#mainpage > div > div.tab-content > div > nav > div > div > span.navbar-brand {
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 22px;
+}
+.tab-content>.active {height:100%;}
+#mainpage > div > div.tab-content > div > div {
+  padding-right:0!important;
+  padding-left:0!important;
+}
+#sidebar{
+  height: 100%;
+  width:25%;
+}
+#sidebar > div {
+  height: 100%;
+  width: 100%;
+  padding-right:0;
+}
+#colcol {height: 100%;
+    width: 75%;}
+#colcol > div {width: 100%!important;
+    height: 100%;}
 
 #topnavbar{
   display: block;
   vertical-align:middle;
+  padding-top:5px;
 }
