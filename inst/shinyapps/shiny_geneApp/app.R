@@ -35,6 +35,7 @@ ui <- shiny::fluidPage(
     about_ui("about")
   #END UI
   ),
+  br(),
   shiny::tags$div(
     class = "footer",
     shiny::includeHTML("www/footer.html")
@@ -64,8 +65,8 @@ server <- function(input, output, session) {
   )
   shinyjs::onclick(id= "toggleSidebar", {
     shinyjs::runjs('var x = document.querySelector("#mainpage > div > div.tab-content > div > nav > div > div");
-                   var y = document.querySelector("#colcol > div")
-                    if (x.style.width == "78px") {x.style.width="23.7%";y.style.width="75%";} else {x.style.width="78px";y.style.width="100%";}
+                   var y = document.querySelector("#colcol")
+                    if (x.style.width == "78px") {x.style.width="24.5%";y.style.width="75%";} else {x.style.width="78px";y.style.width="100%";}
                     ')
     shinyjs::toggle(
       id = "sidebar",

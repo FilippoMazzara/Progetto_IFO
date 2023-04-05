@@ -15,7 +15,7 @@ body {
   width:100%;
   overflow:auto;
   resize: horizontal;
-  min-width: 230px;
+  min-width: 250px;
 }
 .navbar{
   min-height: auto;
@@ -61,12 +61,10 @@ div.container-fluid > nav > div > div > button{
   }
 #mainpage{
   height:100%;
-  margin-right: 0;
-  margin-left: 0;
+  margin:0;
+  padding:0;
   display: flex;
   flex-direction: column;
-  padding-right: auto;
-  padding-left: auto;
   width:100%;
 }
 
@@ -117,6 +115,17 @@ div.container-fluid > nav > div{
   cursor: pointer;
   background-color: transparent !important;
 }
+
+.home_wellpanel{margin-right:4em !important;margin-left:4em !important;display:flex;justify-content:center;}
+
+#home_title{
+  line-height: 1.5;text-align: center;font-size:4vw;
+}
+#home_title_cont{
+  justify-content: center;
+        display: flex;
+        align-items: center;
+}
 #topnavbar>.active>a {
   text-decoration:underline !important;
 }
@@ -132,8 +141,7 @@ div.container-fluid > nav > div{
 #linkapp{
   font-weight: 500;
   letter-spacing: 2px;
-  word-spacing: 8.50px;
-  font-size:30px !important;
+  font-size:3.5vw !important;
   display:flex;
   justify-content:center;
   line-height:1.5 !important;
@@ -151,9 +159,9 @@ div.container-fluid > nav > div{
   white-space: nowrap;
 }
 #mainpage > div.container-fluid {
-  padding-right: 0;
+  padding-left:0;
   flex:1;
-  padding-left: 0;
+  padding-right: 0;
   margin-right: 0;
   margin-left: 0;
   display: flex;
@@ -171,7 +179,34 @@ div.container-fluid > nav > div{
   color:#777;
 }
 
+.dataTables_filter{
+  margin-right:15px;
+}
+
+.dt-buttons{margin-left: 15px;}
+
+.dataTables_length{
+  margin-left: 15px;
+    margin-top: 3px;
+}
+
+div.dataTables_scrollHeadInner{padding:0;}
+
+table.display.dataTable.no-footer {
+  width:100% !important;
+}
+
+div.dataTables_scroll {
+  width:100%;
+  padding-right: 15px;
+  padding-left:15px;
+}
+
+#footer2{margin-left: 20px;
+    margin-right: 20px;}
+
 .footer {
+
     align-items: center;
     display: flex;
     justify-content: space-between;
@@ -187,9 +222,9 @@ div.container-fluid > nav > div{
     text-align: center;
 }
 
+#footertxt_cont{width: 40%;}
+
 .img_footer{
-    padding-right: 100px;
-    padding-left: 100px;
 }
 
 .logoContainerFooter{
@@ -225,7 +260,7 @@ div.navbar-header > span {
 }
 
 #mainpage > div > div.tab-content > div > nav > div > div.navbar-header {
- width: 24%;
+ width: 24.5%;
  transition: width 0.2s ease-out 0s;
  display: flex;
  flex-direction: row-reverse;
@@ -251,12 +286,20 @@ div.navbar-header > span {
   width:60px;
 }
 
+.row{
+   margin-right: 0;
+margin-left: 0;
+}
+
 #mainpage > div > div.tab-content > div > div.container-fluid {height:100%;}
 #mainpage > div > div.tab-content > div > div.container-fluid > div.tab-content {height:100%;}
 #mainpage > div > div.tab-content > div > div.container-fluid > div.tab-content > div > div.row
 {
-  height:100%;flex-wrap: wrap;
-    flex-direction: column; display:flex;}
+
+  display: flex;
+    align-items: stretch;
+    flex-wrap: wrap;
+  height:100%;}
 
 #mainpage > div > div.tab-content > div > nav > div > div > span.navbar-brand {
     padding-top: 0;
@@ -270,17 +313,22 @@ div.navbar-header > span {
   padding-left:0!important;
 }
 #sidebar{
-  height: 100%;
-  width:25%;
+  height: auto;
+  padding-right: 0px;
 }
 #sidebar > div {
   height: 100%;
   width: 100%;
   padding-right:0;
+    padding-left:0;
 }
-#colcol {height: 100%;
+#colcol {
+      flex: 1;
+  height: 100%;
     width: 75%;}
-#colcol > div {width: 100%!important;
+#colcol > div {
+  padding:0;
+  width: 100%!important;
     height: 100%;}
 
 #topnavbar{

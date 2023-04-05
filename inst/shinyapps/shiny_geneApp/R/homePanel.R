@@ -16,19 +16,16 @@ homePanel_ui <- function(id) {
     shiny::tags$br(),
     shiny::tags$br(),
     shiny::fluidRow(
-      style = "justify-content: center;
-        display: flex;
-        align-items: center;",
+      id="home_title_cont",
       shiny::tags$h1(
         id = "home_title",
-        style = "line-height: 1.5;",
         htmltools::HTML("BENVENUTI NELLA <strong>GENEAPP</strong>")
       )
     ),
     shiny::tags$br(),
     shiny::tags$br(),
     shiny::fluidRow(
-      style = "margin-right:4em;margin-left:4em;display:flex;justify-content:center;",
+      class="home_wellpanel",
       shiny::tags$br(),
       shiny::wellPanel(
         style = "margin-bottom:0;width:100%",
@@ -42,7 +39,7 @@ homePanel_ui <- function(id) {
 
     shiny::tags$br(),
     shiny::fluidRow(
-      style = "margin-right:4em;margin-left:4em;display:flex;justify-content:center;",
+      class="home_wellpanel",
       shiny::tags$br(),
       shiny::wellPanel(
         style = "margin-bottom:0;width:100%;",
