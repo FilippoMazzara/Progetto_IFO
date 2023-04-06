@@ -19,3 +19,15 @@ help_text_panel <- tagList(
                        selected = state_group("help_text"), inline = TRUE)
   )
 )
+
+#shinyjs::onclick(id= "toggle_well_input", { #aggiungi visibility
+   # shinyjs::runjs('var z = document.getElementById("well_input");
+    #                if (z.style.height == "0px") {z.style.height="100px";} else {z.style.height="0px";}
+     #               ')})
+
+
+
+#d <- data.table::fread(input$fromfile$datapath, data.table=F)
+        #save(d,file = paste(input$fromfile$name,".RData",sep=""))
+        f <- get(load("maf_test.tsv.RData"))
+        data.table::setDT(f)

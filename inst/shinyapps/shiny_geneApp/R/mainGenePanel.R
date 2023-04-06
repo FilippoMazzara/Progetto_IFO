@@ -30,6 +30,7 @@ mainGenePanel_ui<-function(id){
       #cambia qui se vuoi che solo la navbar sia sticky
       #panel1 contains graph and it's menu
       ##### FIRST TAB #####
+
       geneOverview_ui(ns("overview")),
       # second and third set of nav tabs
       #PER ORA NON FANNO NULLA

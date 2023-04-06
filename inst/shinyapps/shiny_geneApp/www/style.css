@@ -17,15 +17,36 @@ body {
   resize: horizontal;
   min-width: 250px;
 }
-.navbar{
-  min-height: auto;
-}
 
 h2 {margin-top:10px;}
+
+
+
+/* Body */
+
+
+#mainpage{
+  height:100%;
+  margin:0;
+  padding:0;
+  display: flex;
+  flex-direction: column;
+  width:100%;
+}
+
+/* Navbar global */
+
+.navbar{
+  min-height: auto;
+
+}
+
+/* Tooltip */
 
 .tooltip {
   pointer-events: none;
 }
+
 .tooltip > .tooltip-inner {
   pointer-events: none;
   box-sizing: border-box;
@@ -45,12 +66,17 @@ h2 {margin-top:10px;}
   margin-left: 0;
   max-width: 1000px;
 }
+
 .tooltip.right .tooltip-arrow {
   border-right-color: #e3e3e3;
 }
+
 .tooltip.left .tooltip-arrow {
   border-left-color: #e3e3e3;
 }
+
+
+/* Header */
 
 div.container-fluid > nav > div > div > button{
     margin-left: 0;
@@ -59,16 +85,8 @@ div.container-fluid > nav > div > div > button{
     margin-bottom: 0;
 
   }
-#mainpage{
-  height:100%;
-  margin:0;
-  padding:0;
-  display: flex;
-  flex-direction: column;
-  width:100%;
-}
 
-div.container-fluid > nav {
+#mainpage > nav {
   height: auto;
   padding: 0 5%;
   padding-bottom: 5px;
@@ -81,12 +99,22 @@ div.container-fluid > nav {
   align-items: center;
 }
 
-div.container-fluid > nav > div > div > span{
-  margin-left: 0 !important;
-  padding:0;
+div.navbar-header > span.navbar-brand {
+  vertical-align: middle;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height:auto;
+    width:auto;
+    margin-left: 0 !important;
+    padding:0;
 }
 
-div.container-fluid > nav > div{
+#logo1{
+  height: 5em;
+}
+
+#mainpage > nav > div.container-fluid{
   margin: 0 auto;
   max-width: 1200px;
   padding-right: 0;
@@ -95,7 +123,6 @@ div.container-fluid > nav > div{
   align-items: center;
   justify-content: space-evenly;
 }
-
 
 #topnavbar>li {
   padding-left: 2.5em;
@@ -116,22 +143,102 @@ div.container-fluid > nav > div{
   background-color: transparent !important;
 }
 
-.home_wellpanel{margin-right:4em !important;margin-left:4em !important;display:flex;justify-content:center;}
-
-#home_title{
-  line-height: 1.5;text-align: center;font-size:4vw;
-}
-#home_title_cont{
-  justify-content: center;
-        display: flex;
-        align-items: center;
-}
 #topnavbar>.active>a {
   text-decoration:underline !important;
 }
 #topnavbar>li>a:hover{
   text-decoration:underline !important;
 }
+
+#topnavbar{
+  display: block;
+  vertical-align:middle;
+  padding-top:5px;
+}
+
+/* Main */
+
+
+#mainpage > div > div.tab-content > div > div {
+  padding-right:0!important;
+  padding-left:0!important;
+}
+
+.tab-content>.active {
+  height:100%;
+}
+
+#mainpage > div.container-fluid {
+  padding-left:0;
+  flex:1;
+  padding-right: 0;
+  margin-right: 0;
+  margin-left: 0;
+  display: flex;
+  flex-direction: column;
+
+}
+
+#mainpage > div.container-fluid > div{
+  height:100%;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+}
+
+/* toggle filter panel in the sidebar */
+
+.toggle_well_link{
+  display:flex;
+  cursor:pointer;
+  align-items: center;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.toggle_panel_text{
+  display: inline-block;
+  max-width: 100%;
+  font-weight: 700;
+}
+
+.toggle_panel{
+  padding-top: 0 !important;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom:0;
+
+}
+
+.toggle_panel_line{
+  border-radius: 2px;
+  width: 15px;
+  height: 4px;
+  background-color: #808080;
+  margin: 3px;
+}
+
+/* Home */
+
+.home_wellpanel{
+  margin-right:4em !important;
+  margin-left:4em !important;
+  display:flex;
+  justify-content:center;
+}
+
+#home_title{
+  line-height: 1.5;
+  text-align: center;
+  font-size:4vw;
+}
+
+#home_title_cont{
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
+
 #linkapp:hover{
   text-decoration:underline !important;
 }
@@ -153,53 +260,19 @@ div.container-fluid > nav > div{
   cursor: pointer;
   background-color: transparent !important;
 }
+
+/* About */
+
 #about{
   width:100%;
   font-family: 'Open Sans', sans-serif !important;
   white-space: nowrap;
 }
-#mainpage > div.container-fluid {
-  padding-left:0;
-  flex:1;
-  padding-right: 0;
-  margin-right: 0;
-  margin-left: 0;
-  display: flex;
-  flex-direction: column;
 
-}
-#mainpage > div.container-fluid > div{
-  height:100%;
-  display: flex;
-  justify-content: flex-start;
-  flex-direction: column;
-}
+/* Footer */
 
 #footertxt{
   color:#777;
-}
-
-.dataTables_filter{
-  margin-right:15px;
-}
-
-.dt-buttons{margin-left: 15px;}
-
-.dataTables_length{
-  margin-left: 15px;
-    margin-top: 3px;
-}
-
-div.dataTables_scrollHeadInner{padding:0;}
-
-table.display.dataTable.no-footer {
-  width:100% !important;
-}
-
-div.dataTables_scroll {
-  width:100%;
-  padding-right: 15px;
-  padding-left:15px;
 }
 
 #footer2{margin-left: 20px;
@@ -236,25 +309,37 @@ div.dataTables_scroll {
    height: 70px;
 }
 
-div.navbar-header > span {
-  vertical-align: middle;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height:auto;
-    width:auto;
-    margin-left: 0;
+/* Datatable */
+.dataTables_filter{
+  margin-right:15px;
 }
 
+.dt-buttons{margin-left: 15px;}
 
-#logo1{
-  height: 5em;
+.dataTables_length{
+  margin-left: 15px;
+    margin-top: 3px;
 }
+
+div.dataTables_scrollHeadInner{padding:0;}
+
+table.display.dataTable.no-footer {
+  width:100% !important;
+}
+
+div.dataTables_scroll {
+  width:100%;
+  padding-right: 15px;
+  padding-left:15px;
+}
+
+/* seconda navbar */
+/* nota: trovare selettori migliori per i tab */
 
 .navbar-collapse{
   border:0;
 }
-#mainpage > div > div.tab-content > div > nav > div {display:content;}
+
 #mainpage > div > div.tab-content > div > nav {
   margin-bottom: 5px !important;
 }
@@ -267,7 +352,17 @@ div.navbar-header > span {
  justify-content: flex-end;
 }
 
-.navbar-toggle{margin-left: 100%;}
+#mainpage > div > div.tab-content > div > nav > div > div.navbar-header > span.navbar-brand {
+  padding-top: 0;
+  padding-right: 0;
+  padding-bottom: 0;
+  padding-left: 22px !important;
+}
+
+
+.navbar-toggle{
+  margin-left: 100%;
+}
 
 .toggleLine{
     border-radius: 2px;
@@ -275,8 +370,8 @@ div.navbar-header > span {
     height: 4px;
     background-color: #808080;
     margin: 3px;
-
 }
+
 .toggleSidebar{
   display: flex;
   flex-wrap: wrap;
@@ -285,54 +380,91 @@ div.navbar-header > span {
   height:50px;
   width:60px;
 }
+/* Pagina overview main */
+/* nota: trovare selettori migliori */
+
+#mainpage > div > div.tab-content > div > div.container-fluid {
+  height:100%;
+}
+#mainpage > div > div.tab-content > div > div.container-fluid > div.tab-content {
+  height:100%;
+}
+
+#overview_container{
+  height:100%
+}
 
 .row{
-   margin-right: 0;
-margin-left: 0;
+  margin-right: 0;
+  margin-left: 0;
 }
 
-#mainpage > div > div.tab-content > div > div.container-fluid {height:100%;}
-#mainpage > div > div.tab-content > div > div.container-fluid > div.tab-content {height:100%;}
-#mainpage > div > div.tab-content > div > div.container-fluid > div.tab-content > div > div.row
-{
-
+#overview_container > div.row{
   display: flex;
-    align-items: stretch;
-    flex-wrap: wrap;
-  height:100%;}
+  align-items: stretch;
+  flex-wrap: wrap;
+  height:100%;
+}
 
-#mainpage > div > div.tab-content > div > nav > div > div > span.navbar-brand {
-    padding-top: 0;
-    padding-right: 0;
-    padding-bottom: 0;
-    padding-left: 22px;
-}
-.tab-content>.active {height:100%;}
-#mainpage > div > div.tab-content > div > div {
-  padding-right:0!important;
-  padding-left:0!important;
-}
-#sidebar{
+/* Sidebar overview */
+
+#sidebar {
   height: auto;
   padding-right: 0px;
 }
+
 #sidebar > div {
   height: 100%;
   width: 100%;
   padding-right:0;
-    padding-left:0;
+  padding-left:0;
 }
-#colcol {
-      flex: 1;
+/* Input sidebar */
+
+#sidebar>div>form>div.well{
+  padding-bottom: 2px;
+  padding-top: 3px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+#sidebar>div>form>div.well>div.collapse.in{
+  padding-right: 10px;
+  padding-left: 10px;
+  margin-bottom:0px;
+}
+
+#sidebar>div>form>div.well>div.collapse{
+  padding-right: 10px;
+  padding-left: 10px;
+  margin-bottom:0px;
+}
+
+#sidebar>div>form>div.well>div.collapsing{
+  padding-right: 10px;
+  padding-left: 10px;
+  margin-bottom:0px;
+}
+
+#sidebar>div>form>div.well>div>div{
+  padding-top:5px;
+  margin-bottom:0;
+}
+
+#overview-overview-fromfile_progress{
+  margin-bottom:10px;
+
+}
+
+/* Main tabset overview */
+#colcol{
+  flex: 1;
   height: 100%;
-    width: 75%;}
-#colcol > div {
+  width: 75%;
+}
+#colcol > div{
   padding:0;
   width: 100%!important;
-    height: 100%;}
-
-#topnavbar{
-  display: block;
-  vertical-align:middle;
-  padding-top:5px;
+  height: 100%;
 }
+

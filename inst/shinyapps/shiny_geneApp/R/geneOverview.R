@@ -9,8 +9,9 @@ geneOverview_ui<-function(id){
   ns <- shiny::NS(id) #id del modulo
   shiny::tabPanel(
     title = "Graph",
-    id="graph",
+    id = "graph",
     value = shiny::NS(id, "graph"),
+    shiny::tags$div(id = "overview_container",
     #declare sidebars layout
         shiny::sidebarLayout(
           #side menu start
@@ -22,7 +23,23 @@ geneOverview_ui<-function(id){
             #option to hide the panel,hide only one of the inputs ,only allow from server,
             #manage the inputs from file in another location, or by making user choose in advance
             shiny::wellPanel(
-              tooltip_inutile(),
+              id = "well_1",
+              shiny::tags$div(
+                class = "toggle_panel",
+              shiny::tags$span(
+                class = "toggle_panel_text",
+                "Seleziona il campione:"
+              ),
+                shiny::tags$a(
+                  id = "toggle_well_input",
+                  class="toggle_well_link",
+                  `data-toggle`="collapse",
+                  `data-target`="#well_input",
+                shiny::tags$span(class="toggle_panel_line"))
+
+              ),
+              shiny::tags$div( id = "well_input", class = "collapse in",
+
               #input from filesystem
               shiny::fileInput(
                 ns("fromfile"),
@@ -34,11 +51,15 @@ geneOverview_ui<-function(id){
               #bottone per disabilitare il tasto enter fuori da i widget
               #una pecionata pero funziona (attento a possibili errori)
               #non lo puoi mettere statico senno non fa il render finche non lo premi
-              enterDisable_ui(ns("inutile")),
+
               #input from DB/server
               #guarda le opzioni di selectize
               #anche questo panello puo essere reso interattivo e dinamico,compare diverso e compare solo per una certa condizione
             )
+            ),
+            shiny::wellPanel(),
+            enterDisable_ui(ns("inutile")),
+            tooltip_inutile()
           )),
           # Show a plot of the generated distribution, main panel
           shiny::tags$div(id = "colcol",class="col-sm-9",
@@ -58,7 +79,7 @@ geneOverview_ui<-function(id){
             )
           ))
           #END SIDEBAR LAYOUT
-      )
+      ))
     )
   #END TAB
 }
@@ -76,7 +97,7 @@ geneOverview_server <- function(id) {
     function(input, output, session) {
       data <- shiny::reactive({
         shiny::req(input$fromfile)
-        data.table::fread(input$fromfile$datapath, data.table=TRUE)
+        data.table::fread(input$fromfile$datapath, data.table=T)
       })
       cols <- shiny::reactive(names(data()))
       selected <- shiny::reactive({
@@ -98,7 +119,7 @@ geneOverview_server <- function(id) {
           scrollCollapse = TRUE,
           dom = 'Blfrtip',
           buttons = c('copy', 'excel', 'pdf'),
-          lengthMenu = list(c(10,25,50,-1),c(10,25,50,"All")))
+          lengthMenu = list(c(10,25,50,100,1000,-1),c(10,25,50,100,1000,"All")))
       )
       #bottone inutile
       enterDisable_server("inutile")
