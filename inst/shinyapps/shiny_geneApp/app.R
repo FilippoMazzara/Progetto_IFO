@@ -1,4 +1,5 @@
 ui <- shiny::fluidPage(
+  #reactlog::reactlog_enable(),
   id = "mainpage",
   #Styling
   shinyjs::useShinyjs(),
@@ -59,14 +60,14 @@ server <- function(input, output, session) {
   #modulo overview
   mainGenePanel_server("overview")
   #link
+
   shiny::observeEvent(
     input$linkapp,
     {shiny::updateNavbarPage(session, "topnavbar", "overview-gersom")}
   )
   shinyjs::onclick(id= "toggleSidebar", {
     shinyjs::runjs('var x = document.querySelector("#mainpage > div > div.tab-content > div > nav > div > div");
-                   var y = document.querySelector("#colcol")
-                    if (x.style.width == "93px") {x.style.width="24.5%";y.style.width="75%";} else {x.style.width="93px";y.style.width="100%";}
+                    if (x.style.width == "93px") {x.style.width="24.5%";} else {x.style.width="93px";}
                     ')
     shinyjs::toggle(
       id = "sidebar",
@@ -76,7 +77,14 @@ server <- function(input, output, session) {
   })
   #modulo about
   about_server("about")
+  #observe({
+ #   req(input$dataset_files)
+  #})
 
+
+
+
+  # shinyFiles::shinyFileChoose(input = input, id = "dataset_files", session = session, roots=c(wd = "C:/Users/facke/Desktop/datasets"), defaultPath="/")
 }
 
 # Run the application

@@ -48,6 +48,17 @@ geneOverview_ui<-function(id){
               <i class="far fa-circle-question" role="presentation" aria-label="circle-question icon"></i></span>'),
               accept = c(".tsv",".csv")
               ),
+              shinyFiles::shinyFilesButton(
+                id = ns("dataset_files"),
+                label= "Seleziona un campione dai datasets...",
+                title = "Pick a file:" ,
+                viewtype = "detail",
+                multiple = FALSE,
+                style= "overflow: hidden;
+                        width: auto;
+                        max-width: 100%;"
+              ),
+              shiny::tags$div(shiny::textOutput(ns("titolo2")), style="white-space: nowrap;overflow: auto;")
               #bottone per disabilitare il tasto enter fuori da i widget
               #una pecionata pero funziona (attento a possibili errori)
               #non lo puoi mettere statico senno non fa il render finche non lo premi
@@ -68,7 +79,7 @@ geneOverview_ui<-function(id){
             shiny::tabsetPanel(
               shiny::tabPanel(
                 "pannello1",
-                shiny::tags$h1("Il file che hai caricato:"),
+                shiny::tags$h1(shiny::textOutput(ns("titolo1")), style ="white-space: nowrap;overflow: hidden;"),
                 shiny::fluidRow(
                   id = "tabcontainer",
                   style="display:flex;justify-content:center;",
@@ -95,16 +106,40 @@ geneOverview_server <- function(id) {
   shiny::moduleServer(
     id,
     function(input, output, session) {
-      data <- shiny::reactive({
+
+      titolo11 <- shiny::reactiveVal("CARICA IL FILE CON il somatico")
+      titolo12 <- shiny::reactiveVal("")
+      data <- shiny::reactiveVal()
+      shiny::observe({
         shiny::req(input$fromfile)
-        data.table::fread(input$fromfile$datapath, data.table=T)
+        data(data.table::fread(input$fromfile$datapath, data.table=T))
       })
+
+      shinyFiles::shinyFileChoose(input = input, id = "dataset_files", session = session, roots=c(wd = "C:/Users/facke/Desktop/datasets"), defaultPath="/")
+
+      shiny::observe({
+        shiny::req(input$dataset_files)
+        inFile <- shinyFiles::parseFilePaths(roots=c(wd="C:/Users/facke/Desktop/datasets"), input$dataset_files)
+        if (length(inFile$datapath) != 0 ){
+          titolo11(inFile$name)
+          titolo12(inFile$name)
+          data(data.table::fread(as.character(inFile$datapath), data.table=T))}
+      })
+
+
+
+
       cols <- shiny::reactive(names(data()))
       selected <- shiny::reactive({
         each_var <- purrr::map(cols(), ~ filter_var(data()[[.x]], input[[.x]]))
         purrr::reduce(each_var, `&`)
       })
-      output$table <- DT::renderDataTable(data() ,
+
+      output$titolo1 <- shiny::renderText(titolo11())
+      output$titolo2 <- shiny::renderText(titolo12())
+      output$table <- DT::renderDataTable(
+        data(),
+        server = FALSE,
         rownames = FALSE,
         filter = 'top',
         selection = list(mode = "multiple"),
@@ -123,6 +158,7 @@ geneOverview_server <- function(id) {
       )
       #bottone inutile
       enterDisable_server("inutile")
+
     }
   )
 }

@@ -13,5 +13,7 @@ Imports:
     DT,
     magrittr,
     purrr,
+    reactlog,
     shiny,
+    shinyFiles,
     shinyjs

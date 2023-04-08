@@ -31,3 +31,26 @@ help_text_panel <- tagList(
         #save(d,file = paste(input$fromfile$name,".RData",sep=""))
         f <- get(load("maf_test.tsv.RData"))
         data.table::setDT(f)
+
+data <- shiny::eventReactive({
+        shiny::req(shiny::isTruthy(input$fromfile) || shiny::isTruthy(input$dataset_files), cancelOutput = TRUE)
+        if (shiny::isTruthy(input$fromfile))
+          {data.table::fread(shiny::isolate(input$fromfile$datapath), data.table=T)}
+        else if (shiny::isTruthy(input$dataset_files)) {
+          shinyFiles::shinyFileChoose(input = input, id = "dataset_files", session = session, roots=c(wd = "C:/Users/facke/Desktop/datasets"), defaultPath="/")
+          inFile <- shinyFiles::parseFilePaths(roots=c(wd="C:/Users/facke/Desktop/datasets"),shiny::isolate( input$dataset_files))
+          if (length(inFile$datapath) != 0 ){
+          data.table::fread(as.character(inFile$datapath), data.table=T)}}
+      })
+datax <- shiny::reactive({
+        shiny::req(shiny::isTruthy(input$fromfile) || shiny::isTruthy(input$dataset_files))
+        print(input$fromfile)
+        print(input$dataset_files)
+        if (shiny::isTruthy(input$fromfile))
+        {data.table::fread(input$fromfile$datapath, data.table=T)}
+        else if (shiny::isTruthy(input$dataset_files)) {
+          shinyFiles::shinyFileChoose(input = input, id = "dataset_files", session = session, roots=c(wd = "C:/Users/facke/Desktop/datasets"), defaultPath="/")
+          inFile <- shinyFiles::parseFilePaths(roots=c(wd="C:/Users/facke/Desktop/datasets"), input$dataset_files)
+          if (length(inFile$datapath) != 0 ){
+            data.table::fread(as.character(inFile$datapath), data.table=T)}}
+      })
