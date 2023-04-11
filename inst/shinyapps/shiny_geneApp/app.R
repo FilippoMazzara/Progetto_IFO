@@ -12,6 +12,7 @@ ui <- shiny::fluidPage(
   ),
   #top header
   shiny::navbarPage(
+    windowTitle = "HOME",
     position = "static-top",
     header = NULL,
     footer = NULL,
@@ -36,7 +37,7 @@ ui <- shiny::fluidPage(
     about_ui("about")
   #END UI
   ),
-  br(),
+  shiny::tags$br(),
   shiny::tags$div(
     class = "footer",
     shiny::includeHTML("www/footer.html")
@@ -58,8 +59,51 @@ server <- function(input, output, session) {
   #modulo home
   homePanel_server("homepage")
   #modulo overview
-  mainGenePanel_server("overview")
+  ch <- shiny::reactive({
+    if(is.null(input$checkbox1)){return(NULL)}
+    else{return(input$checkbox1)}
+    })
+  ch2 <- shiny::reactive({
+    if(is.null(input$checkbox2)){return(NULL)}
+    else{return(input$checkbox2)}
+  })
+
+  selected <- shiny::reactive({
+    if (!is.null(ch())){
+      each_input = list()
+      for(c in ch()){
+      each_input[[c]] <-input[[c]]}
+      return(each_input)
+      } else {return(NULL)}
+  })
+
+
+  mainGenePanel_server("overview",ch2=ch2,ch = ch, selected = selected)
   #link
+
+
+
+  shinyjs::onclick(id= "sidebar_somatic", {
+    shinyjs::runjs('document.querySelector("#file1_sidebar").style.display = "initial";
+                   document.querySelector("#sidebar_somatic").className += " active";
+                       document.querySelector("#file2_sidebar").style.display = "none";
+
+                   document.querySelector("#sidebar_germ").className= "btn btn-default action-button shiny-bound-input";
+                   '
+    )
+  })
+  shinyjs::onclick(id = "sidebar_germ", {
+    shinyjs::runjs('document.querySelector("#file1_sidebar").style.display = "none";
+                       document.querySelector("#file2_sidebar").style.display = "initial";
+                   document.querySelector("#sidebar_germ").className += " active";
+                   document.querySelector("#sidebar_somatic").className = "btn btn-default action-button shiny-bound-input";
+                   '
+
+    )
+
+  })
+
+
 
   shiny::observeEvent(
     input$linkapp,
@@ -75,6 +119,7 @@ server <- function(input, output, session) {
       animType = "fade",
       time = 0.1)
   })
+
   #modulo about
   about_server("about")
   #observe({

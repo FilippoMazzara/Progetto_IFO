@@ -54,3 +54,110 @@ datax <- shiny::reactive({
           if (length(inFile$datapath) != 0 ){
             data.table::fread(as.character(inFile$datapath), data.table=T)}}
       })
+
+
+
+-------------------------------------
+
+li <- shiny::reactiveVal(list())
+      data2 <- shiny::reactiveValues(tables = list())
+      #data2[["l"]] <- li
+      shiny::observeEvent(input$fromfile,{
+        #shiny::req(input$fromfile)
+        #current1(input$fromfile$name)
+        d <- data.table::fread(input$fromfile$datapath, data.table=T)
+        data2$tables <- c(data2$tables,list(d))
+        #print(is.null(data2[[input$fromfile$name]]))
+        #if (is.null(data2[[input$fromfile$name]])){
+         # data2[[input$fromfile$name]] <- shiny::reactiveVal(data.table::fread(input$fromfile$datapath, data.table=T))
+        #}
+        #else {data2[[input$fromfile$name]]()}
+
+         # i <- data2[["l"]]()
+       # i[[input$fromfile$name]] <- data.table::fread(input$fromfile$datapath, data.table=T)
+       # data2[["l"]](i)
+        # i <- li()
+        # print(!(input$fromfile$name %in% names(i)))
+        # if (!(input$fromfile$name %in% names(i))){
+        #  i[[input$fromfile$name]] <- data.table::fread(input$fromfile$datapath, data.table=T)
+        #  li(i)}
+
+        }
+        )
+shiny::observeEvent(input$dataset_files,{
+        #shiny::req()
+        inFile <- shinyFiles::parseFilePaths(roots=c(wd="C:/Users/facke/Desktop/datasets"), input$dataset_files)
+        if (length(inFile$datapath) != 0 ){
+        d <- data.table::fread(as.character(inFile$datapath), data.table=T)
+        data2$tables <- c(data2$tables,list(d))
+        }})
+
+          #current1(inFile$name)
+          #titolo11(inFile$name)
+          #titolo12(inFile$name)
+          #if (is.null(data2[[inFile$name]])){
+          #  data2[[inFile$name]] <- shiny::reactiveVal(data.table::fread(as.character(inFile$datapath), data.table=T))
+          }
+          #else {data2[[inFile$name]](data.table::fread(as.character(inFile$datapath), data.table=T))}
+          #i <- data2[["l"]]()
+          #i[[inFile$name]] <-data.table::fread(as.character(inFile$datapath), data.table=T)
+          #data2[["l"]](i)
+          #i <- li()
+          #if (!(inFile$name %in% names(i))){
+          #i[[inFile$name]] <- data.table::fread(as.character(inFile$datapath), data.table=T)
+          #li(i)}
+
+          }
+        })
+----------------------------------------------------------------------------
+sele <- shiny::reactiveVal("")
+      shiny::observeEvent(input$select_cols_som, {
+        sele( input$select_cols_som - names(data()) )
+      })
+      cols <- shiny::reactive(input$select_cols_som - names(data()))
+      cols2 <- shiny::reactive(names(data2()))
+
+      sel <- shiny::reactive({
+        #shiny::req(input$select_cols_som)
+        print(names(data()))
+        print(input$select_cols_som)
+        dplyr::instersect(x = names(data()), y = input$select_cols_som)
+      })
+
+
+      selected <- shiny::reactive({
+        each_var <- purrr::map(cols(), ~ filter_var(data()[[.x]], input[[.x]]))
+        purrr::reduce(each_var, `&`)
+      })
+      selected2 <- shiny::reactive({
+        each_var <- purrr::map(cols(), ~ filter_var(data2()[[.x]], input[[.x]]))
+        purrr::reduce(each_var, `&`)
+      })
+
+
+
+      shiny::wellPanel(
+            shiny::checkboxGroupInput(
+              inputId = "select_cols_som",
+              label = "seleziona le colonne: ",
+              choiceNames = "",
+              choiceValues = "",
+              selected = ""
+            )),
+            -----------------------------------------------------
+
+
+
+      shiny::observeEvent(filteredData(), {
+        # this is how an example of how you update it
+        av <- filteredData()
+        DT::replaceData(table_proxy, as.data.frame(av), resetPaging = F)})
+
+      table_proxy <- DT::dataTableProxy("table", session = session)
+
+      shiny::observeEvent(filteredData(), {
+          d <- filteredData()
+          DT::replaceData(table_proxy,as.data.frame(d), resetPaging = FALSE)
+        })
+
+

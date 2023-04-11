@@ -3,7 +3,7 @@
 #' This is the launcher function to the geneApp package
 #' @return The running application
 #' @export run_geneApp
-#'
+#' @importFrom magrittr "%>%"
 #' @examples run_geneApp()
 #' The only way to first start the app
 #'

@@ -11,15 +11,18 @@ mainGenePanel_ui<-function(id){
   #### TABPANEL DELLA NAVBAR PRINCIPALE ####
   shiny::tabPanel(
     title = "GERSOM",
+
     value = shiny::NS(id,"gersom"),
     id = "gersom",
     class = "topchoice",
     # navbar page start
     #TUTTA QUESTA PARTE PUO ESSERE RIDOTTA SOLO AL PRIMO TAB
     shiny::navbarPage(
+      windowTitle = "GERSOM",
       position = "static-top",
       collapsible = TRUE,
       id = "topnavbar2",
+      title =
         shiny::tags$a(
           id = "toggleSidebar",
           class = "toggleSidebar",
@@ -48,11 +51,15 @@ mainGenePanel_ui<-function(id){
 #' l'id assegnato al modulo
 #' @examples
 #' mainGenePanel_server("nomemodulo")
-mainGenePanel_server <- function(id) {
+mainGenePanel_server <- function(id, ch2 = NULL, ch = NULL ,selected = NULL) {
   shiny::moduleServer(
     id,
     function(input, output, session) {
-      geneOverview_server("overview")
+      #shiny::callModule(geneOverview_server,"geneOverview_server")
+      geneOverview_server("overview", ch2= ch2, ch = ch, selected = selected)
+
     }
+
   )
+
 }

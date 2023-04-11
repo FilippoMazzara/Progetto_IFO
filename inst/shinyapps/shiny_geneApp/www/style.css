@@ -403,7 +403,7 @@ div.dataTables_scroll {
   display: flex;
   align-items: stretch;
   flex-wrap: wrap;
-  height:100%;
+  /*height:100%;*/
 }
 
 /* Sidebar overview */
@@ -421,32 +421,32 @@ div.dataTables_scroll {
 }
 /* Input sidebar */
 
-#sidebar>div>form>div.well{
+div.file_side>div.well{
   padding-bottom: 2px;
   padding-top: 3px;
   padding-left: 10px;
   padding-right: 10px;
 }
 
-#sidebar>div>form>div.well>div.collapse.in{
+div.file_side>div.well>div.collapse.in{
   padding-right: 10px;
   padding-left: 10px;
   margin-bottom:5px;
 }
 
-#sidebar>div>form>div.well>div.collapse{
+div.file_side>div.well>div.collapse{
   padding-right: 10px;
   padding-left: 10px;
   margin-bottom:0px;
 }
 
-#sidebar>div>form>div.well>div.collapsing{
+div.file_side>div.well>div.collapsing{
   padding-right: 10px;
   padding-left: 10px;
   margin-bottom:0px;
 }
 
-#sidebar>div>form>div.well>div>div{
+div.file_side>div.well>div>div{
   padding-top:5px;
   margin-bottom:0;
 }
@@ -456,10 +456,15 @@ div.dataTables_scroll {
 
 }
 
+#file1_sidebar{display:initial;}
+#file2_sidebar{display:none;}
+
+
 /* Main tabset overview */
 #colcol{
+  margin-bottom: 10px;
   flex: 1;
-  height: 100%;
+  /*height: 100%;*/
   width: 75%;
 }
 #colcol > div{
@@ -468,3 +473,9 @@ div.dataTables_scroll {
   height: 100%;
 }
 
+
+@media screen and (max-width: 1000px) {
+  #sidebar{
+    width:100%;
+  }
+}
