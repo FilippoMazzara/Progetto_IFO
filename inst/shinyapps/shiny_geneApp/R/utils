@@ -160,4 +160,240 @@ sele <- shiny::reactiveVal("")
           DT::replaceData(table_proxy,as.data.frame(d), resetPaging = FALSE)
         })
 
+-----------------------------------------------------------------------
+ sel <- shiny::reactive({
+    d <- data1()
+    if (length(selected()) != 0){
+      each_var <- purrr::map(names(selected()), ~ filter_var(d[[.x]], selected()[[.x]]))
+      purrr::reduce(each_var, `&`)
+      d <- data1() %>% dplyr::filter(each_var[[1]])
+      i = 1
+      while(i < length(names(selected()))){
+        i = i + 1
+        each_var <- purrr::map(names(selected()), ~ filter_var(d[[.x]], selected()[[.x]]))
+        purrr::reduce(each_var, `&`)
+        d <- d %>% dplyr::filter(each_var[[i]])
+      }
+      return(d)
+    }
+    return(d)
+  })
 
+----------------------------------------------------------------------------
+ x<-x1
+  if (any(is.na(x1)) && is.numeric(x)){
+    print("ciao")
+    x <- as.character(x1)
+  }
+  print(typeof(x))
+x<-x1
+  if (anyNA(x) && is.numeric(x)){
+    x <- as.character(x1)
+    x <- lapply(x, function(y) {ifelse(is.na(y), "NA", y)})
+  }
+-----------------------------------
+else if (is.character(d[[n2]])){
+          lev <- levels(factor(d[[n2]], exclude = NULL))
+          #lev <- intersect(lev,selected()[[n2]] )
+          shinyWidgets::updatePickerInput(inputId=n2,session=session,selected = selected()[[n2]])
+
+
+        }
+if (is.numeric(d[[n2]])){
+          rng <- range(d[[n2]], na.rm = T)
+          #if (selected()[[n2]][1]>rng[1]){rng[1]<-selected()[[n2]][1]}
+          #if (selected()[[n2]][2]<rng[2]){rng[2]<-selected()[[n2]][2]}
+          shiny::updateSliderInput(inputId=n2, value = rng)
+        }
+---------------------------------------------------
+
+          if (nrow(sel3()) > nrow(s2))
+          {sel3(dplyr::right_join(sel3(),s2))}
+          else if (nrow(sel3()) < nrow(s2)){
+            #print(nrow(dplyr::full_join(s2,sel3())))
+            sel3(dplyr::anti_join(s2,sel3()))}
+        }
+shiny::observeEvent(!is.null(input[["V1"]]),{
+    print("a")
+    makeo()})
+ if (!is.null(d))){
+     output$filter <- shiny::renderUI(
+
+
+         shiny::wellPanel(
+           purrr::map(names(d), ~ make_ui(d[[.x]], .x)))
+     )
+-------------------------------------------------------------
+if (all(f)){
+              print(x %in% names(filter_vars$l))
+              if (x %in% names(filter_vars$l)){filter_vars$l[[x]] <- f}
+              }
+            else if (!all(f)){
+
+              filter_vars$l[[x]] <- f}ù
+
+observeEvent(!is.null(input$sync),{
+  if(!is.null(data1())){
+
+
+    res <- lapply(names(data1()), function (x) {
+      if (!is.null(input[[x]]))
+      {
+        shiny::observeEvent(input[[x]],{
+          if(!is.null(input[[x]]) && !is.null(data1())){
+            f <- filter_var(data1()[[x]], input[[x]])
+            if (all(f)){
+              print(x %in% names(filter_vars$l))
+              if (x %in% names(filter_vars$l)){filter_vars$l[[x]] <- f}
+            }
+            else if (!all(f)){
+
+              filter_vars$l[[x]] <- f}
+
+          }})}
+    })
+
+    res}
+
+})
+!is.null(vn()) && !is.null(input[[vn()]]
+___________________________________________________________________________
+#shiny::req(identical(union(names(proc_data1()),input$checkbox1), names(proc_data1())) && !is.null(input$checkbox1))
+#final_data1()[,input$checkbox1, drop = FALSE],
+  #FILTERED SOMATIC DATA TO RENDER
+  final_data1 <- reactive({
+    shiny::req(proc_data1())
+    shiny::req(filter_vars$l)
+    d <- proc_data1()
+    if (length(filter_vars$l) != 0){
+        d <- d %>% dplyr::filter(purrr::reduce(filter_vars$l,`&`))
+    }
+    d
+  })
+
+  #FILTERED GERM DATA TO RENDER
+  final_data2 <- reactive({
+    shiny::req(proc_data2())
+    shiny::req(filter_vars2$l)
+    d <- proc_data2()
+    if (length(filter_vars2$l) != 0){
+      d <- d %>% dplyr::filter(purrr::reduce(filter_vars2$l,`&`))
+    }
+    d
+  })
+  _________________________________________________________________________
+  for(n in names(proc_data1())){
+          make_ui(proc_data1()[[n]], n)}
+
+          if(is.character(proc_data1()[[n]])){
+            sel1$l[[n]] <- levels(factor(proc_data1()[[n]], exclude = NULL))
+            #shiny::updateSelectizeInput(inputId = n,choices = sel1$l[[n]], selected =  sel1$l[[n]])
+        }}
+        for(n in names(proc_data1())){if(is.character(proc_data1()[[n]])){
+      sel1$l[[n]] <- levels(factor(proc_data1()[[n]], exclude = NULL))
+
+      #shiny::updateSelectizeInput(inputId = n,choices = lev, selected =  lev)
+    }}
+
+
+    shiny::observeEvent(length(sel1$l) > 0,{
+  if (length(sel1$l) > 0){
+    for (n in names(sel1$l)){
+      shiny::updateSelectizeInput(inputId = n,choices = sel1$l[[n]], selected =  sel1$l[[n]], server = F)
+    }
+  }
+})
+
+  #DYNAMICALLY CREATE OBSERVERS FOR SOMATIC FILTERS' INPUTS
+  shiny::observeEvent(sel1() ,{
+    if(!is.null(proc_data1())){
+      #create observers fo inputs
+      res <- lapply(names(proc_data1()), function (x) {
+          shiny::observeEvent(input[[x]], {
+            #questionable if, check for redundant initialization of observers
+            if(!is.null(input[[x]]) && !is.null(proc_data1())){
+              f <- filter_var(proc_data1()[[x]], input[[x]])
+              if (all(f)){
+                if (x %in% names(filter_vars1$l)){
+                  filter_vars1$l[[x]] <- f
+                }
+              }
+              else if (!all(f)){
+                filter_vars1$l[[x]] <- f
+              }
+            }
+          },ignoreInit = T ) #inner observer end
+      }) #lapply end
+      obs1(res)
+    }
+  },ignoreInit = T) #end outer observer
+  ------------------------------------------------------------------------------
+  make_ui1 <- function(x, var) {
+  if (is.numeric(x)) {
+    rng <- range(x, na.rm = T)
+    shiny::sliderInput(var, var, min = rng[1], max = rng[2], value = rng)
+  } else if (is.factor(x)) {
+    levs <- levels(factor(x, exclude = NULL))
+    shinyWidgets::pickerInput(var, var, choices = levs, selected = levs, multiple = TRUE, options = shinyWidgets::pickerOptions(actionsBox= TRUE, size = 10),choicesOpt = list(content = stringr::str_trunc(c(levs), width = 40)) )
+  }
+  else if ( is.array(x) || is.character(x)) {
+    #NULL
+    levs <- levels(factor(x, exclude = NULL))
+    #per un select normalepuoi fare il truncate e fare un vettore con c(nomi,valori) per le select
+    shiny::selectizeInput(var, var, choices = levs, selected = levs, multiple = TRUE,size=10)
+    #shinyWidgets::pickerInput(var, var, choices = levs, selected = levs, multiple = TRUE, options = shinyWidgets::pickerOptions(actionsBox= TRUE, size = 10, virtualScroll= TRUE ),choicesOpt = list(content = stringr::str_trunc(c(levs), width = 40)) )
+    #shiny::selectInput(var, var, choices = levs, selected = levs, multiple = TRUE, selectize = T)
+  }
+  else if (is.logical(x)) {
+    if(all(is.na(x)) || all(is.null(x))) {NULL}
+    else
+    {levs <- levels(factor(x, exclude = NULL))
+    shinyWidgets::pickerInput(var, var, choices = levs, selected = levs, multiple = TRUE, options = shinyWidgets::pickerOptions(actionsBox= TRUE, size = 10),choicesOpt = list(content = stringr::str_trunc(c(levs), width = 40))) }
+  }
+
+  else {
+    # Not supported
+    NULL
+  }
+}
+
+
+
+
+    fv1 <- filter_vars1$l
+    if (length(filter_vars1$l) != 0 && !identical(length(filter_vars1$l[[1]]),nrow(proc_data1()))){fv1 <- list()}
+    chk1 <- input$checkbox1
+    if (!identical(union(names(proc_data1()),input$checkbox1), names(proc_data1()))){ chk1 <- c()}
+______________________________________________________________________________________________________________________________________________________
+    #fv1 <- filter_vars1$l
+    #if (length(filter_vars1$l) != 0 && !identical(length(filter_vars1$l[[1]]),nrow(proc_data1()))){fv1 <- list()}
+    #chk1 <- input$checkbox1
+    #if (!identical(union(names(proc_data1()),input$checkbox1), names(proc_data1()))){ chk1 <- c()}
+______________________________________________________________________________________________________________________________________________________________________________________
+
+QUESTA è LA ROW CALL BACK
+rowCallback = JS(
+    "function(row, data) {",
+    "var num = '$' + data[3].toString().replace(/\\B(?=(\\d{3})+(?!\\d))/g, ',');",
+    "$('td:eq(3)', row).html(num);",
+    "}")
+
+
+
+Gene <- c("SYMBOL","Symbol","symbol","hugo_symbol" ,"Hugo_Symbol","HUGO_SYMBOL","Gene.refGene","Gene","gene")
+Chromosome <- c("CHROM", "Chromosome","Chr","chrom","chromosome")
+Ref <- c("Ref","REF","Tumor_Seq_Allele1",)
+Alt <- c("Alt","ALT","Tumor_Seq_Allele2","alt")
+VAF <- c("vaf","VAF","Vaf")
+Consequence <- c("Consequence","Variant_Classification","Func.refGene","consequence")
+VARIANT_CLASS <- c("VARIANT_CLASS","Variant_Type","ExonicFunc.refGene","variant_class")
+Clinvar <- c("CLIN_SIG","clinvar","Clinvar",)
+Start <- c("Start_Position","start","Start",)
+End <- c("End_Position","end","End",)
+Variation <- c("Existing_variation","AAChange.refGene","Variation","Var","variation")
+HGVSp <- c("HGVSp_Short","HGVSp","hgvsp")
+Exon <- c("Exon_Number","EXON","exon","Exon")
+VARIE <- c("Actionable.O","Actionable.M","Actionable.C","Moderate.risk","azionabile","depth","High.risk","actionable","Amino_acids","Protein_position","cancervar_tier","tiering","POS","pos")
+
+
+c("Actionable.O","Actionable.M","Actionable.C","Moderate.risk","azionabile","depth","High.risk","actionable","Amino_acids","Protein_position","cancervar_tier","tiering","POS","pos","SYMBOL","Symbol","symbol","hugo_symbol" ,"Hugo_Symbol","HUGO_SYMBOL","Gene.refGene","Gene","gene","CHROM", "Chromosome","Chr","chrom","chromosome","Ref","REF","Tumor_Seq_Allele1","Alt","ALT","Tumor_Seq_Allele2","alt","vaf","VAF","Vaf","Consequence","Variant_Classification","Func.refGene","consequence","VARIANT_CLASS","Variant_Type","ExonicFunc.refGene","variant_class","CLIN_SIG","clinvar","Clinvar","Start_Position","start","Start","End_Position","end","End","Existing_variation","AAChange.refGene","Variation","Var","variation","HGVSp_Short","HGVSp","hgvsp","Exon_Number","EXON","exon","Exon")

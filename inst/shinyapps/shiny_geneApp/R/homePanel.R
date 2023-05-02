@@ -1,20 +1,26 @@
 #' homePanel_ui
 #' @description
-#' modulo ui per la home Page
+#' homepage ui module
 #' @param id
-#' l'id assegnato al modulo
+#' module's id
 #' @examples
-#' homePanel_ui("nomemodulo")
+#' homePanel_ui("modulename")
+#'
 homePanel_ui <- function(id) {
-  ns <- shiny::NS(id) #id del modulo
-  #### TABPANEL DELLA NAVBAR PRINCIPALE ####
+
+  ns <- shiny::NS(id)
+
+  #### HOMEPAGE TAB ####
   shiny::tabPanel(
     title = "Home",
-    value = shiny::NS(id,"home"),
+    value = "homepage",
     id = "home",
     class = "topchoice",
+
     shiny::tags$br(),
     shiny::tags$br(),
+
+    ## TITLE
     shiny::fluidRow(
       id="home_title_cont",
       shiny::tags$h1(
@@ -22,8 +28,11 @@ homePanel_ui <- function(id) {
         htmltools::HTML("BENVENUTI NELLA <strong>GENEAPP</strong>")
       )
     ),
+
     shiny::tags$br(),
     shiny::tags$br(),
+
+    ## FIRST WELL PANEL
     shiny::fluidRow(
       class="home_wellpanel",
       shiny::tags$br(),
@@ -33,11 +42,16 @@ homePanel_ui <- function(id) {
       ),
       shiny::tags$br()
     ),
-    shiny::tags$br(),
-    shiny::actionLink("linkapp",shiny::tags$span(("> > > VAI ALL'APP < < <"))),
-    shiny::tags$br(),
 
     shiny::tags$br(),
+
+    #LINK TO SECOND PAGE
+    shiny::actionLink("linkapp",shiny::tags$span(("> > > VAI ALL'APP < < <"))),
+
+    shiny::tags$br(),
+    shiny::tags$br(),
+
+    ## SECOND WELL PANEL
     shiny::fluidRow(
       class="home_wellpanel",
       shiny::tags$br(),
@@ -47,24 +61,27 @@ homePanel_ui <- function(id) {
       ),
       shiny::tags$br()
     ),
+
     shiny::tags$br(),
     shiny::tags$br()
+
   )
 }
 
-
-
 #' homePanel_server
 #' @description
-#' modulo server per la homepage
+#' server module for the homepage
 #' @param id
-#' l'id assegnato al modulo
+#' module's id
 #' @examples
-#' homePanel_server("nomemodulo")
+#' homePanel_server("modulename")
+#'
 homePanel_server <- function(id) {
   shiny::moduleServer(
     id,
     function(input, output, session) {
+
+      #POSSIBLE SERVER FUNCTIONS
 
     }
   )

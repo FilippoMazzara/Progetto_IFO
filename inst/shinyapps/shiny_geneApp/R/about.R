@@ -1,20 +1,25 @@
 #' about_ui
 #' @description
-#' modulo ui per la pagina about
+#' ABOUT PAGE UI MODULE
 #' @param id
-#' l'id assegnato al modulo
+#' module's id
 #' @examples
-#' about_ui("nomemodulo")
+#' about_ui("modulename")
+#'
 about_ui <- function(id) {
-  ns <- shiny::NS(id) #id del modulo
-  #### TABPANEL DELLA NAVBAR PRINCIPALE ####
+
+  ns <- shiny::NS(id)
+
+  ### ABOUT TAB ###
   shiny::tabPanel(
     title = "About us",
-    value = shiny::NS(id,"about"),
+    value = "about",
     id = "about",
     class = "topchoice",
+
+    # CONTENTS OF ABOUT PAGE
     shiny::fluidRow(
-      style = "margin-right:4em;margin-left:4em;display:flex;justify-content:center;",
+      style = "margin-right:4em; margin-left:4em; display:flex; justify-content:center;",
       shiny::tags$br(),
       shiny::includeHTML(rmarkdown::render('www/about.Rmd')),
       shiny::tags$br()
@@ -26,15 +31,18 @@ about_ui <- function(id) {
 
 #' about_server
 #' @description
-#' modulo server per la pagina about
+#' server module for the about page
 #' @param id
-#' l'id assegnato al modulo
+#' modules'id
 #' @examples
-#' about_server("nomemodulo")
+#' about_server("modulename")
+#'
 about_server <- function(id) {
   shiny::moduleServer(
     id,
     function(input, output, session) {
+
+      #POSSIBLE SERVER FUNCTIONS
 
     }
   )

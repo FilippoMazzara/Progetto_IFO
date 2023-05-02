@@ -12,9 +12,13 @@ Imports:
     data.table,
     dplyr,
     DT,
+    kit,
     magrittr,
+    profvis,
     purrr,
     reactlog,
     shiny,
     shinyFiles,
-    shinyjs
+    shinyjs,
+    shinyWidgets,
+    stringr

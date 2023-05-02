@@ -1,17 +1,30 @@
 ui <- shiny::fluidPage(
-  #reactlog::reactlog_enable(),
+
   id = "mainpage",
-  #Styling
+
+  # ------ Styling -------
+
   shinyjs::useShinyjs(),
+
   shiny::includeCSS("www/style.css"),
+
   shiny::includeScript("www/myscript.js"),
-  # title header (hidden)
+
+  # ------ hidden header -------
+
   shiny::tags$div(
     style = "display: none",
-    shiny::titlePanel(title = "", windowTitle = "geneApp")
+    shiny::titlePanel(
+      title = "",
+      windowTitle = "geneApp"
+    )
   ),
-  #top header
+
+  # ------ MAIN NAVBAR -------
+
   shiny::navbarPage(
+
+    # ------ MAIN NAVBAR OPTIONS -------
     windowTitle = "HOME",
     position = "static-top",
     header = NULL,
@@ -19,7 +32,8 @@ ui <- shiny::fluidPage(
     collapsible = TRUE,
     id = "topnavbar",
     fluid = TRUE,
-    #logo
+
+    # ------ MAIN NAVBAR TITLE + LOGO-------
     title = shiny::tags$div(
       shiny::tags$a(
         href = "/",
@@ -29,15 +43,65 @@ ui <- shiny::fluidPage(
         )
       )
     ),
-    #### HOME ####
+
+    # ------ HOME PAGE MODULE UI -------
+
     homePanel_ui("homepage"),
-    #### OVERVIEW ####
-    mainGenePanel_ui("overview"),
-    #### ABOUT ####
+
+    # ------ OVERVIEW PAGE MODULE UI -------
+
+    shiny::tabPanel(
+      title = "GERSOM",
+      value = "gersom",
+      id = "gersom",
+      class = "topchoice",
+
+      # ------ OVERVIEW NAVBAR + CONT -------
+      # IT'S POSSIBLE TO SWITCH OUT THE NAVBAR IN FAVOR OF A SINGLE TAB
+
+      shiny::tags$div(
+        id = "nav_cont_2",
+        shiny::navbarPage(
+
+          # ------ OVERVIEW NAVBAR OPTIONS -------
+
+          windowTitle = "GERSOM",
+          position = "static-top",
+          collapsible = TRUE,
+          id = "topnavbar2",
+
+          # ------ OVERVIEW NAVBAR TITLE/LOGO -------
+
+          title = shiny::tags$a(
+              id = "toggleSidebar",
+              class = "toggleSidebar",
+              shiny::tags$span(class = "toggleLine"),
+              shiny::tags$span(class = "toggleLine"),
+              shiny::tags$span(class = "toggleLine")
+          ),
+
+          # ------ SOMATIC AND GERM UI -------
+
+          gersomPanel_ui("GSP"),
+
+          # second and third set of nav tabs
+          #PER ORA NON FANNO NULLA
+          shiny::navbarMenu(title = "tab1", menuName = "tab1", "panel 1.1", shiny::tabPanel("1.1"), "panel 1.2", shiny::tabPanel("1.2")),
+          shiny::navbarMenu(title = "tab2", menuName = "tab2", shiny::tabPanel("2.1"), shiny::tabPanel("2.2")),
+
+        )
+      ) #END FLUID ROW AND NAV PAGE AND CONTAINER
+    ),
+
+    # ------ ABOUT MODULE UI -------
+
     about_ui("about")
-  #END UI
   ),
+
   shiny::tags$br(),
+
+  # ------ FOOTER -------
+
   shiny::tags$div(
     class = "footer",
     shiny::includeHTML("www/footer.html")
@@ -54,83 +118,48 @@ ui <- shiny::fluidPage(
 #' @param output
 #' the output vector
 #' @return the running gene app
-server <- function(input, output, session) {
-  options(shiny.maxRequestSize=30*1024^2)
-  #modulo home
+server <- function(input, output, session){
+
+  #data.table::setDTthreads(4)
+
+  # INCREASE HTTP REQUEST SIZE TO 30mb
+  options(shiny.maxRequestSize = 30 * 1024^2)
+
+  # ------ HOME SERVER MODULE -------
   homePanel_server("homepage")
-  #modulo overview
-  ch <- shiny::reactive({
-    if(is.null(input$checkbox1)){return(NULL)}
-    else{return(input$checkbox1)}
-    })
-  ch2 <- shiny::reactive({
-    if(is.null(input$checkbox2)){return(NULL)}
-    else{return(input$checkbox2)}
+
+  ### HOMEPAGE LINK ###
+  shiny::observeEvent(input$linkapp,{
+    shiny::updateNavbarPage(session, "topnavbar", "gersom")
   })
 
-  selected <- shiny::reactive({
-    if (!is.null(ch())){
-      each_input = list()
-      for(c in ch()){
-      each_input[[c]] <-input[[c]]}
-      return(each_input)
-      } else {return(NULL)}
-  })
+  # ------ SOMATIC AND GERM SERVER MODULE -------
 
+  gersomPanel_server("GSP")
 
-  mainGenePanel_server("overview",ch2=ch2,ch = ch, selected = selected)
-  #link
+  # ------ OVERVIEW SERVER MODULE -------
 
-
-
-  shinyjs::onclick(id= "sidebar_somatic", {
-    shinyjs::runjs('document.querySelector("#file1_sidebar").style.display = "initial";
-                   document.querySelector("#sidebar_somatic").className += " active";
-                       document.querySelector("#file2_sidebar").style.display = "none";
-
-                   document.querySelector("#sidebar_germ").className= "btn btn-default action-button shiny-bound-input";
-                   '
+  ### OVERVIEW SIDEBAR TOGGLE ###
+  shinyjs::onclick( id = "toggleSidebar", {
+    shinyjs::runjs(
+      'var x = document.querySelector("#nav_cont_2 > nav > div > div");
+      if (x.style.width == "93px") {x.style.width="24.5%";} else {x.style.width="93px";}'
     )
-  })
-  shinyjs::onclick(id = "sidebar_germ", {
-    shinyjs::runjs('document.querySelector("#file1_sidebar").style.display = "none";
-                       document.querySelector("#file2_sidebar").style.display = "initial";
-                   document.querySelector("#sidebar_germ").className += " active";
-                   document.querySelector("#sidebar_somatic").className = "btn btn-default action-button shiny-bound-input";
-                   '
-
-    )
-
-  })
-
-
-
-  shiny::observeEvent(
-    input$linkapp,
-    {shiny::updateNavbarPage(session, "topnavbar", "overview-gersom")}
-  )
-  shinyjs::onclick(id= "toggleSidebar", {
-    shinyjs::runjs('var x = document.querySelector("#mainpage > div > div.tab-content > div > nav > div > div");
-                    if (x.style.width == "93px") {x.style.width="24.5%";} else {x.style.width="93px";}
-                    ')
     shinyjs::toggle(
       id = "sidebar",
       anim = TRUE,
       animType = "fade",
-      time = 0.1)
+      time = 0.1
+    )
   })
 
-  #modulo about
+  # ------ ABOUT SERVER MODULE -------
   about_server("about")
-  #observe({
- #   req(input$dataset_files)
-  #})
 
-
-
-
-  # shinyFiles::shinyFileChoose(input = input, id = "dataset_files", session = session, roots=c(wd = "C:/Users/facke/Desktop/datasets"), defaultPath="/")
 }
+
+#enabling reactlog testing
+#reactlog::reactlog_enable()
 
 # Run the application
 shiny::shinyApp(ui = ui, server = server)

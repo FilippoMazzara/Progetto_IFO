@@ -1,30 +1,35 @@
 
 #' enterDisable_ui
 #' @description
-#' modulo ui per l'inserimento del bottone che disabilita il tasto enter
+#' ui module to deactivate enter key in order to prevent erroneous inputs activation
 #' @param id
-#' l'id assegnato al modulo
+#' module's id
 #' @examples
-#' enterDisable_ui("nomemodulo")
+#' enterDisable_ui("modulename")
+#'
 enterDisable_ui <- function(id) {
-  ns <- shiny::NS(id) #id del modulo
+
+  ns <- shiny::NS(id)
+
   shiny::uiOutput(ns("enterDis"))
 }
 
 #' enterDisable_server
 #' @description
-#' modulo server per l'inserimento del bottone che disabilita il tasto enter
+#' server module to deactivate enter key in order to prevent erroneous inputs activation
 #' @param id
-#' l'id assegnato al modulo
+#' module's id
 #' @examples
-#' enterDisable_server("nomemodulo")
+#' enterDisable_server("modulename")
+#'
 enterDisable_server <- function(id) {
   shiny::moduleServer(
     id,
     function(input, output, session) {
-      #bottone inutile
+
+      #useless button
       output$enterDis <- shiny::renderUI(htmltools::HTML( '<button type="submit" disabled style="display: none" aria-hidden="true"></button>'))
-      #
+
     }
   )
 }

@@ -38,8 +38,8 @@ h2 {margin-top:10px;}
 
 .navbar{
   min-height: auto;
-
 }
+
 
 /* Tooltip */
 
@@ -50,12 +50,15 @@ h2 {margin-top:10px;}
 .tooltip > .tooltip-inner {
   pointer-events: none;
   box-sizing: border-box;
+  -moz-box-sizing:border-box;
   -webkit-box-sizing: border-box;
+  -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   background-color: #f5f5f5;
   border:1px solid #e3e3e3;
   border-radius: 4px;
   -webkit-box-shadow: inset 0 1px 1px rgb(0 0 0 / 5%);
+  -moz-box-shadow: inset 0 1px 1px rgb(0 0 0 / 5%);
   box-shadow: inset 0 1px 1px rgb(0 0 0 / 5%);
   padding: 10px;
   font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
@@ -128,6 +131,7 @@ div.navbar-header > span.navbar-brand {
   padding-left: 2.5em;
   padding-right: 2.5em;
 }
+
 #topnavbar>li>a {
   transition-duration: 0.25s;
   line-height: 28px;
@@ -144,25 +148,22 @@ div.navbar-header > span.navbar-brand {
 }
 
 #topnavbar>.active>a {
-  text-decoration:underline !important;
+  text-decoration: underline !important;
 }
 #topnavbar>li>a:hover{
-  text-decoration:underline !important;
+  text-decoration: underline !important;
 }
 
 #topnavbar{
   display: block;
-  vertical-align:middle;
-  padding-top:5px;
+  vertical-align: middle;
+  padding-top: 5px;
 }
 
 /* Main */
 
+/*questo becca tutti i div nella seconda navbar molti hannoun id! */
 
-#mainpage > div > div.tab-content > div > div {
-  padding-right:0!important;
-  padding-left:0!important;
-}
 
 .tab-content>.active {
   height:100%;
@@ -242,9 +243,11 @@ div.navbar-header > span.navbar-brand {
 #linkapp:hover{
   text-decoration:underline !important;
 }
+
 #linkapp:active{
   text-decoration:underline !important;
 }
+
 #linkapp{
   font-weight: 500;
   letter-spacing: 2px;
@@ -275,11 +278,12 @@ div.navbar-header > span.navbar-brand {
   color:#777;
 }
 
-#footer2{margin-left: 20px;
-    margin-right: 20px;}
+#footer2{
+  margin-left: 20px;
+  margin-right: 20px;
+}
 
 .footer {
-
     align-items: center;
     display: flex;
     justify-content: space-between;
@@ -288,20 +292,19 @@ div.navbar-header > span.navbar-brand {
     width: 100%;
     box-shadow: 0 6px 5px -7px grey inset;
     height: 80px;
-    background-color: red;
     left: 0;
-    right: 0px;
+    right: 0;
     background-color: #FFFFFF;
     text-align: center;
 }
 
-#footertxt_cont{width: 40%;}
-
-.img_footer{
+#footertxt_cont{
+  width: 40%;
 }
 
+
 .logoContainerFooter{
-   padding-top: 0px;
+   padding-top: 0;
    float: left;
 }
 
@@ -311,17 +314,21 @@ div.navbar-header > span.navbar-brand {
 
 /* Datatable */
 .dataTables_filter{
-  margin-right:15px;
+  margin-right: 15px;
 }
 
-.dt-buttons{margin-left: 15px;}
+.dt-buttons{
+  margin-left: 15px;
+}
 
 .dataTables_length{
   margin-left: 15px;
     margin-top: 3px;
 }
 
-div.dataTables_scrollHeadInner{padding:0;}
+div.dataTables_scrollHeadInner{
+  padding:0;
+}
 
 table.display.dataTable.no-footer {
   width:100% !important;
@@ -330,7 +337,7 @@ table.display.dataTable.no-footer {
 div.dataTables_scroll {
   width:100%;
   padding-right: 15px;
-  padding-left:15px;
+  padding-left: 15px;
 }
 
 /* seconda navbar */
@@ -340,11 +347,17 @@ div.dataTables_scroll {
   border:0;
 }
 
-#mainpage > div > div.tab-content > div > nav {
+#nav_cont_2 {
+  height: 100%;
+  padding-right:0 !important;
+  padding-left:0 !important;
+}
+
+#nav_cont_2 > nav {
   margin-bottom: 5px !important;
 }
 
-#mainpage > div > div.tab-content > div > nav > div > div.navbar-header {
+#nav_cont_2 > nav > div > div.navbar-header {
  width: 24.5%;
  transition: width 0.2s ease-out 0s;
  display: flex;
@@ -352,16 +365,15 @@ div.dataTables_scroll {
  justify-content: flex-end;
 }
 
-#mainpage > div > div.tab-content > div > nav > div > div.navbar-header > span.navbar-brand {
+#nav_cont_2 > nav > div > div.navbar-header > span.navbar-brand {
   padding-top: 0;
   padding-right: 0;
   padding-bottom: 0;
   padding-left: 22px !important;
 }
 
-
-.navbar-toggle{
-  margin-left: 100%;
+#nav_cont_2 > nav > div > div.navbar-header > button {
+  margin-left: 150%;
 }
 
 .toggleLine{
@@ -380,17 +392,22 @@ div.dataTables_scroll {
   height:50px;
   width:60px;
 }
+
 /* Pagina overview main */
 /* nota: trovare selettori migliori */
 
-#mainpage > div > div.tab-content > div > div.container-fluid {
+#nav_cont_2 > div.container-fluid {
+  padding-right:0 !important;
+  padding-left:0 !important;
   height:100%;
 }
-#mainpage > div > div.tab-content > div > div.container-fluid > div.tab-content {
+
+#nav_cont_2 > div.container-fluid > div.tab-content {
   height:100%;
 }
 
 #overview_container{
+  padding-right: 15px;
   height:100%
 }
 
@@ -403,14 +420,15 @@ div.dataTables_scroll {
   display: flex;
   align-items: stretch;
   flex-wrap: wrap;
-  /*height:100%;*/
+  height:100%;
 }
 
 /* Sidebar overview */
 
 #sidebar {
+  margin-bottom: 42px;
   height: auto;
-  padding-right: 0px;
+  padding-right: 0;
 }
 
 #sidebar > div {
@@ -419,7 +437,12 @@ div.dataTables_scroll {
   padding-right:0;
   padding-left:0;
 }
+
 /* Input sidebar */
+
+form.well{
+  height:100%
+}
 
 div.file_side>div.well{
   padding-bottom: 2px;
@@ -437,13 +460,13 @@ div.file_side>div.well>div.collapse.in{
 div.file_side>div.well>div.collapse{
   padding-right: 10px;
   padding-left: 10px;
-  margin-bottom:0px;
+  margin-bottom:0;
 }
 
 div.file_side>div.well>div.collapsing{
   padding-right: 10px;
   padding-left: 10px;
-  margin-bottom:0px;
+  margin-bottom:0;
 }
 
 div.file_side>div.well>div>div{
@@ -451,31 +474,113 @@ div.file_side>div.well>div>div{
   margin-bottom:0;
 }
 
-#overview-overview-fromfile_progress{
+#GSP-fromfile_progress{
   margin-bottom:10px;
-
 }
-
-#file1_sidebar{display:initial;}
-#file2_sidebar{display:none;}
+#GSP-fromfile2_progress{
+  margin-bottom:10px;
+}
 
 
 /* Main tabset overview */
 #colcol{
   margin-bottom: 10px;
+  padding-right: 0;
+  padding-left:0;
   flex: 1;
   /*height: 100%;*/
   width: 75%;
 }
+
 #colcol > div{
   padding:0;
   width: 100%!important;
   height: 100%;
 }
 
+#colcol > div > div > ul {
+ margin-left:5px;
+}
 
-@media screen and (max-width: 1000px) {
+#colcol > div > div > div {
+ margin-left:15px;
+}
+
+/* RESTYLE DATATABLE HEAD FILTERS/SEARCH */
+/*.form-group.has-feedback {z-index:-1 !important;}*/
+.dt-button-info{
+  z-index:100 !important;
+}
+
+#datatables_buttons_info{
+  z-index:100 !important;
+}
+
+.form-control{
+  padding-right:5px!important;
+  min-width: 60px;
+}
+
+td div:nth-of-type(2){
+  display:none !important;
+}
+
+td[data-type = "integer"] {
+  cursor: not-allowed;
+}
+
+td[data-type = "number"] {
+  cursor: not-allowed;
+}
+
+td[data-type = "integer"] > div {
+  pointer-events: none !important;
+  background-color: #eee;
+  opacity: 1;
+}
+
+td[data-type = "integer"] > div > input{
+  pointer-events: none !important;
+  color:transparent;
+  font-size:0;
+  background-color: #eee !important;
+  opacity: 1 !important;
+}
+
+input[disabled]{
+  color:transparent;
+  font-size:0;
+}
+
+td[data-type = "number"] > div {
+  pointer-events: none !important;
+  background-color: #eee;
+  opacity: 1;
+
+}
+
+td[data-type = "number"] > div > input {
+  pointer-events: none !important;
+  color:transparent;
+  font-size:0;
+  background-color: #eee !important;
+  opacity: 1 !important;
+}
+
+#GSP-sidebar_tabset{
+  display:none !important;
+}
+
+#topnavbar2 > li{
+  min-width: 92px;
+  text-align: center;
+}
+
+/* SCREEN OPTIONS */
+
+@media screen and (max-width: 950px) {
   #sidebar{
     width:100%;
+    margin-bottom: 20px;
   }
 }
