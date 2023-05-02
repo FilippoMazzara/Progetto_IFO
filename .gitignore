@@ -5,5 +5,4 @@
 .DS_Store
 geneApp.Rproj
 .vscode
-.Rdata
 .httr-oauth
