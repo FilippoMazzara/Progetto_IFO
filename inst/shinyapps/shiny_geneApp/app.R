@@ -70,6 +70,7 @@ ui <- shiny::fluidPage(
           collapsible = TRUE,
           id = "topnavbar2",
 
+
           # ------ OVERVIEW NAVBAR TITLE/LOGO -------
 
           title = shiny::tags$a(
@@ -97,8 +98,6 @@ ui <- shiny::fluidPage(
 
     about_ui("about")
   ),
-
-  shiny::tags$br(),
 
   # ------ FOOTER -------
 
@@ -137,13 +136,65 @@ server <- function(input, output, session){
 
   gersomPanel_server("GSP")
 
-  # ------ OVERVIEW SERVER MODULE -------
+
+  ## altezza dinamica solo tabella som/ possibile mem leak TROVA UN ALTRO MODO PER FORZARE L'HEIGHT
+  shinyjs::onevent( event = "mousemove", id = "nav_cont_2", {
+    shinyjs::runjs(
+      'var x = document.querySelector("#GSP-som_table > div > div.dataTables_scroll > div.dataTables_scrollBody > table");
+       var y = document.querySelector("#GSP-som_table > div > div.dataTables_scroll > div.dataTables_scrollBody");
+      if (y != null && x != null){
+       if (y.style.maxHeight != x.offsetHeight + 20){y.style.maxHeight = x.offsetHeight + 20 + "px";}}'
+    )
+  })
 
   ### OVERVIEW SIDEBAR TOGGLE ###
   shinyjs::onclick( id = "toggleSidebar", {
     shinyjs::runjs(
       'var x = document.querySelector("#nav_cont_2 > nav > div > div");
-      if (x.style.width == "93px") {x.style.width="24.5%";} else {x.style.width="93px";}'
+      var y = document.querySelector("#nav_cont_2 > nav > div > div.navbar-collapse.collapse");
+      var b1 = document.querySelector("#GSP-som_table > div > div.row_b > div.dt-buttons");
+      var b2 = document.querySelector("#GSP-germ_table > div > div.row_b > div.dt-buttons");
+      var p1 = document.querySelector("#GSP-som_table > div > div.row_i > div.dataTables_length");
+      var p2= document.querySelector("#GSP-germ_table >  div > div.row_i > div.dataTables_length");
+      var i1 = document.querySelectorAll("#GSP-som_table > div > div.row_i > div.dataTables_info");
+      var i2= document.querySelectorAll("#GSP-germ_table > div > div.row_i > div.dataTables_info");
+
+      if (x.style.width == "93px") {
+        if (b1 != null){
+          b1.style.left = "25%";
+          p1.style.left = "25%";
+          i1[0].style.left = "25%";
+          i1[1].style.left = "25%";
+        }
+        if (b2 != null){
+          b2.style.left = "25%";
+          p2.style.left = "25%";
+          i2[0].style.left = "25%";
+          i2[1].style.left = "25%";
+        }
+
+          x.style.width="24.5%";
+          y.style.left="24.5%";
+
+      }
+      else {
+      if (b1 != null){
+        b1.style.left = "0";
+        p1.style.left = "0";
+        i1[0].style.left = "0";
+          i1[1].style.left = "0";
+      }
+      if (b2 != null){
+        b2.style.left = "0";
+        p2.style.left = "0";
+        i2[0].style.left = "0";
+          i2[1].style.left = "0";
+      }
+
+      y.style.left="0";
+      x.style.width="93px";
+
+      }'
     )
     shinyjs::toggle(
       id = "sidebar",

@@ -369,6 +369,93 @@ ________________________________________________________________________________
     #if (length(filter_vars1$l) != 0 && !identical(length(filter_vars1$l[[1]]),nrow(proc_data1()))){fv1 <- list()}
     #chk1 <- input$checkbox1
     #if (!identical(union(names(proc_data1()),input$checkbox1), names(proc_data1()))){ chk1 <- c()}
+
+         output$som_table <- DT::renderDataTable({
+        shiny::req(proc_data1())
+        DT::datatable(
+          proc_data1(),
+          extensions = 'Buttons',
+          rownames = FALSE,
+          filter = 'top',
+          selection = list(mode = "multiple"),
+          editable = F,
+          class = 'stripe hover order-column',
+          #class = 'cell-border',
+          options = list(
+            serverSide = TRUE,
+            paging = TRUE,
+            processing = TRUE,
+            autoWidth = T,
+            fixedHeader = T,
+            #### CONTROLLA BENE LE OPTIONS IL BOTTLENECK è QUI  ####
+            # QUESTA è LA TABELLA PER I TEST
+            columnDefs = list(list(className = 'dt-center', width = "auto",
+                                   render = DT::JS(
+                                     "function(data, type, row, meta) {",
+                                     "return type === 'display' && data != null && data.length > 30 ?",
+                                     "'<span title=\"' + data + '\">' + data.substr(0, 30) + '...</span>' : data;",
+                                     "}"), targets = "_all")),
+            #columnDefs = list(list(width = 'auto', targets = "_all")),
+            #callback = DT::JS('table.draw(true);'),
+            pageLength = 50,
+            pagingType = 'full_numbers',
+            scrollX = T,
+            scrollCollapse = F,
+            dom = 'Blfrtip',
+            buttons = c('copy', 'excel', 'pdf'),
+            lengthMenu = list(c(10,25,50,100,1000,-1),c(10,25,50,100,1000,"All"))
+          )
+        )
+      },server = T)
+
+            #columnDefs = list(list(targets = '_all', width="250px")),
+            #### CONTROLLA BENE LE OPTIONS IL BOTTLENECK è QUI  ####
+            # QUESTA è LA TABELLA PER I TEST
+        #    columnDefs = list(
+         #     list(className = 'dt-center',
+         #          width = "auto",
+          #         render = DT::JS("function(data, type, row, meta) {",
+          #                         "return type === 'display' && data != null && data.length > 30 ?",
+          #                         "'<span title=\"' + data + '\">' + data.substr(0, 30) + '...</span>' : data;}"),
+          #         targets = "_all")
+                    #,list(visible=F,targets = 2)
+          #  ),
+      output$germ_table <- DT::renderDataTable({
+        shiny::req(proc_data2())
+        DT::datatable(
+          proc_data2(),
+          extensions = c('Buttons','FixedHeader'),
+          rownames = FALSE,
+          filter = 'top',
+          #fillContainer = T,
+          container = htmltools::withTags(table(DT::tableHeader(names(proc_data2())),DT::tableFooter(names(proc_data2())))),
+          selection = list(mode = "multiple"),
+          editable = FALSE,
+          class = 'display',
+          options = list(
+            order = list(0,"asc"),
+            serverSide = TRUE,
+            paging = F,
+            processing = TRUE,
+            autoWidth = F,
+            fixedHeader = list(header = F, footer = T),
+            #pageLength = 25,
+            #pagingType = 'full_numbers',
+            #scrollY = 944,
+            #scrollX = T,
+            scrollCollapse = T,
+            dom = 'Blf<"row_i" pi>rtip',
+            buttons = list('copy', 'excel','colvis','colvisRestore',
+                           list(extend = "pdf", pageSize = "A3", orientation = "landscape", exportOptions = list(columns = ":visible"))
+            )
+            #,lengthMenu = list(c(10,25,50,100,1000,-1),c(10,25,50,100,1000,"All"))
+          )
+        )
+        #%>% DT::formatStyle(names(proc_data1()),"text-align"= "center", 'min-width' = '250px','width' = '250px','max-width' = '250px')
+      },
+      server = T
+      )
+
 ______________________________________________________________________________________________________________________________________________________________________________________
 
 QUESTA è LA ROW CALL BACK
@@ -397,3 +484,15 @@ VARIE <- c("Actionable.O","Actionable.M","Actionable.C","Moderate.risk","azionab
 
 
 c("Actionable.O","Actionable.M","Actionable.C","Moderate.risk","azionabile","depth","High.risk","actionable","Amino_acids","Protein_position","cancervar_tier","tiering","POS","pos","SYMBOL","Symbol","symbol","hugo_symbol" ,"Hugo_Symbol","HUGO_SYMBOL","Gene.refGene","Gene","gene","CHROM", "Chromosome","Chr","chrom","chromosome","Ref","REF","Tumor_Seq_Allele1","Alt","ALT","Tumor_Seq_Allele2","alt","vaf","VAF","Vaf","Consequence","Variant_Classification","Func.refGene","consequence","VARIANT_CLASS","Variant_Type","ExonicFunc.refGene","variant_class","CLIN_SIG","clinvar","Clinvar","Start_Position","start","Start","End_Position","end","End","Existing_variation","AAChange.refGene","Variation","Var","variation","HGVSp_Short","HGVSp","hgvsp","Exon_Number","EXON","exon","Exon")
+
+
+<span class="arrow down" style="
+    border: solid #808080;
+    border-width: 0 2px 2px 0;
+    display: inline-block;
+    padding: 6px;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+"></span>
+
+

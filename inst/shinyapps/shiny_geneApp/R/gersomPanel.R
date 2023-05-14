@@ -67,7 +67,7 @@ gersomPanel_ui <- function(id){
                         # LABEL + TOOLTIP (WORKAROUND)
                         label = htmltools::HTML('Carica un file .tsv </label><span data-toggle="tooltip" style="float:right" data-placement="right" title="" data-original-title="A tooltip"><i class="far fa-circle-question" role="presentation" aria-label="circle-question icon"></i></span>'),
                         # LIST HERE THE ALLOWED FILE FORMATS
-                        accept = c(".tsv",".csv")
+                        accept = c(".tsv",".csv",".maf",".xlsx",".xls")
                       ),
 
                       # ------ FILE INPUT - SOMATIC FROM SERVER FILESYSTEM -------
@@ -192,7 +192,7 @@ gersomPanel_ui <- function(id){
                 shiny::fluidRow(
                   id = "tabcontainer",
                   style = "display: flex; justify-content: center;",
-                  DT::dataTableOutput(shiny::NS(id,"som_table"))
+                  DT::DTOutput(shiny::NS(id,"som_table"))
                 )
               ),
 
@@ -268,7 +268,7 @@ gersomPanel_server <- function(id){ #oltre id puoi passare altri parametri
             input$fromfile$datapath,
             data.table = FALSE,
             ### TROVA UN MODO MEGLIO DE FA STA' COSA  ###
-            #select = c("Actionable.O","Actionable.M","Actionable.C","Moderate.risk","azionabile","depth","High.risk","actionable","Amino_acids","Protein_position","cancervar_tier","tiering","POS","pos","SYMBOL","Symbol","symbol","hugo_symbol" ,"Hugo_Symbol","HUGO_SYMBOL","Gene.refGene","Gene","gene","CHROM", "Chromosome","Chr","chrom","chromosome","Ref","REF","Tumor_Seq_Allele1","Alt","ALT","Tumor_Seq_Allele2","alt","vaf","VAF","Vaf","Consequence","Variant_Classification","Func.refGene","consequence","VARIANT_CLASS","Variant_Type","ExonicFunc.refGene","variant_class","CLIN_SIG","clinvar","Clinvar","Start_Position","start","Start","End_Position","end","End","Existing_variation","AAChange.refGene","Variation","Var","variation","HGVSp_Short","HGVSp","hgvsp","Exon_Number","EXON","exon","Exon"),  #vedi per il select delle variabili
+            select = c("Actionable.O","Actionable.M","Actionable.C","Moderate.risk","azionabile","depth","High.risk","actionable","Amino_acids","Protein_position","cancervar_tier","tiering","POS","pos","SYMBOL","Symbol","symbol","hugo_symbol" ,"Hugo_Symbol","HUGO_SYMBOL","Gene.refGene","Gene","gene","CHROM", "Chromosome","Chr","chrom","chromosome","Ref","REF","Tumor_Seq_Allele1","Alt","ALT","Tumor_Seq_Allele2","alt","vaf","VAF","Vaf","Consequence","Variant_Classification","Func.refGene","consequence","VARIANT_CLASS","Variant_Type","ExonicFunc.refGene","variant_class","CLIN_SIG","clinvar","Clinvar","Start_Position","start","Start","End_Position","end","End","Existing_variation","AAChange.refGene","Variation","Var","variation","HGVSp_Short","HGVSp","hgvsp","Exon_Number","EXON","exon","Exon"),  #vedi per il select delle variabili
             na.strings = base::getOption("NA")
           )
         )
@@ -484,7 +484,7 @@ gersomPanel_server <- function(id){ #oltre id puoi passare altri parametri
               shiny::NS(id,"checkbox1"),
               "",
               choices = c(names(proc_data1())),
-              selected = c(names(proc_data1())),
+              selected = c(),
               multiple = TRUE,
               options = shinyWidgets::pickerOptions(
                 dropdownAlignRight = F,
@@ -510,7 +510,7 @@ gersomPanel_server <- function(id){ #oltre id puoi passare altri parametri
             class = "collapse in",
             shinyWidgets::pickerInput(
               shiny::NS(id,"checkbox2"),
-              "seleziona le colonne: ",
+              "",
               choices = c(names(proc_data2())),
               selected = c(names(proc_data2())),
               multiple = TRUE,
@@ -562,43 +562,46 @@ gersomPanel_server <- function(id){ #oltre id puoi passare altri parametri
       output$titolo21 <- shiny::renderText(titolo21())
       output$titolo22 <- shiny::renderText(titolo22())
 
+
+
       #------ RENDER SOMATIC TABLE ------
-      output$som_table <- DT::renderDataTable({
+      output$som_table <- DT::renderDT({
         shiny::req(proc_data1())
         DT::datatable(
           proc_data1(),
-          extensions = 'Buttons',
+          extensions = c('Buttons','FixedHeader'),
           rownames = FALSE,
           filter = 'top',
+          #fillContainer = T,
+          container = htmltools::withTags(table(DT::tableHeader(names(proc_data1())),DT::tableFooter(names(proc_data1())))),
           selection = list(mode = "multiple"),
-          editable = F,
-          class = 'stripe hover order-column',
-          #class = 'cell-border',
+          editable = FALSE,
+          class = 'display',
           options = list(
+            order = list(0,"asc"),
             serverSide = TRUE,
-            paging = TRUE,
+            paging = T,
             processing = TRUE,
-            autoWidth = T,
-            #### CONTROLLA BENE LE OPTIONS IL BOTTLENECK è QUI  ####
-            # QUESTA è LA TABELLA PER I TEST
-            columnDefs = list(list(className = 'dt-center', width = "auto",
-                                   render = DT::JS(
-                                     "function(data, type, row, meta) {",
-                                     "return type === 'display' && data != null && data.length > 30 ?",
-                                     "'<span title=\"' + data + '\">' + data.substr(0, 30) + '...</span>' : data;",
-                                     "}"), targets = "_all")),
-            #columnDefs = list(list(width = 'auto', targets = "_all")),
-            #callback = DT::JS('table.draw(true);'),
-            pageLength = 50,
+            autoWidth = F,
+            fixedHeader = list(header = F, footer = F),
+            pageLength = 25,
             pagingType = 'full_numbers',
-            scrollX = TRUE,
-            scrollCollapse = TRUE,
-            dom = 'Blfrtip',
-            buttons = c('copy', 'excel', 'pdf'),
-            lengthMenu = list(c(10,25,50,100,1000,-1),c(10,25,50,100,1000,"All"))
+            #scrollY = 944,
+            #scrollX = T,
+            scrollCollapse = T,
+            dom = '<"row_b" B><"row_i" fl><"row_i" pi>rt<"row_i" pi>',
+            buttons = list('copy', 'excel',#'colvis','colvisRestore',
+                           list(extend = "pdf", pageSize = "A3", orientation = "landscape", exportOptions = list(columns = ":visible"))
+            )
+            ,lengthMenu = list(c(10,25,50,100,1000,-1),c(10,25,50,100,1000,"All"))
           )
         )
-      },server = T)
+        #%>% DT::formatStyle(names(proc_data1()),"text-align"= "center", 'min-width' = '250px','width' = '250px','max-width' = '250px')
+      },
+      server = T
+      )
+
+
 
       ### SOMATIC TABLE PROXY SETUP ###
       ds <- shiny::reactiveVal()
@@ -612,7 +615,7 @@ gersomPanel_server <- function(id){ #oltre id puoi passare altri parametri
         fv1 <- filter_vars1$l
         if (length(filter_vars1$l) != 0 && !identical(length(filter_vars1$l[[1]]),nrow(proc_data1()))){fv1 <- list()}
         rec_val$df <<- proc_data1()%>% dplyr::filter(purrr::reduce(fv1,`&`,.init = TRUE))
-        proxy1 %>% DT::replaceData(rec_val$df, resetPaging = FALSE,rownames = FALSE)
+        proxy1 %>% DT::replaceData(rec_val$df, resetPaging = T,rownames = FALSE)
       })
 
       ### SOMATIC TABLE CHECKBOX PROXY ###
@@ -636,27 +639,37 @@ gersomPanel_server <- function(id){ #oltre id puoi passare altri parametri
         shiny::req(proc_data2())
         DT::datatable(
           proc_data2(),
-          extensions = 'Buttons',
+          extensions = c('Buttons','FixedHeader'),
           rownames = FALSE,
           filter = 'top',
+          #fillContainer = T,
+          container = htmltools::withTags(table(DT::tableHeader(names(proc_data2())),DT::tableFooter(names(proc_data2())))),
           selection = list(mode = "multiple"),
-          editable = F,
-          class = 'stripe hover order-column',
+          editable = FALSE,
+          class = 'display',
           options = list(
-            paging = TRUE,
+            order = list(0,"asc"),
+            serverSide = TRUE,
+            paging = T,
             processing = TRUE,
-            autoWidth = T,
-            columnDefs = list(list(width = 'auto', targets = "_all")),
-            pageLength = 50,
+            autoWidth = F,
+            fixedHeader = list(header = F, footer = F),
+            pageLength = 25,
             pagingType = 'full_numbers',
-            scrollX = TRUE,
-            scrollCollapse = TRUE,
-            dom = 'Blfrtip',
-            buttons = c('copy', 'excel', 'pdf'),
-            lengthMenu = list(c(10,25,50,100,250),c(10,25,50,100,250))
+            #scrollY = 944,
+            #scrollX = T,
+            scrollCollapse = T,
+            dom = '<"row_b" B><"row_i" fl><"row_i" pi>rt<"row_i" pi>',
+            buttons = list('copy', 'excel',#'colvis','colvisRestore',
+                           list(extend = "pdf", pageSize = "A3", orientation = "landscape", exportOptions = list(columns = ":visible"))
+            )
+            ,lengthMenu = list(c(10,25,50,100,1000,-1),c(10,25,50,100,1000,"All"))
           )
         )
-      },server=T,)
+        #%>% DT::formatStyle(names(proc_data2()),"text-align"= "center", 'min-width' = '250px','width' = '250px','max-width' = '250px')
+      },
+      server = T
+      )
 
       ### GERM TABLE PROXY SETUP ###
       ds2 <- shiny::reactiveVal()
