@@ -140,12 +140,21 @@ server <- function(input, output, session){
   ## altezza dinamica solo tabella som/ possibile mem leak TROVA UN ALTRO MODO PER FORZARE L'HEIGHT
   shinyjs::onevent( event = "mousemove", id = "nav_cont_2", {
     shinyjs::runjs(
-      'var x = document.querySelector("#GSP-som_table > div > div.dataTables_scroll > div.dataTables_scrollBody > table");
-       var y = document.querySelector("#GSP-som_table > div > div.dataTables_scroll > div.dataTables_scrollBody");
-      if (y != null && x != null){
-       if (y.style.maxHeight != x.offsetHeight + 20){y.style.maxHeight = x.offsetHeight + 20 + "px";}}'
+      'var x = document.querySelector("#colcol");
+       var y = document.querySelectorAll("div.row_sc_i");
+      if(y[0] != null){y[0].style.width = x.offsetWidth - 20 + "px";}
+      if(y[1] != null){y[1].style.width = x.offsetWidth - 20 + "px";}'
     )
   })
+  shinyjs::onevent( event = "scroll", id = "rowsc1", {
+    shinyjs::runjs(
+    "
+    var x = document.querySelectorAll('html');
+    var y = document.querySelector('#rowsc1');
+    x[0].scrollLeft = y.scrollLeft;
+    ")
+  })
+
 
   ### OVERVIEW SIDEBAR TOGGLE ###
   shinyjs::onclick( id = "toggleSidebar", {
@@ -158,19 +167,22 @@ server <- function(input, output, session){
       var p2= document.querySelector("#GSP-germ_table >  div > div.row_i > div.dataTables_length");
       var i1 = document.querySelectorAll("#GSP-som_table > div > div.row_i > div.dataTables_info");
       var i2= document.querySelectorAll("#GSP-germ_table > div > div.row_i > div.dataTables_info");
-
+      var s1 = document.querySelector("#GSP-som_table > div > div.row_sc");
+      var s2 = document.querySelector("#GSP-germ_table > div > div.row_sc");
       if (x.style.width == "93px") {
         if (b1 != null){
           b1.style.left = "25%";
           p1.style.left = "25%";
           i1[0].style.left = "25%";
           i1[1].style.left = "25%";
+          s1.style.maxWidth = "73vw"
         }
         if (b2 != null){
           b2.style.left = "25%";
           p2.style.left = "25%";
           i2[0].style.left = "25%";
           i2[1].style.left = "25%";
+          s2.style.maxWidth = "73vw"
         }
 
           x.style.width="24.5%";
@@ -183,13 +195,16 @@ server <- function(input, output, session){
         p1.style.left = "0";
         i1[0].style.left = "0";
           i1[1].style.left = "0";
+      s1.style.maxWidth = "97vw"
       }
       if (b2 != null){
         b2.style.left = "0";
         p2.style.left = "0";
         i2[0].style.left = "0";
           i2[1].style.left = "0";
+       s2.style.maxWidth = "97vw"
       }
+
 
       y.style.left="0";
       x.style.width="93px";

@@ -876,8 +876,11 @@ padding-left: 5px;}
     justify-content: space-between;
     align-items: flex-start;
   }
+  #nav_cont_2 > nav > div{
+   justify-content: space-around;}
+  #nav_cont_2 > nav > div > div.navbar-header {justify-content: normal}
   #nav_cont_2 > nav > div > div.navbar-header > button {
-    margin-left: 100px;
+    margin-left: 10px;
 }
   #overview_container > div.row{flex-direction: column;}
   #mainpage > nav > div.container-fluid{justify-content: flex-start;}

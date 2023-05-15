@@ -589,7 +589,7 @@ gersomPanel_server <- function(id){ #oltre id puoi passare altri parametri
             #scrollY = 944,
             #scrollX = T,
             scrollCollapse = T,
-            dom = '<"row_b" B><"row_i" fl><"row_i" pi>rt<"row_i" pi>',
+            dom = '<"row_b" B><"row_i" fl><"row_i" pi>rt<"#rowsc1.row_sc"<"row_sc_i" >><"row_i" pi><"row_e" >',
             buttons = list('copy', 'excel',#'colvis','colvisRestore',
                            list(extend = "pdf", pageSize = "A3", orientation = "landscape", exportOptions = list(columns = ":visible"))
             )
@@ -659,7 +659,7 @@ gersomPanel_server <- function(id){ #oltre id puoi passare altri parametri
             #scrollY = 944,
             #scrollX = T,
             scrollCollapse = T,
-            dom = '<"row_b" B><"row_i" fl><"row_i" pi>rt<"row_i" pi>',
+            dom = '<"row_b" B><"row_i" fl><"row_i" pi>rt<"row_sc"<"row_sc_i" >><"row_i" pi><"row_e" >',
             buttons = list('copy', 'excel',#'colvis','colvisRestore',
                            list(extend = "pdf", pageSize = "A3", orientation = "landscape", exportOptions = list(columns = ":visible"))
             )

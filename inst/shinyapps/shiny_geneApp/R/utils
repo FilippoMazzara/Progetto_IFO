@@ -495,4 +495,143 @@ c("Actionable.O","Actionable.M","Actionable.C","Moderate.risk","azionabile","dep
     -webkit-transform: rotate(45deg);
 "></span>
 
+display: flex; */
+    flex-direction: row;
+    overflow: auto;
+    position: sticky;
+    z-index: 1000000;
+    top: 58vw;
+    /* max-height: 75vw; */
+    width: 100%;
+    max-width: 75vw;
+    text-align: right;
+    justify-content: space-between;
 
+    margin-left: 0;
+    padding-left: 10px;
+    float: left;
+    left: 25%;
+    width: 3000px;
+    position: sticky !important;
+
+        /* display: flex; */
+    flex-direction: row;
+    overflow: auto;
+    position: fixed;
+    /* bottom: -99%; */
+    bottom: 37px;
+    max-height: 600px;
+    z-index: 1000;
+    /* top: 30%; */
+    /* max-height: 75vw; */
+    width: 100%;
+    max-width: 75vw;
+    text-align: right;
+    justify-content: space-between;
+    .row_b {
+    /* display: flex; */
+    flex-direction: row;
+    overflow: auto;
+    position: sticky;
+    /* bottom: -99%; */
+    /* bottom: 37px; */
+    /* max-height: 600px; */
+    z-index: 1000;
+    top: 89%;
+    /* max-height: 75vw; */
+    width: 100%;
+    max-width: 75vw;
+    text-align: right;
+    justify-content: space-between;
+}
+buttons
+
+{margin-left: 0;
+    padding-left: 10px;
+    float: left;
+    left: 25%;
+    width: 2000px;
+    position: sticky !important;}
+
+
+    max-width: 100vw;
+    position: sticky;
+    display: flex;
+    height: 140px;
+    z-index: 10001;
+    display: flex;
+    /* position: absolute; */
+    overflow: hidden;
+    bottom: 0;
+    width: 100%;
+    box-shadow: 0 6px 5px -7px grey inset;
+    height: 126px;
+    left: 0;
+    background-color: #FFFFFF;
+    text-align: center;
+    align-items: center;
+    left: 0;
+    justify-content: space-between;
+shinyjs::onclick( id = "toggleSidebar", {
+    shinyjs::runjs(
+      'var x = document.querySelector("#nav_cont_2 > nav > div > div");
+      var y = document.querySelector("#nav_cont_2 > nav > div > div.navbar-collapse.collapse");
+      var b1 = document.querySelector("#GSP-som_table > div > div.row_b > div.dt-buttons");
+      var b2 = document.querySelector("#GSP-germ_table > div > div.row_b > div.dt-buttons");
+      var p1 = document.querySelector("#GSP-som_table > div > div.row_i > div.dataTables_length");
+      var p2= document.querySelector("#GSP-germ_table >  div > div.row_i > div.dataTables_length");
+      var i1 = document.querySelectorAll("#GSP-som_table > div > div.row_i > div.dataTables_info");
+      var i2= document.querySelectorAll("#GSP-germ_table > div > div.row_i > div.dataTables_info");
+
+      if (x.style.width == "93px") {
+        if (b1 != null){
+          b1.style.left = "25%";
+          p1.style.left = "25%";
+          i1[0].style.left = "25%";
+          i1[1].style.left = "25%";
+        }
+        if (b2 != null){
+          b2.style.left = "25%";
+          p2.style.left = "25%";
+          i2[0].style.left = "25%";
+          i2[1].style.left = "25%";
+        }
+
+          x.style.width="24.5%";
+          y.style.left="24.5%";
+
+      }
+      else {
+      if (b1 != null){
+        b1.style.left = "0";
+        p1.style.left = "0";
+        i1[0].style.left = "0";
+          i1[1].style.left = "0";
+      }
+      if (b2 != null){
+        b2.style.left = "0";
+        p2.style.left = "0";
+        i2[0].style.left = "0";
+          i2[1].style.left = "0";
+      }
+
+      y.style.left="0";
+      x.style.width="93px";
+
+      }'
+    )
+    shinyjs::toggle(
+      id = "sidebar",
+      anim = TRUE,
+      animType = "fade",
+      time = 0.1
+    )
+  })
+    shinyjs::onevent( event = "mousemove", id = "nav_cont_2", {
+    shinyjs::runjs(
+      'var x = document.querySelector("#GSP-som_table > div > div.dataTables_scroll > div.dataTables_scrollBody > table");
+       var y = document.querySelector("#GSP-som_table > div > div.dataTables_scroll > div.dataTables_scrollBody");
+      if (y != null && x != null){
+       if (y.style.maxHeight != x.offsetHeight + 20){y.style.maxHeight = x.offsetHeight + 20 + "px";}}'
+    )
+  })
