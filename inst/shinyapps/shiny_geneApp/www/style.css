@@ -1,32 +1,12 @@
 html{
-  padding: 0;
-  margin: 0;
   height:100% !important;
   width:100%!important;
-  inset: 0px;
 }
 
 body{
-  padding: 0;
-  margin: 0;
   height:100% !important;
   width:100% !important;
 }
-
-/*
-body {
-  height:100% !important;
-  padding: 0;
-  margin: 0;
-  min-height:100% !important;
-  flex-direction: column;
-  position:relative;
-  display: flex;
-  width:100%;
-  overflow:auto;
-  resize: horizontal;
-  min-width: 250px;
-}*/
 
 h2 {margin-top:10px;}
 
@@ -38,9 +18,9 @@ h2 {margin-top:10px;}
     height: 100%;
     margin: 0;
     padding: 0;
-    display: table;
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    align-items: stretch;
 }
 
 /* Navbar global */
@@ -99,6 +79,7 @@ div.container-fluid > nav > div > div > button{
   }
 
 #mainpage > nav {
+  flex:0;
   width: 100%;
   height: auto;
     /* padding: 0 5%; */
@@ -138,6 +119,9 @@ div.navbar-header > span.navbar-brand {
     width: 100%;
     display: flex;
     position: sticky;
+    -webkit-position: sticky ;
+    -moz-position: sticky;
+
     left: 0;
     align-items: center;
     justify-content: space-evenly;
@@ -182,19 +166,15 @@ div.navbar-header > span.navbar-brand {
 
 
 .tab-content>.active {
-  display: contents;
   height:100%;
 
 }
-#colcol > div > div > div.tab-content>.active{
-  display:grid;
-}
 
 #mainpage > div.container-fluid {
-  display: table-row-group;
+
   padding-left: 0;
-    /* flex: 1; */
-    height:100%;
+     flex: 1;
+
     padding-right: 0;
     width: 100%;
     margin-top: 0 !important;
@@ -205,11 +185,7 @@ div.navbar-header > span.navbar-brand {
 
 #mainpage > div.container-fluid > div{
   height: 100%;
-    display: inline-table;
-    width: 100%;
-    /* justify-content: flex-start; */
-    /* flex-direction: column; */
-
+  width: 100%;
 }
 
 /* toggle filter panel in the sidebar */
@@ -306,9 +282,11 @@ div.navbar-header > span.navbar-brand {
 #footer2{
 max-width: 100vw;
     position: sticky;
+    -webkit-position: sticky ;
+    -moz-position: sticky;
     display: flex;
     z-index: 1000;
-    display: flex;
+
     /* position: absolute; */
     bottom: 0;
     width: 100%;
@@ -318,11 +296,13 @@ max-width: 100vw;
     background-color: #FFFFFF;
     text-align: center;
     align-items: center;
-    left: 0;
+
     justify-content: space-between;
 }
 
 .footer {
+  margin-top: 10px;
+  flex:0;
     z-index: 1000;
     align-items: center;
     display: flex;
@@ -333,7 +313,6 @@ max-width: 100vw;
     box-shadow: 0 6px 5px -7px grey inset;
     height: 80px;
     left: 0;
-
     background-color: #FFFFFF;
     text-align: center;
 }
@@ -377,7 +356,7 @@ table.display.dataTable.no-footer {
 div.dataTables_scroll {
   width:100%;
   padding-right: 15px;
-  padding-left: 15px;
+  padding-left: 10px;
 }
 
 /* seconda navbar */
@@ -388,9 +367,9 @@ div.dataTables_scroll {
 }
 
 #nav_cont_2 {
-top: -15px;
     position: relative;
-  display: inline-table;
+  display: flex;
+  flex-direction: column;
     height: 100%;
     padding-right: 0 !important;
     padding-left: 0 !important;
@@ -400,32 +379,32 @@ top: -15px;
 #nav_cont_2 > nav {
   margin-bottom: 0 !important;
   width: 100%;
+  flex: 0;
 }
 #nav_cont_2 > nav > div {
+  padding-left: 0 !important;
   display: flex;
   width: 100%;
-position: sticky;
-    left: 0;
+
 max-width: 100vw;
     margin: 0;}
 
 
 
 #nav_cont_2 > nav > div > div.navbar-collapse.collapse{
-  position: sticky;
-  left: 24.5%;
+
 }
 
 #nav_cont_2 > nav > div > div.navbar-header {
+
   display:flex;
   flex-direction: row-reverse;
     justify-content: flex-end;
-position: sticky;
-    left: 0;
-  max-width: 25vw;
- width: 24.5%;
- /*
- transition: width 0.2s ease-out 0s;*/
+
+
+ width: 25%;
+
+ transition: width 0.2s ease-out 0s;
 
 }
 
@@ -433,11 +412,11 @@ position: sticky;
   padding-top: 0;
   padding-right: 0;
   padding-bottom: 0;
-  padding-left: 22px !important;
+  padding-left: 22px;
 }
 
 #nav_cont_2 > nav > div > div.navbar-header > button {
-  margin-left: 150%;
+
 }
 
 .toggleLine{
@@ -464,7 +443,7 @@ position: sticky;
   margin-top: 5px !important;
   padding-right:0 !important;
   padding-left:0 !important;
-
+  flex: 1;
   height: 100%;
   width:100%;
 
@@ -476,8 +455,7 @@ position: sticky;
 
 #overview_container{
   width: 100%;
-    display: contents;
-    padding-right: 15px;
+
     height: 100%;
 }
 
@@ -495,14 +473,13 @@ position: sticky;
 /* Sidebar overview */
 
 #sidebar {
-  left:0;
-  position: sticky;
-  min-width: 225px;
+  min-width: 230px;
   z-index: 1000;
   background: #FFF;
   height: auto;
   padding-right: 0;
-  max-width: 25vw;
+  max-width: 24.95vw;
+  padding-left: 10px;
 }
 
 #sidebar > div > form { margin-bottom:0;}
@@ -549,27 +526,27 @@ div.file_side>div.well>div>div{
   margin-bottom:0;
 }
 
-#GSP-fromfile_progress{
+#GSP-SOM-fromfile_progress{
   margin-bottom:10px;
 }
-#GSP-fromfile2_progress{
+#GSP-GERM-fromfile2_progress{
   margin-bottom:10px;
 }
 
 
 /* Main tabset overview */
 #colcol{
+  overflow-x : clip;
   margin-bottom: 10px;
-  padding-right: 0;
+  margin-right: 0;
+  padding-right:0;
   padding-left:0;
   flex: 1;
   height: 100%;
-  width: 100% !important;
-  display: inline-table;
 }
 
 #colcol > div{
-  display:inline-table;
+
   padding:0;
   width: 100%!important;
   height: 100%;
@@ -588,7 +565,6 @@ div.file_side>div.well>div>div{
 }
 
 #tabcontainer{
-  display: contents;
   width: 100%;}
 
 /* RESTYLE DATATABLE HEAD FILTERS/SEARCH */
@@ -691,7 +667,7 @@ thead > tr > td {
 }
 
 
-.dataTables_scrollFootInner{margin-left: 17px;}
+.dataTables_scrollFootInner{margin-left: 0;}
 
 .dataTables_scrollFoot{
     display: inline-flex;
@@ -699,10 +675,14 @@ thead > tr > td {
     justify-content: space-around;
     align-items: center;
     flex-wrap: wrap;
-    /*position: sticky !important;
-    bottom:0;
-    z-index: 99;
-    background-color: #FFF;*/
+    overflow: hidden;
+    border: 0px;
+    width: 100%;
+    bottom: 0;
+    position: sticky;
+    background: #FFF;
+    z-index: 101;
+
 }
 
 .dataTables_scrollHead{
@@ -711,6 +691,8 @@ thead > tr > td {
     flex-wrap: wrap;
     align-items: center;
     position: sticky !important;
+    -webkit-position: sticky ;
+    -moz-position: sticky;
     top:0;
     z-index: 99;
     background-color: #FFF;
@@ -723,12 +705,14 @@ thead > tr > td {
     align-items: center;}
 
 .row_i{
-
+    background: #FFF;
     display: flex;
     flex-direction: row-reverse;
     width: 100%;
     text-align: right;
     justify-content: space-between;
+    position:relative;
+    z-index: 103;
 
 }
 .row_b{
@@ -744,91 +728,95 @@ div.row_b > div.dt-buttons{
   margin-left:0;
   padding-left: 10px;
   float: left;
-  left: 25%;
-  position: sticky !important;}
+}
 
 .dataTables_paginate{
   right:0;
   background: #FFF;
   z-index: 99;
-  position:sticky;
+
 }
 .dataTables_info{
   padding-left: 10px;
-  left: 25%;
-  position: sticky;}
+
+}
 
 .dataTables_length{
 
   margin-left:0;
   padding-left: 10px;
-  left: 25%;
-  position: sticky;}
+
+
+}
 
 .dataTables_filter{
   margin-right:0;
   padding-right: 10px;
   right: 0;
-  position: sticky;}
+
+}
 
 
 
-#GSP-som_table{
+#GSP-SOM-som_table{
 
   width: 100%;
   height: 100%;
 }
-#GSP-som_table > div{
-  display: contents;
+#GSP-SOM-som_table > div{
+
   width: 100%;
   height: 100%;
 }
 
-#GSP-som_table > div > table > thead{
-    position: sticky;
+#GSP-SOM-som_table > div > table > thead{
+
     top: 0;
     z-index: 100;
     background: #FFF;}
-#GSP-som_table > div > table > tfoot{
-position: sticky;
+#GSP-SOM-som_table > div > table > tfoot{
+
     bottom: 0;
     z-index: 100;
     background: #FFF;}
 
-#GSP-som_table > div > div > div.dataTables_scrollBody{
+#GSP-SOM-som_table > div > div > div.dataTables_scrollBody{
     overflow-x: auto !important;
-    overflow-y: hidden !important;
-    max-height: 964px;
+
 }
 
-#GSP-germ_table{
+#GSP-SOM-som_table > div > table{padding-right: 30px;}
+#GSP-GERM-germ_table > div > table{padding-right: 30px;}
+
+
+#GSP-GERM-germ_table{
 
   width: 100%;
   height: 100%;
 }
-#GSP-germ_table > div{
-  display: contents;
+#GSP-GERM-germ_table > div{
+
   width: 100%;
   height: 100%;
 }
 
-#GSP-germ_table > div > table > thead{
-    position: sticky;
+#GSP-GERM-germ_table > div > table > thead{
+
     top: 0;
     z-index: 100;
     background: #FFF;}
-#GSP-germ_table > div > table > tfoot{
-position: sticky;
+#GSP-GERM-germ_table > div > table > tfoot{
+
     bottom: 0;
+
     z-index: 100;
     background: #FFF;}
 
-#GSP-germ_table > div > div > div.dataTables_scrollBody{
+#GSP-GERM-germ_table > div > div > div.dataTables_scrollBody{
     overflow-x: auto !important;
-    overflow-y: hidden !important;
-    max-height: 964px;
+
 }
-#GSP-germ_table > div > div > div.dataTables_scrollFoot{
+#GSP-GERM-germ_table > div > div > div.dataTables_scrollFoot{
     z-index: 4;
 }
 
@@ -841,26 +829,59 @@ tfoot > tr {
 }
 
 #topnavbar2{
-  position: sticky;
 
-padding-left: 5px;}
+margin-left: 5px;
+}
 
 #topnavbar2 > li{
 
   min-width: 92px;
   text-align: center;
 }
+.row_e{
+  overflow-y: visible;
+  max-height: 1px;
+  position: relative;
+}
+
+.row_e_overlay{
+  padding-bottom: 20px;
+    z-index: 103;
+    background: #FFF;
+    position: relative;
+}
+.row_sc_i{
+    width: 1710px;
+    height: 1px;
+
+}
+
+.row_sc{
+  margin-right: 15px;
+    float: right;
+  max-width: 97.3%;
+    overflow-x: auto;
+  position: sticky;
+
+    bottom: 35px;
+
+  z-index: 100;
+}
 
 .img_footer{padding-left: 30px;}
 /* SCREEN OPTIONS*/
 
-@media screen and (max-width: 768px) {
+
+@media screen and (max-width: 1200px) {
+#nav_cont_2 > nav > div > div.navbar-header {min-width:230px !important;}
+}
+
+@media screen and (max-width: 767px) {
   #sidebar{
     padding-right: 5px;
     padding-left: 5px;
     max-width: 100vw !important;
-    position:sticky;
-    left:0;
+    padding-bottom: 10px;
   }
   .dataTables_paginate{left: 0;}
   .dataTables_filter{left: 0;}
@@ -875,7 +896,12 @@ padding-left: 5px;}
     align-content: space-between;
     justify-content: space-between;
     align-items: flex-start;
+    position:relative;
+    z-index: 103;
   }
+  /* se non dovesse funzionare su mobile
+  #colcol{overflow: auto; display : block !important;max-width: 100vw;}
+  .row_sc{max-width: 97vw;}*/
   #nav_cont_2 > nav > div{
    justify-content: space-around;}
   #nav_cont_2 > nav > div > div.navbar-header {justify-content: normal}
@@ -884,4 +910,9 @@ padding-left: 5px;}
 }
   #overview_container > div.row{flex-direction: column;}
   #mainpage > nav > div.container-fluid{justify-content: flex-start;}
+  #nav_cont_2 > nav > div > div.navbar-header > span.navbar-brand {
+
+    padding-left: 0 ;
+}
+
 }

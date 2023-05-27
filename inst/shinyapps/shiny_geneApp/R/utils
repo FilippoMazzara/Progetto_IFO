@@ -635,3 +635,92 @@ shinyjs::onclick( id = "toggleSidebar", {
        if (y.style.maxHeight != x.offsetHeight + 20){y.style.maxHeight = x.offsetHeight + 20 + "px";}}'
     )
   })
+var y2 = document.querySelector("#rowsc2");
+if(y2 != null){y2.style.width = x.offsetWidth - 20 + "px";}
+html::-webkit-scrollbar{
+
+    height:0;
+    width:15px;
+  }
+  ::-webkit-scrollbar-track {
+  border-radius: 0;
+  background: #eeeeee;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 0;
+  background: #b0b0b0;
+}
+for(n in col_yes){
+            if (n == "Gene")
+            else if (n == "Chromosome")
+            else if (n == "Ref")
+            else if (n == "Alt")
+            else if (n =="VAF")
+            else if (n == "Consequence")
+            else if (n == "Variant_Type")
+            else if (n == "Clinvar")
+            else if (n == "Depth")
+            else if (n == "Start")
+            else if (n == "End")
+            else if (n == "Variation")
+            else if (n == "HGVSp")
+            else if (n == "Exon")
+          }
+shinyjs::onevent( event = "mousemove", id = "nav_cont_2", {
+    shinyjs::runjs(
+      'var x = document.querySelector("#colcol");
+       var y1 = document.querySelector("#rowsc1 > div");
+       var y2 = document.querySelector("#rowsc2 > div");
+      if(y1 != null){y1.style.width = x.offsetWidth - 25 + "px";}
+      if(y2 != null){y2.style.width = x.offsetWidth - 25 + "px";}'
+    )
+  })
+_________________________________________________________________________________
+ shinyjs::onevent( event = "mouseenter", id = "GSP-SOM-som_table", {
+    shinyjs::runjs(
+      'var x = document.querySelector("#GSP-SOM-som_table > div > div > div.dataTables_scrollBody > table");
+       var y1 = document.querySelector("#rowsc1 > div");
+
+      if(y1 != null){y1.style.width = x.offsetWidth + 8 + "px";}'
+
+   )
+  })
+    shinyjs::onevent( event = "change", id = "GSP-SOM-checkbox1", {
+    shinyjs::runjs(
+      'var x = document.querySelector("#GSP-SOM-som_table > div > div > div.dataTables_scrollBody > table");
+       var y1 = document.querySelector("#rowsc1 > div");
+
+      if(y1 != null){y1.style.width = x.offsetWidth + 8 + "px";}'
+
+    )
+  })
+  shinyjs::onevent( event = "mouseover", id = "GSP-SOM-checkbox1", {
+    shinyjs::runjs(
+      'var x = document.querySelector("#GSP-SOM-som_table > div > div > div.dataTables_scrollBody > table");
+       var y1 = document.querySelector("#rowsc1 > div");
+
+      if(y1 != null){y1.style.width = x.offsetWidth + 8 + "px";}'
+
+    )
+  })
+
+  shinyjs::runjs(
+    '
+      $("#GSP-SOM-som_table").on("load",function() {
+
+   var x = document.querySelector("#GSP-SOM-som_table > div > div > div.dataTables_scrollBody > table");
+   var y1 = document.querySelector("#rowsc1 > div");
+
+   if(y1 != null){y1.style.width = x.offsetWidth + 8 + "px";}
+      })
+      ')
+  shinyjs::runjs(
+    '
+      $("#GSP-SOM-som_table").on("DOMNodeInserted DOMNodeRemoved",function() {
+        var x = document.querySelector("#GSP-SOM-som_table > div > div > div.dataTables_scrollBody > table");
+        var y1 = document.querySelector("#rowsc1 > div");
+
+        if(y1 != null){y1.style.width = x.offsetWidth + 8 + "px";}
+      })
+      ')

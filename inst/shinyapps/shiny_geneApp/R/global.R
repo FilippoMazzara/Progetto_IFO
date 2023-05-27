@@ -17,6 +17,41 @@ tooltip_inutile <- function() {
   )
 }
 
+check_names <- function(n) {
+  Gene <- c("SYMBOL","Symbol","symbol","hugo_symbol" ,"Hugo_Symbol","HUGO_SYMBOL","Gene.refGene","Gene","gene")
+  Chromosome <- c("CHROM", "Chromosome","Chr","chrom","chromosome")
+  Ref <- c("Ref","REF","Tumor_Seq_Allele1")
+  Alt <- c("Alt","ALT","Tumor_Seq_Allele2","alt")
+  VAF <- c("vaf","VAF","Vaf")
+  Consequence <- c("Consequence","Variant_Classification","Func.refGene","consequence")
+  Variant_Type <- c("VARIANT_CLASS","Variant_Type","ExonicFunc.refGene","variant_class")
+  Clinvar <- c("CLIN_SIG","clinvar","Clinvar")
+  Depth <- c("t_depth","depth","Depth")
+  Start <- c("Start_Position","start","Start")
+  End <- c("End_Position","end","End")
+  Variation <- c("Existing_variation","AAChange.refGene","Variation","Var","variation")
+  HGVSp <- c("HGVSp_Short","HGVSp","hgvsp")
+  Exon <- c("Exon_Number","EXON","exon","Exon")
+  VARIE <- c("Actionable.O","Actionable.M","Actionable.C","Moderate.risk","azionabile","High.risk","actionable","Amino_acids","Protein_position","cancervar_tier","tiering","POS","pos")
+
+  if (n %in% Gene){"Gene"}
+  else if (n %in% Chromosome){"Chromosome"}
+  else if (n %in% Ref){"Ref"}
+  else if (n %in% Alt){"Alt"}
+  else if (n %in% VAF){"VAF"}
+  else if (n %in% Consequence){"Consequence"}
+  else if (n %in% Variant_Type){"Variant_Type"}
+  else if (n %in% Clinvar){"Clinvar"}
+  else if (n %in% Depth){"Depth"}
+  else if (n %in% Start){"Start"}
+  else if (n %in% End){"End"}
+  else if (n %in% Variation){"Variation"}
+  else if (n %in% HGVSp){"HGVSp"}
+  else if (n %in% Exon){"Exon"}
+  else if (n %in% VARIE){NULL}
+  else {NULL}
+  }
+
 #' check vector type
 #' @description
 #' this function checks if it is needed
@@ -44,8 +79,9 @@ check_ui <- function(x) {
 
     levs <- kit::funique(x)
     #remember that this condition is tied to make_ui/2
-    if (length(levs) < (length(x)/8)){T}
-    else {NULL}
+    #if (length(levs) < (length(x)/8)){T}
+    #else {NULL}
+    T
   }
   else if (is.logical(x)) {
     if(all(is.na(x)) || all(is.null(x))) {NULL}
@@ -67,19 +103,20 @@ check_ui <- function(x) {
 #' @return the filter created according to the conditions in the function
 #' @examples make_ui(vector,name,moduleid)
 #'
-make_ui <- function(x, var, id) {
+make_ui <- function(x, var, id, n) {
+  var2 <- paste(var,n,sep="")
   #NUMERIC VECTORS
   if (is.numeric(x)) {
     rng <- range(x, na.rm = T)
     if (!(rng[1] == rng[2])){
-    shiny::sliderInput(shiny::NS(id,var), var, min = rng[1], max = rng[2], value = rng)
+    shiny::sliderInput(paste("GSP-",shiny::NS(id,var2),sep=""), var, min = rng[1], max = rng[2], value = rng)
     }
     else {NULL}
   }
   #FACTORS
   else if (is.factor(x)) {
     levs <- levels(factor(x, exclude = NULL))
-    shinyWidgets::pickerInput(shiny::NS(id,var), var, choices = levs, selected = levs, multiple = TRUE, options = shinyWidgets::pickerOptions(actionsBox= TRUE, size = 10),choicesOpt = list(content = stringr::str_trunc(c(levs), width = 40)) )
+    shinyWidgets::pickerInput(paste("GSP-",shiny::NS(id,var2),sep=""), var, choices = levs, selected = c(), multiple = TRUE, options = shinyWidgets::pickerOptions(actionsBox= TRUE, size = 10),choicesOpt = list(content = stringr::str_trunc(c(levs), width = 40)) )
   }
   #CARACTER VECTORS AND ARRAYS
   else if ( is.array(x) || is.character(x)) {
@@ -88,12 +125,12 @@ make_ui <- function(x, var, id) {
 
     #per un select normalepuoi fare il truncate e fare un vettore con c(nomi,valori) per le select
     #FILTERING OF VECTORS
-    if (length(levs) < (length(x)/8)){
+    #if (length(levs) < (length(x)/8)){
     #if (length(levs) < 600 && length(levs) > 1){
-      shinyWidgets::pickerInput(shiny::NS(id,var), var, choices = levs, selected = levs, multiple = TRUE, options = shinyWidgets::pickerOptions(actionsBox= TRUE, size = 10, virtualScroll= TRUE ),choicesOpt = list(content = stringr::str_trunc(c(levs), width = 40)) )
+      shinyWidgets::pickerInput(paste("GSP-",shiny::NS(id,var2),sep=""), var, choices = levs, selected = c(), multiple = TRUE, options = shinyWidgets::pickerOptions(actionsBox= TRUE, size = 10, virtualScroll= TRUE ),choicesOpt = list(content = stringr::str_trunc(c(levs), width = 40)) )
       #shiny::selectizeInput(var, var, choices = levs, selected = levs, multiple = TRUE)
-    }
-    else {NULL}
+    #}
+   # else {NULL}
     #shiny::selectInput(var, var, choices = levs, selected = levs, multiple = TRUE, selectize = T)
   }
   #LOGICAL VECTORS
@@ -101,7 +138,7 @@ make_ui <- function(x, var, id) {
     if(all(is.na(x)) || all(is.null(x))) {NULL}
     else{
       levs <- levels(factor(x, exclude = NULL))
-      shinyWidgets::pickerInput(shiny::NS(id,var), var, choices = levs, selected = levs, multiple = TRUE, options = shinyWidgets::pickerOptions(actionsBox= TRUE, size = 10),choicesOpt = list(content = stringr::str_trunc(c(levs), width = 40)))
+      shinyWidgets::pickerInput(paste("GSP-",shiny::NS(id,var2),sep=""), var, choices = levs, selected = c(), multiple = TRUE, options = shinyWidgets::pickerOptions(actionsBox= TRUE, size = 10),choicesOpt = list(content = stringr::str_trunc(c(levs), width = 40)))
     }
   }
   else {
@@ -137,10 +174,10 @@ make_ui2 <- function(x, var, id){
     #levs <- levels(factor(x, exclude = NULL))
 
     levs <- kit::funique(x)
-    if (length(levs) < (length(x)/8)){
+    #if (length(levs) < (length(x)/8)){
       shinyWidgets::pickerInput(shiny::NS(id,var2), var, choices = levs, selected = levs, multiple = TRUE, options = shinyWidgets::pickerOptions(actionsBox= TRUE, size = 10),choicesOpt = list(content = stringr::str_trunc(c(levs), width = 40))  )
-    }
-    else {NULL}
+    #}
+    #else {NULL}
   }
   else if (is.logical(x)) {
     if(all(is.na(x)) || all(is.null(x))) {NULL}

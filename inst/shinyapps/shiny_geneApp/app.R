@@ -135,80 +135,118 @@ server <- function(input, output, session){
   # ------ SOMATIC AND GERM SERVER MODULE -------
 
   gersomPanel_server("GSP")
+  #TROVA UN ALTRO MODO PER TRIGGERARE L'EVENTO
 
 
-  ## altezza dinamica solo tabella som/ possibile mem leak TROVA UN ALTRO MODO PER FORZARE L'HEIGHT
-  shinyjs::onevent( event = "mousemove", id = "nav_cont_2", {
+  shinyjs::onevent( event = "change", id = "GSP-GERM-checkbox2", {
     shinyjs::runjs(
-      'var x = document.querySelector("#colcol");
-       var y = document.querySelectorAll("div.row_sc_i");
-      if(y[0] != null){y[0].style.width = x.offsetWidth - 20 + "px";}
-      if(y[1] != null){y[1].style.width = x.offsetWidth - 20 + "px";}'
+      'var x = document.querySelector("#GSP-GERM-germ_table > div > div > div.dataTables_scrollBody > table");
+       var y2 = document.querySelector("#rowsc2 > div");
+
+      if(y2 != null){y2.style.width = x.offsetWidth  + "px";}'
+
     )
   })
+  ## altezza dinamica solo tabella som/ possibile mem leak TROVA UN ALTRO MODO PER FORZARE L'HEIGHT
+
   shinyjs::onevent( event = "scroll", id = "rowsc1", {
     shinyjs::runjs(
     "
-    var x = document.querySelectorAll('html');
+    var x = document.querySelector('#GSP-SOM-som_table > div > div > div.dataTables_scrollBody');
     var y = document.querySelector('#rowsc1');
-    x[0].scrollLeft = y.scrollLeft;
+    x.scrollLeft = y.scrollLeft;
     ")
   })
 
+  shinyjs::runjs('
+  function addObserverIfDesiredNodeAvailable() {
+    if(document.getElementById("colcol") == null) {
+      window.setTimeout(addObserverIfDesiredNodeAvailable,500);
+      return;
+    }
+    else{
+
+      const config = {childList: true, subtree: true };
+      var x = 0;
+      var y = 0;
+      const callback1 = (mutationList, observer) => {
+        var x1 = document.querySelector("#GSP-SOM-som_table > div > div > div.dataTables_scrollBody > table");
+        var y1 = document.querySelector("#rowsc1 > div");
+        if(y1 !== null){y1.style.width = x1.offsetWidth + "px";}
+      };
+
+      const callback2 = (mutationList, observer) => {
+          var x2 = document.querySelector("#GSP-GERM-germ_table > div > div > div.dataTables_scrollBody > table");
+          var y2 = document.querySelector("#rowsc2 > div");
+          if(y2 !== null){y2.style.width = x2.offsetWidth + "px";}
+      };
+      const callback3 = (mutationList, observer) => {
+
+          if (document.querySelector("#GSP-SOM-som_table > div > div > div.dataTables_scrollBody > table") !== null && x == 0) {
+
+            const observer1 = new MutationObserver(callback1);
+            x = 1;
+            observer1.observe(document.querySelector("#GSP-SOM-som_table > div > div > div.dataTables_scrollBody > table"), config);
+          }
+
+          if (document.querySelector("#GSP-GERM-germ_table > div > div > div.dataTables_scrollBody > table") !== null && y == 0) {
+              const observer2 = new MutationObserver(callback2);
+              y = 1;
+             observer2.observe(document.querySelector("#GSP-GERM-germ_table > div > div > div.dataTables_scrollBody > table"), config);
+          }
+
+      };
+
+         const observer3 = new MutationObserver(callback3);
+        observer3.observe(document.getElementById("colcol"), config);
+    }
+  }
+  addObserverIfDesiredNodeAvailable();
+
+  ')
+
+
+
+
+    shinyjs::runjs(
+      '
+      $("#GSP-SOM-som_table").on("mouseup",function() {
+
+    var x = document.querySelector("#GSP-SOM-som_table > div > div > div.dataTables_scrollBody");
+    var y = document.querySelector("#rowsc1");
+    y.scrollLeft = x.scrollLeft;
+      });
+      ')
+
+
+  shinyjs::onevent( event = "scroll", id = "rowsc2", {
+    shinyjs::runjs(
+      "
+    var x = document.querySelector('#GSP-GERM-germ_table > div > div > div.dataTables_scrollBody');
+    var y = document.querySelector('#rowsc2');
+    x.scrollLeft = y.scrollLeft;
+    ")
+  })
 
   ### OVERVIEW SIDEBAR TOGGLE ###
   shinyjs::onclick( id = "toggleSidebar", {
     shinyjs::runjs(
-      'var x = document.querySelector("#nav_cont_2 > nav > div > div");
-      var y = document.querySelector("#nav_cont_2 > nav > div > div.navbar-collapse.collapse");
-      var b1 = document.querySelector("#GSP-som_table > div > div.row_b > div.dt-buttons");
-      var b2 = document.querySelector("#GSP-germ_table > div > div.row_b > div.dt-buttons");
-      var p1 = document.querySelector("#GSP-som_table > div > div.row_i > div.dataTables_length");
-      var p2= document.querySelector("#GSP-germ_table >  div > div.row_i > div.dataTables_length");
-      var i1 = document.querySelectorAll("#GSP-som_table > div > div.row_i > div.dataTables_info");
-      var i2= document.querySelectorAll("#GSP-germ_table > div > div.row_i > div.dataTables_info");
-      var s1 = document.querySelector("#GSP-som_table > div > div.row_sc");
-      var s2 = document.querySelector("#GSP-germ_table > div > div.row_sc");
-      if (x.style.width == "93px") {
-        if (b1 != null){
-          b1.style.left = "25%";
-          p1.style.left = "25%";
-          i1[0].style.left = "25%";
-          i1[1].style.left = "25%";
-          s1.style.maxWidth = "73vw"
-        }
-        if (b2 != null){
-          b2.style.left = "25%";
-          p2.style.left = "25%";
-          i2[0].style.left = "25%";
-          i2[1].style.left = "25%";
-          s2.style.maxWidth = "73vw"
-        }
+      '
+      var x = document.querySelector("#nav_cont_2 > nav > div > div");
 
-          x.style.width="24.5%";
-          y.style.left="24.5%";
+
+
+      if (x.style.width == "93px") {
+
+          x.style.width = "25%";
+          x.style.minWidth = "inherit";
+
 
       }
       else {
-      if (b1 != null){
-        b1.style.left = "0";
-        p1.style.left = "0";
-        i1[0].style.left = "0";
-          i1[1].style.left = "0";
-      s1.style.maxWidth = "97vw"
-      }
-      if (b2 != null){
-        b2.style.left = "0";
-        p2.style.left = "0";
-        i2[0].style.left = "0";
-          i2[1].style.left = "0";
-       s2.style.maxWidth = "97vw"
-      }
 
-
-      y.style.left="0";
-      x.style.width="93px";
-
+          x.style.setProperty("min-width", "auto", "important");
+          x.style.width="93px";
       }'
     )
     shinyjs::toggle(
