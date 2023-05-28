@@ -189,11 +189,11 @@ somTab_server <- function(id){
             col_yes_y <- append(col_yes_y,n)
             }
           }
-      #    if (anyNA(d[[n]]) && is.numeric(d[[n]])){
-            #here converts "" to "NA"
-       #     x1 <- lapply(d[[n]], function(y) {ifelse(is.na(y), "NA", y)})
-        #   d[[n]] <- as.character(x1)
-       #   }
+          #if (anyNA(d[[n]]) && is.numeric(d[[n]])){
+          #here converts "" to "NA"
+          #x1 <- lapply(d[[n]], function(y) {ifelse(is.na(y), "NA", y)})
+          #d[[n]] <- as.character(x1)
+          #}
           #here can be implemented other pre processing parameters
         }
         pos <- c("Gene","Chromosome","VAF","Consequence","Variant_Type","Clinvar","Depth","Ref","Alt","Start","End","Variation","HGVSp","Exon")
@@ -313,11 +313,14 @@ somTab_server <- function(id){
           )
         )
       })
+
       # RENDER OF TITLES
       output$titolo11 <- shiny::renderText(titolo11())
       output$titolo12 <- shiny::renderText(titolo12())
       output$warning1 <- shiny::renderText(nomi_w())
+
       #------ RENDER SOMATIC TABLE ------
+
       output$som_table <- DT::renderDT({
         shiny::req(proc_data1())
         DT::datatable(
@@ -342,7 +345,7 @@ somTab_server <- function(id){
             #scrollY = 944,
             scrollX = T,
             scrollCollapse = T,
-            dom = '<"row_b" B><"row_i" fl><"row_i" pi>rt<"row_i" pi><"row_e" <"row_e_overlay" >><"#rowsc1.row_sc"<"row_sc_i" >>',
+            dom = '<"row_b" B><"row_i" fl><"row_i" pi>rt<"row_i" pi><"row_e" <"row_e_overlay" >><"row_sc_cont" <"#rowsc1.row_sc"<"row_sc_i" >>>',
             buttons = list('copy', 'excel',#'colvis','colvisRestore',
                            list(extend = "pdf", pageSize = "A3", orientation = "landscape", exportOptions = list(rows = list(page = "all"), columns = ":visible"))
             )
@@ -355,9 +358,7 @@ somTab_server <- function(id){
 
       },
       server = T
-      )
-
-
+    )
 
       ### SOMATIC TABLE PROXY SETUP ###
       ds <- shiny::reactiveVal()

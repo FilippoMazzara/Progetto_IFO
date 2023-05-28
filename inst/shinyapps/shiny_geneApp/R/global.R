@@ -4,7 +4,6 @@
 #' function that activates tooltips
 #' use once!
 #' @examples tooltip_inutile()
-#'
 tooltip_inutile <- function() {
   shiny::fluidRow(
     shiny::tags$span(
@@ -17,6 +16,13 @@ tooltip_inutile <- function() {
   )
 }
 
+#' Check for column names
+#' @description
+#' check for column names
+#' @param n the column name to check
+#' @return
+#' the correct name or NULL
+#' @examples checknames("nomeesempio")
 check_names <- function(n) {
   Gene <- c("SYMBOL","Symbol","symbol","hugo_symbol" ,"Hugo_Symbol","HUGO_SYMBOL","Gene.refGene","Gene","gene")
   Chromosome <- c("CHROM", "Chromosome","Chr","chrom","chromosome")
@@ -56,13 +62,9 @@ check_names <- function(n) {
 #' @description
 #' this function checks if it is needed
 #' to invoke an observer for the matching input
-#'
 #' @param x the vector to check
-#'
 #' @return  TRUE if the condition checks NULL otherwise
-#'
 #' @examples check_ui(dataframecolumn)
-#'
 check_ui <- function(x) {
   if (is.numeric(x)) {
 
@@ -99,10 +101,8 @@ check_ui <- function(x) {
 #' @param x the vector
 #' @param var the name of the vector
 #' @param id the module's id where the inputs will be created
-#'
 #' @return the filter created according to the conditions in the function
 #' @examples make_ui(vector,name,moduleid)
-#'
 make_ui <- function(x, var, id, n) {
   var2 <- paste(var,n,sep="")
   #NUMERIC VECTORS
@@ -153,10 +153,8 @@ make_ui <- function(x, var, id, n) {
 #' @param x the vector
 #' @param var the name of the vector
 #' @param id the module's id where the inputs will be created
-#'
 #' @return the filter created according to the conditions in the function
 #' @examples make_ui2(vector,name,moduleid)
-#'
 make_ui2 <- function(x, var, id){
   #to distinguish from the first
   var2 <- paste(var,"2",sep="")
@@ -198,10 +196,8 @@ make_ui2 <- function(x, var, id){
 #' this function decide if the values in the table are to keep or not
 #' @param x the vector to filter
 #' @param val the values supplied from the inputs
-#'
 #' @return a logical vector mapping the values to remove from the tableù
 #' @examples filter_var(vector,inputvalues)
-#'
 filter_var <- function(x, val) {
   if (is.numeric(x) ) {
     if (val[1]==val[2]) {TRUE}
@@ -230,10 +226,8 @@ filter_var <- function(x, val) {
 #' @param id the button id
 #' @param target the well panel id
 #' @param text the text to display
-#'
 #' @return the toggle row
 #' @examples toggle_panel(toggleid,targetid,text)
-#'
 toggle_panel <- function(id, target, text) {
   shiny::tags$div(
     class = "toggle_panel",
@@ -257,7 +251,6 @@ toggle_panel <- function(id, target, text) {
 #' @param txt the text to display in the tooltip popup
 #' @return the tooltip
 #' @examples a_tooltip("text to show")
-#'
 a_tooltip <- function(txt){
   shiny::fluidRow(
     shiny::tags$span(

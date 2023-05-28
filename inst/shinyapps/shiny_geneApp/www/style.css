@@ -31,7 +31,7 @@ h2 {margin-top:10px;}
 
 
 /* Tooltip */
-
+/*questa sezione contiene lo styling per i tooltips*/
 .tooltip {
   pointer-events: none;
 }
@@ -67,64 +67,54 @@ h2 {margin-top:10px;}
   border-left-color: #e3e3e3;
 }
 
-
 /* Header */
+/*questa sezione contiene lo styling per l'header della pagina, anche quando collapsed*/
 
 div.container-fluid > nav > div > div > button{
     margin-left: 0;
     margin-right: 0;
     margin-top: 16%;
     margin-bottom: 0;
-
   }
 
 #mainpage > nav {
   flex:0;
   width: 100%;
   height: auto;
-    /* padding: 0 5%; */
-    padding-bottom: 5px;
-    position: relative;
-    margin-bottom: 0 !important;
-    box-shadow: 0 -6px 7px -7px grey inset;
-    background: white;
-    /* display: flex; */
-    justify-content: space-between;
-    align-items: center;
+  padding-bottom: 5px;
+  position: relative;
+  margin-bottom: 0 !important;
+  box-shadow: 0 -6px 7px -7px grey inset;
+  background: white;
 }
 
 div.navbar-header > span.navbar-brand {
   vertical-align: middle;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height:auto;
-    width:auto;
-    margin-left: 0 !important;
-    padding:0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height:auto;
+  width:auto;
+  margin-left: 0 !important;
+  padding:0;
 }
 
 #logo1{
   height: 5em;
 }
 
-#mainpage > nav > div.container-fluid > div.navbar-header{padding-left: 5%;}
+#mainpage > nav > div.container-fluid > div.navbar-header{
+  padding-left: 5%;
+}
 
 #mainpage > nav > div.container-fluid{
   margin: 0;
-
-    padding-right: 0;
-    padding-left: 0;
-    max-width: 100vw;
-    width: 100%;
-    display: flex;
-    position: sticky;
-    -webkit-position: sticky ;
-    -moz-position: sticky;
-
-    left: 0;
-    align-items: center;
-    justify-content: space-evenly;
+  padding-right: 0;
+  padding-left: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
 }
 
 #topnavbar>li {
@@ -155,15 +145,12 @@ div.navbar-header > span.navbar-brand {
 }
 
 #topnavbar{
-  display: block;
   vertical-align: middle;
   padding-top: 5px;
 }
 
 /* Main */
-
-/*questo becca tutti i div nella seconda navbar molti hannoun id! */
-
+/*styling per la parte centrale della pagina*/
 
 .tab-content>.active {
   height:100%;
@@ -171,16 +158,13 @@ div.navbar-header > span.navbar-brand {
 }
 
 #mainpage > div.container-fluid {
-
   padding-left: 0;
-     flex: 1;
-
-    padding-right: 0;
-    width: 100%;
-    margin-top: 0 !important;
-    margin-right: 0;
-    margin-left: 0;
-
+  flex: 1;
+  padding-right: 0;
+  width: 100%;
+  margin-top: 0 !important;
+  margin-right: 0;
+  margin-left: 0;
 }
 
 #mainpage > div.container-fluid > div{
@@ -188,6 +172,7 @@ div.navbar-header > span.navbar-brand {
   width: 100%;
 }
 
+/*Toggler Header*/
 /* toggle filter panel in the sidebar */
 
 .toggle_well_link{
@@ -209,7 +194,6 @@ div.navbar-header > span.navbar-brand {
   display: flex;
   justify-content: space-between;
   margin-bottom:0;
-
 }
 
 .toggle_panel_line{
@@ -221,6 +205,7 @@ div.navbar-header > span.navbar-brand {
 }
 
 /* Home */
+/*styling pagina home*/
 
 .home_wellpanel{
   margin-right:4em !important;
@@ -266,7 +251,7 @@ div.navbar-header > span.navbar-brand {
 }
 
 /* About */
-
+/*styling pagina about*/
 #about{
   width:100%;
   font-family: 'Open Sans', sans-serif !important;
@@ -274,106 +259,68 @@ div.navbar-header > span.navbar-brand {
 }
 
 /* Footer */
+/*styling del footer delle pagine*/
 
 #footertxt{
   color:#777;
 }
 
 #footer2{
-max-width: 100vw;
-    position: sticky;
-    -webkit-position: sticky ;
-    -moz-position: sticky;
-    display: flex;
-    z-index: 1000;
-
-    /* position: absolute; */
-    bottom: 0;
-    width: 100%;
-    box-shadow: 0 6px 5px -7px grey inset;
-    height: 80px;
-    left: 0;
-    background-color: #FFFFFF;
-    text-align: center;
-    align-items: center;
-
-    justify-content: space-between;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background-color: #FFFFFF;
+  text-align: center;
+  align-items: center;
+  justify-content: space-between;
+  margin-top:10px;
 }
 
 .footer {
   margin-top: 10px;
   flex:0;
-    z-index: 1000;
-    align-items: center;
-    display: flex;
-    justify-content: space-between;
-    position: relative;
-    bottom:0;
-    width: 100%;
-    box-shadow: 0 6px 5px -7px grey inset;
-    height: 80px;
-    left: 0;
-    background-color: #FFFFFF;
-    text-align: center;
+  z-index: 1000;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  bottom:0;
+  width: 100%;
+  box-shadow: 0 6px 5px -7px grey inset;
+  height: 80px;
+  background-color: #FFFFFF;
+  text-align: center;
 }
 
 #footertxt_cont{
   width: 40%;
 }
 
-
 .logoContainerFooter{
-   padding-top: 0;
-   float: left;
+  padding-top: 0;
+  float: left;
 }
 
 .logoContainerFooter img {
-   height: 70px;
+  height: 70px;
 }
 
-/* Datatable */
-.dataTables_filter{
-  margin-right: 15px;
-}
-
-.dt-buttons{
-  margin-left: 15px;
-}
-
-.dataTables_length{
-  margin-left: 15px;
-    margin-top: 3px;
-}
-
-div.dataTables_scrollHeadInner{
-  padding:0;
-}
-
-table.display.dataTable.no-footer {
-  width:100% !important;
-}
-
-div.dataTables_scroll {
-  width:100%;
-  padding-right: 15px;
-  padding-left: 10px;
-}
 
 /* seconda navbar */
-/* nota: trovare selettori migliori per i tab */
+/* navbar della pagina principale */
 
 .navbar-collapse{
   border:0;
 }
 
 #nav_cont_2 {
-    position: relative;
+  position: relative;
   display: flex;
   flex-direction: column;
-    height: 100%;
-    padding-right: 0 !important;
-    padding-left: 0 !important;
-    width: 100%;
+  height: 100%;
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+  width: 100%;
 }
 
 #nav_cont_2 > nav {
@@ -381,31 +328,21 @@ div.dataTables_scroll {
   width: 100%;
   flex: 0;
 }
+
 #nav_cont_2 > nav > div {
   padding-left: 0 !important;
   display: flex;
   width: 100%;
-
-max-width: 100vw;
-    margin: 0;}
-
-
-
-#nav_cont_2 > nav > div > div.navbar-collapse.collapse{
-
+  max-width: 100vw;
+  margin: 0;
 }
 
 #nav_cont_2 > nav > div > div.navbar-header {
-
   display:flex;
   flex-direction: row-reverse;
-    justify-content: flex-end;
-
-
- width: 25%;
-
- transition: width 0.2s ease-out 0s;
-
+  justify-content: flex-end;
+  width: 25%;
+  transition: width 0.2s ease-out 0s;
 }
 
 #nav_cont_2 > nav > div > div.navbar-header > span.navbar-brand {
@@ -413,10 +350,6 @@ max-width: 100vw;
   padding-right: 0;
   padding-bottom: 0;
   padding-left: 22px;
-}
-
-#nav_cont_2 > nav > div > div.navbar-header > button {
-
 }
 
 .toggleLine{
@@ -446,7 +379,6 @@ max-width: 100vw;
   flex: 1;
   height: 100%;
   width:100%;
-
 }
 
 #nav_cont_2 > div.container-fluid > div.tab-content {
@@ -455,8 +387,7 @@ max-width: 100vw;
 
 #overview_container{
   width: 100%;
-
-    height: 100%;
+  height: 100%;
 }
 
 .row{
@@ -482,7 +413,9 @@ max-width: 100vw;
   padding-left: 10px;
 }
 
-#sidebar > div > form { margin-bottom:0;}
+#sidebar > div > form {
+  margin-bottom:0;
+}
 
 #sidebar > div {
   height: 100%;
@@ -498,7 +431,6 @@ form.well{
 }
 
 div.file_side>div.well{
-
   padding-left: 10px;
   padding-right: 10px;
 }
@@ -546,7 +478,6 @@ div.file_side>div.well>div>div{
 }
 
 #colcol > div{
-
   padding:0;
   width: 100%!important;
   height: 100%;
@@ -560,15 +491,43 @@ div.file_side>div.well>div>div{
  margin-left:15px;
 }
 #colcol > div > div > div > div.tab-pane{
-
   width: 100%;
 }
 
 #tabcontainer{
-  width: 100%;}
+  width: 100%;
+}
 
-/* RESTYLE DATATABLE HEAD FILTERS/SEARCH */
-/*.form-group.has-feedback {z-index:-1 !important;}*/
+/* Datatable */
+/*changes in styiling to the datatables package, */
+/*I changed the default header's filters and the cells' styling */
+.dataTables_filter{
+  margin-right: 15px;
+}
+
+.dt-buttons{
+  margin-left: 15px;
+}
+
+.dataTables_length{
+  margin-left: 15px;
+  margin-top: 3px;
+}
+
+div.dataTables_scrollHeadInner{
+  padding:0;
+}
+
+table.display.dataTable.no-footer {
+  width:100% !important;
+}
+
+div.dataTables_scroll {
+  width:100%;
+  padding-right: 15px;
+  padding-left: 10px;
+}
+
 .dt-button-info{
   z-index:100 !important;
 }
@@ -649,7 +608,7 @@ td[data-type = "number"] > div > input {
   text-align:center !important;
 }
 
-.odd > td{
+.odd > td {
   text-align:center !important;
   overflow:hidden !important;
   text-overflow: ellipsis;
@@ -657,7 +616,8 @@ td[data-type = "number"] > div > input {
   min-width: 50px !important;
 }
 
-th {text-align:center !important;
+th {
+  text-align:center !important;
   max-width: 250px !important;
   min-width: 50px !important;
 }
@@ -666,62 +626,64 @@ thead > tr > td {
   min-width: 50px !important;
 }
 
-
-.dataTables_scrollFootInner{margin-left: 0;}
+.dataTables_scrollFootInner{
+  margin-left: 0;
+}
 
 .dataTables_scrollFoot{
-    display: inline-flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-    flex-wrap: wrap;
-    overflow: hidden;
-    border: 0px;
-    width: 100%;
-    bottom: 0;
-    position: sticky;
-    background: #FFF;
-    z-index: 101;
-
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+  overflow: hidden;
+  border: 0px;
+  width: 100%;
+  bottom: 0;
+  position: sticky;
+  background: #FFF;
+  z-index: 101;
 }
 
 .dataTables_scrollHead{
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    align-items: center;
-    position: sticky !important;
-    -webkit-position: sticky ;
-    -moz-position: sticky;
-    top:0;
-    z-index: 99;
-    background-color: #FFF;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  position: sticky !important;
+  -webkit-position: sticky ;
+  -moz-position: sticky;
+  top:0;
+  z-index: 99;
+  background-color: #FFF;
 }
 
 .dataTables_scroll{
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    align-items: center;}
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;}
 
 .row_i{
-    background: #FFF;
-    display: flex;
-    flex-direction: row-reverse;
-    width: 100%;
-    text-align: right;
-    justify-content: space-between;
-    position:relative;
-    z-index: 103;
-
+  background: #FFF;
+  display: flex;
+  flex-direction: row-reverse;
+  width: 100%;
+  text-align: right;
+  justify-content: space-between;
+  position:relative;
+  z-index: 103;
 }
-.row_b{
 
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    text-align: right;
-    justify-content: space-between;
+.row_b{
+  position: relative;
+  z-index: 103;
+  background: #FFF;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  text-align: right;
+  justify-content: space-between;
 }
 
 div.row_b > div.dt-buttons{
@@ -738,106 +700,103 @@ div.row_b > div.dt-buttons{
 }
 .dataTables_info{
   padding-left: 10px;
-
 }
 
 .dataTables_length{
-
   margin-left:0;
   padding-left: 10px;
-
-
 }
 
 .dataTables_filter{
   margin-right:0;
   padding-right: 10px;
   right: 0;
-
 }
 
-
-
+/*TABLE CONTAINERS*/
+/*SOM table styling*/
 #GSP-SOM-som_table{
-
   width: 100%;
   height: 100%;
 }
-#GSP-SOM-som_table > div{
 
+#GSP-SOM-som_table > div{
   width: 100%;
   height: 100%;
 }
 
 #GSP-SOM-som_table > div > table > thead{
-
-    top: 0;
-    z-index: 100;
-    background: #FFF;}
-#GSP-SOM-som_table > div > table > tfoot{
-
-    bottom: 0;
-    z-index: 100;
-    background: #FFF;}
-
-#GSP-SOM-som_table > div > div > div.dataTables_scrollBody{
-    overflow-x: auto !important;
-
+  top: 0;
+  z-index: 100;
+  background: #FFF;
 }
 
-#GSP-SOM-som_table > div > table{padding-right: 30px;}
-#GSP-GERM-germ_table > div > table{padding-right: 30px;}
+#GSP-SOM-som_table > div > table > tfoot{
+  bottom: 0;
+  z-index: 100;
+  background: #FFF;
+}
 
+#GSP-SOM-som_table > div > div > div.dataTables_scrollBody{
+  overflow-x: auto !important;
+}
+
+#GSP-SOM-som_table > div > table{
+  padding-right: 30px;
+}
+
+/*GERM table styling*/
+
+#GSP-GERM-germ_table > div > table{
+  padding-right: 30px;
+}
 
 #GSP-GERM-germ_table{
-
   width: 100%;
   height: 100%;
 }
-#GSP-GERM-germ_table > div{
 
+#GSP-GERM-germ_table > div{
   width: 100%;
   height: 100%;
 }
 
 #GSP-GERM-germ_table > div > table > thead{
+  top: 0;
+  z-index: 100;
+  background: #FFF;
+}
 
-    top: 0;
-    z-index: 100;
-    background: #FFF;}
 #GSP-GERM-germ_table > div > table > tfoot{
-
-    bottom: 0;
-
-    z-index: 100;
-    background: #FFF;}
+  bottom: 0;
+  z-index: 100;
+  background: #FFF;
+}
 
 #GSP-GERM-germ_table > div > div > div.dataTables_scrollBody{
-    overflow-x: auto !important;
-
-}
-#GSP-GERM-germ_table > div > div > div.dataTables_scrollFoot{
-    z-index: 4;
+  overflow-x: auto !important;
 }
 
 
 tfoot > tr {
-    position: relative;}
+  position: relative;
+}
 
 #GSP-sidebar_tabset{
   display:none !important;
 }
 
 #topnavbar2{
-
-margin-left: 5px;
+  margin-left: 5px;
 }
 
 #topnavbar2 > li{
-
   min-width: 92px;
   text-align: center;
 }
+
+/*DATATABLE ADDONS*/
+
 .row_e{
   overflow-y: visible;
   max-height: 1px;
@@ -846,46 +805,65 @@ margin-left: 5px;
 
 .row_e_overlay{
   padding-bottom: 20px;
-    z-index: 103;
-    background: #FFF;
-    position: relative;
+  z-index: 103;
+  background: #FFF;
+  position: relative;
 }
-.row_sc_i{
-    width: 1710px;
-    height: 1px;
 
+.row_sc_i{
+  width: 1710px;
+  height: 1px;
+}
+
+.row_sc_cont{
+  margin-right: 15px;
+  z-index: 100;
+  position: sticky;
+  margin-left: 10px;
+  bottom: 36px;
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .row_sc{
-  margin-right: 15px;
-    float: right;
-  max-width: 97.3%;
-    overflow-x: auto;
-  position: sticky;
-
-    bottom: 35px;
-
-  z-index: 100;
+ overflow-x: auto;
 }
 
-.img_footer{padding-left: 30px;}
+.img_footer{
+  padding-left: 30px;
+}
 /* SCREEN OPTIONS*/
 
-
 @media screen and (max-width: 1200px) {
-#nav_cont_2 > nav > div > div.navbar-header {min-width:230px !important;}
+
+  #nav_cont_2 > nav > div > div.navbar-header {
+    min-width:230px !important;
+  }
+
 }
 
+/*MOBILE WIDTH*/
 @media screen and (max-width: 767px) {
+
   #sidebar{
     padding-right: 5px;
     padding-left: 5px;
     max-width: 100vw !important;
     padding-bottom: 10px;
   }
-  .dataTables_paginate{left: 0;}
-  .dataTables_filter{left: 0;}
-  #mainpage > nav > div.container-fluid{flex-direction: column;}
+
+  .dataTables_paginate{
+    left: 0;
+  }
+
+  .dataTables_filter{
+    left: 0;
+  }
+
+  #mainpage > nav > div.container-fluid{
+    flex-direction: column;
+  }
 
   .row_i{
     display: flex;
@@ -899,20 +877,29 @@ margin-left: 5px;
     position:relative;
     z-index: 103;
   }
-  /* se non dovesse funzionare su mobile
-  #colcol{overflow: auto; display : block !important;max-width: 100vw;}
-  .row_sc{max-width: 97vw;}*/
+
   #nav_cont_2 > nav > div{
-   justify-content: space-around;}
-  #nav_cont_2 > nav > div > div.navbar-header {justify-content: normal}
+    justify-content: space-around;
+  }
+
+  #nav_cont_2 > nav > div > div.navbar-header {
+    justify-content: normal
+  }
+
   #nav_cont_2 > nav > div > div.navbar-header > button {
     margin-left: 10px;
-}
-  #overview_container > div.row{flex-direction: column;}
-  #mainpage > nav > div.container-fluid{justify-content: flex-start;}
+  }
+
+  #overview_container > div.row{
+    flex-direction: column;
+  }
+
+  #mainpage > nav > div.container-fluid{
+    justify-content: flex-start;
+  }
+
   #nav_cont_2 > nav > div > div.navbar-header > span.navbar-brand {
-
     padding-left: 0 ;
+  }
 }
 
-}

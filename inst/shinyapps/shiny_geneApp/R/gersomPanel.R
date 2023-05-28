@@ -85,7 +85,9 @@ gersomPanel_server <- function(id){ #oltre id puoi passare altri parametri
     id,
 
     function(input, output, session) {
+
       somTab_server("SOM")
+
       germTab_server("GERM")
 
       #JS ON SOMATIC BUTTON PUSH
@@ -109,7 +111,6 @@ gersomPanel_server <- function(id){ #oltre id puoi passare altri parametri
 
       ### OVERVIEW PANEL SWITCH BUTTONS + TABS ###
       shiny::observeEvent(input$main_overview_files, {
-
         if(input$main_overview_files == "pannello1"){
           shinyjs::runjs(
             'document.querySelector("#GSP-sidebar_somatic").className += " active";

@@ -724,3 +724,5 @@ ________________________________________________________________________________
         if(y1 != null){y1.style.width = x.offsetWidth + 8 + "px";}
       })
       ')
+@media screen and (max-width: 540px) {.row_sc{max-width:95%}}
+@media screen and (max-width: 400px) {.row_sc{max-width:92.5%}}

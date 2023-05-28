@@ -135,120 +135,126 @@ server <- function(input, output, session){
   # ------ SOMATIC AND GERM SERVER MODULE -------
 
   gersomPanel_server("GSP")
-  #TROVA UN ALTRO MODO PER TRIGGERARE L'EVENTO
 
-
-  shinyjs::onevent( event = "change", id = "GSP-GERM-checkbox2", {
-    shinyjs::runjs(
-      'var x = document.querySelector("#GSP-GERM-germ_table > div > div > div.dataTables_scrollBody > table");
-       var y2 = document.querySelector("#rowsc2 > div");
-
-      if(y2 != null){y2.style.width = x.offsetWidth  + "px";}'
-
-    )
-  })
-  ## altezza dinamica solo tabella som/ possibile mem leak TROVA UN ALTRO MODO PER FORZARE L'HEIGHT
-
+  ### SOM TABLE STICKY SCROLLER###
   shinyjs::onevent( event = "scroll", id = "rowsc1", {
-    shinyjs::runjs(
-    "
-    var x = document.querySelector('#GSP-SOM-som_table > div > div > div.dataTables_scrollBody');
-    var y = document.querySelector('#rowsc1');
-    x.scrollLeft = y.scrollLeft;
+    shinyjs::runjs("
+
+      var x = document.querySelector('#GSP-SOM-som_table > div > div > div.dataTables_scrollBody');
+      var y = document.querySelector('#rowsc1');
+      x.scrollLeft = y.scrollLeft;
+
     ")
   })
 
+  ### GERM TABLE STICKY SCROLLER###
+  shinyjs::onevent( event = "scroll", id = "rowsc2", {
+    shinyjs::runjs("
+
+      var x = document.querySelector('#GSP-GERM-germ_table > div > div > div.dataTables_scrollBody');
+      var y = document.querySelector('#rowsc2');
+      x.scrollLeft = y.scrollLeft;
+
+    ")
+  })
+
+  #Questa parte di codice js viene eseguita sin da subito
+  #ogni 0.5s attende il rendering della pagina GERSOM
+  #poi se nota un cambiamento nella pagina, crea l'observer opportuno
+  #a sua volta quell'observer ridimensionerà lo scroller se la tabella cambia di width
   shinyjs::runjs('
-  function addObserverIfDesiredNodeAvailable() {
-    if(document.getElementById("colcol") == null) {
-      window.setTimeout(addObserverIfDesiredNodeAvailable,500);
-      return;
-    }
-    else{
+    function addObserverIfDesiredNodeAvailable() {
+      if(document.getElementById("colcol") == null) {
+        window.setTimeout(addObserverIfDesiredNodeAvailable,500);
+        return;
+      }
+      else{
 
-      const config = {childList: true, subtree: true };
-      var x = 0;
-      var y = 0;
-      const callback1 = (mutationList, observer) => {
-        var x1 = document.querySelector("#GSP-SOM-som_table > div > div > div.dataTables_scrollBody > table");
-        var y1 = document.querySelector("#rowsc1 > div");
-        if(y1 !== null){y1.style.width = x1.offsetWidth + "px";}
-      };
+        const config = {childList: true, subtree: true };
+        var x = 0;
+        var y = 0;
 
-      const callback2 = (mutationList, observer) => {
-          var x2 = document.querySelector("#GSP-GERM-germ_table > div > div > div.dataTables_scrollBody > table");
-          var y2 = document.querySelector("#rowsc2 > div");
-          if(y2 !== null){y2.style.width = x2.offsetWidth + "px";}
-      };
-      const callback3 = (mutationList, observer) => {
+        const callback1 = (mutationList, observer) => {
+            var x1 = document.querySelector("#GSP-SOM-som_table > div > div > div.dataTables_scrollBody > table");
+            var y1 = document.querySelector("#rowsc1 > div");
+            if(y1 !== null){y1.style.width = x1.offsetWidth + "px";}
+        };
 
+        const callback2 = (mutationList, observer) => {
+            var x2 = document.querySelector("#GSP-GERM-germ_table > div > div > div.dataTables_scrollBody > table");
+            var y2 = document.querySelector("#rowsc2 > div");
+            if(y2 !== null){y2.style.width = x2.offsetWidth + "px";}
+        };
+
+        const callback3 = (mutationList, observer) => {
           if (document.querySelector("#GSP-SOM-som_table > div > div > div.dataTables_scrollBody > table") !== null && x == 0) {
-
             const observer1 = new MutationObserver(callback1);
             x = 1;
             observer1.observe(document.querySelector("#GSP-SOM-som_table > div > div > div.dataTables_scrollBody > table"), config);
           }
-
-          if (document.querySelector("#GSP-GERM-germ_table > div > div > div.dataTables_scrollBody > table") !== null && y == 0) {
-              const observer2 = new MutationObserver(callback2);
-              y = 1;
-             observer2.observe(document.querySelector("#GSP-GERM-germ_table > div > div > div.dataTables_scrollBody > table"), config);
+          if (x == 1){
+            observer.disconnect();
           }
+        };
 
-      };
+        const callback4 = (mutationList, observer) => {
+          if (document.querySelector("#GSP-GERM-germ_table > div > div > div.dataTables_scrollBody > table") !== null && y == 0) {
+            y = 1;
+            const observer2 = new MutationObserver(callback2);
+            observer2.observe(document.querySelector("#GSP-GERM-germ_table > div > div > div.dataTables_scrollBody > table"), config);
+          }
+          if (y == 1){
+            observer.disconnect();
+          }
+        };
 
-         const observer3 = new MutationObserver(callback3);
-        observer3.observe(document.getElementById("colcol"), config);
+        const observer3 = new MutationObserver(callback3);
+        observer3.observe(document.getElementById("tabcontainer"), config);
+
+        const observer4 = new MutationObserver(callback4);
+        observer4.observe(document.getElementById("tabcontainer2"), config);
+      }
     }
-  }
-  addObserverIfDesiredNodeAvailable();
+    addObserverIfDesiredNodeAvailable();
+  ')
+
+  ##syncronize the scroll position of the two scrollers##
+  shinyjs::runjs('
+
+    $("#GSP-SOM-som_table").on("mouseup",function() {
+      var x = document.querySelector("#GSP-SOM-som_table > div > div > div.dataTables_scrollBody");
+      var y = document.querySelector("#rowsc1");
+      y.scrollLeft = x.scrollLeft;
+    });
 
   ')
 
+  shinyjs::runjs('
 
+    $("#GSP-GERM-som_table").on("mouseup",function() {
+      var x = document.querySelector("#GSP-GERM-som_table > div > div > div.dataTables_scrollBody");
+      var y = document.querySelector("#rowsc2");
+      y.scrollLeft = x.scrollLeft;
+    });
 
-
-    shinyjs::runjs(
-      '
-      $("#GSP-SOM-som_table").on("mouseup",function() {
-
-    var x = document.querySelector("#GSP-SOM-som_table > div > div > div.dataTables_scrollBody");
-    var y = document.querySelector("#rowsc1");
-    y.scrollLeft = x.scrollLeft;
-      });
-      ')
-
-
-  shinyjs::onevent( event = "scroll", id = "rowsc2", {
-    shinyjs::runjs(
-      "
-    var x = document.querySelector('#GSP-GERM-germ_table > div > div > div.dataTables_scrollBody');
-    var y = document.querySelector('#rowsc2');
-    x.scrollLeft = y.scrollLeft;
-    ")
-  })
+  ')
 
   ### OVERVIEW SIDEBAR TOGGLE ###
   shinyjs::onclick( id = "toggleSidebar", {
-    shinyjs::runjs(
-      '
+    shinyjs::runjs('
+
       var x = document.querySelector("#nav_cont_2 > nav > div > div");
 
-
-
       if (x.style.width == "93px") {
-
-          x.style.width = "25%";
-          x.style.minWidth = "inherit";
-
-
+        x.style.width = "25%";
+        x.style.minWidth = "inherit";
       }
       else {
+        x.style.setProperty("min-width", "auto", "important");
+        x.style.width="93px";
+      }
 
-          x.style.setProperty("min-width", "auto", "important");
-          x.style.width="93px";
-      }'
-    )
+    ')
     shinyjs::toggle(
       id = "sidebar",
       anim = TRUE,
