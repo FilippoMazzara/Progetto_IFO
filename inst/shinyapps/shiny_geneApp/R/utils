@@ -726,3 +726,55 @@ ________________________________________________________________________________
       ')
 @media screen and (max-width: 540px) {.row_sc{max-width:95%}}
 @media screen and (max-width: 400px) {.row_sc{max-width:92.5%}}
+  ### OVERVIEW SIDEBAR TOGGLE ###
+  shinyjs::onclick( id = "toggleSidebar", {
+    shinyjs::runjs('
+
+      var x = document.querySelector("#nav_cont_2 > nav > div > div");
+      var y = document.querySelector("#GSP-SOM-som_table > div > div.dataTables_scroll > div.dataTables_scrollHead > div.dataTables_scrollHeadInner");
+      var z = document.querySelector("#GSP-SOM-som_table > div > div.dataTables_scroll");
+      var sc1 = document.querySelector("#rowsc1");
+      var sc11 = document.querySelector("#GSP-SOM-som_table > div > div > div.dataTables_scrollBody > table");
+      var sc2 = document.querySelector("#rowsc2");
+      var sc22 = document.querySelector("#GSP-GERM-germ_table > div > div > div.dataTables_scrollBody > table");
+      var y2 = document.querySelector("#GSP-GERM-germ_table > div > div.dataTables_scroll > div.dataTables_scrollHead > div.dataTables_scrollHeadInner");
+      var z2 = document.querySelector("#GSP-GERM-germ_table > div > div.dataTables_scroll");
+      if (x.style.width == "93px") {
+        x.style.width = "25%";
+        x.style.minWidth = "inherit";
+        if (z !== null){
+          z.style.maxWidth = "inherit";
+          sc1.style.maxWidth = sc11.offsetWidth  + "px";
+        }
+        if (z2 !== null){
+          z2.style.maxWidth = "inherit";
+          sc2.style.maxWidth = sc22.offsetWidth  + "px";
+        }
+      }
+      else {
+        x.style.setProperty("min-width", "auto", "important");
+        x.style.width="93px";
+        if(y !== null && y.offsetWidth < 1500){
+          z.style.maxWidth = y.offsetWidth + 25 + "px";
+          sc1.style.maxWidth = sc11.offsetWidth  + "px";
+        }
+        if(y2 !== null && y2.offsetWidth < 1500){
+          z2.style.maxWidth = y2.offsetWidth + 25 + "px";
+          sc2.style.maxWidth = sc22.offsetWidth  + "px";
+        }
+      }
+
+    ')
+        if(h1 !== null && h1.offsetWidth  < xx.offsetWidth - ((xx.offsetWidth/100)*25)){
+          alert(h1.offsetWidth)
+          alert(xx.offsetWidth - ((xx.offsetWidth/100)*25))
+          h1.style.width = "100%";
+          f1.style.width = "100%";
+        }
+        if(h1 !== null && h1.offsetWidth  >= xx.offsetWidth - ((xx.offsetWidth/100)*25)){
+          alert("2")
+          alert(h1.offsetWidth)
+          alert(xx.offsetWidth - ((xx.offsetWidth/100)*25))
+          h1.style.width = "max-width";
+          f1.style.width = "max-width";
+        }

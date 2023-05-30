@@ -32,7 +32,7 @@ gersomPanel_ui <- function(id){
             width = 3,
             # SIDEBAR SWITCH
             shiny::tags$div(
-              style = "display:flex;justify-content: center;",
+              style = "display:flex; justify-content: center;",
               shiny::actionButton(inputId = shiny::NS(id,"sidebar_somatic"), label = "SOMATIC", class = "btn btn-default action-button shiny-bound-input active" ),
               shiny::actionButton(inputId = shiny::NS(id,"sidebar_germ"), label = "GERMLINE")
             ),
@@ -59,6 +59,7 @@ gersomPanel_ui <- function(id){
 
             shiny::tabsetPanel(
               id = shiny::NS(id,"main_overview_files"),
+
               # ------ FIRST TAB - MAIN SOMATIC-------
               somTab_ui_table(shiny::NS(id,"SOM")),
 
@@ -92,19 +93,23 @@ gersomPanel_server <- function(id){ #oltre id puoi passare altri parametri
 
       #JS ON SOMATIC BUTTON PUSH
       shiny::observeEvent(input$sidebar_somatic, {
-        shinyjs::runjs(
-          'document.querySelector("#GSP-sidebar_somatic").className += " active";
-          document.querySelector("#GSP-sidebar_germ").className= "btn btn-default action-button shiny-bound-input";'
-        )
+        shinyjs::runjs('
+
+          document.querySelector("#GSP-sidebar_somatic").className += " active";
+          document.querySelector("#GSP-sidebar_germ").className= "btn btn-default action-button shiny-bound-input";
+
+        ')
         shiny::updateTabsetPanel(session, "main_overview_files", "pannello1")
       })
 
       #JS ON GERM BUTTON PUSH
       shiny::observeEvent(input$sidebar_germ, {
-        shinyjs::runjs(
-          'document.querySelector("#GSP-sidebar_germ").className += " active";
-          document.querySelector("#GSP-sidebar_somatic").className = "btn btn-default action-button shiny-bound-input";'
-        )
+        shinyjs::runjs('
+
+          document.querySelector("#GSP-sidebar_germ").className += " active";
+          document.querySelector("#GSP-sidebar_somatic").className = "btn btn-default action-button shiny-bound-input";
+
+        ')
         shiny::updateTabsetPanel(session, "main_overview_files", "pannello2")
       })
 
@@ -112,17 +117,21 @@ gersomPanel_server <- function(id){ #oltre id puoi passare altri parametri
       ### OVERVIEW PANEL SWITCH BUTTONS + TABS ###
       shiny::observeEvent(input$main_overview_files, {
         if(input$main_overview_files == "pannello1"){
-          shinyjs::runjs(
-            'document.querySelector("#GSP-sidebar_somatic").className += " active";
-            document.querySelector("#GSP-sidebar_germ").className= "btn btn-default action-button shiny-bound-input";'
-          )
+          shinyjs::runjs('
+
+            document.querySelector("#GSP-sidebar_somatic").className += " active";
+            document.querySelector("#GSP-sidebar_germ").className= "btn btn-default action-button shiny-bound-input";
+
+          ')
           shiny::updateTabsetPanel(session, "sidebar_tabset", "som_nav")
         }
         else if (input$main_overview_files == "pannello2"){
-          shinyjs::runjs(
-            'document.querySelector("#GSP-sidebar_germ").className += " active";
-            document.querySelector("#GSP-sidebar_somatic").className = "btn btn-default action-button shiny-bound-input";'
-          )
+          shinyjs::runjs('
+
+            document.querySelector("#GSP-sidebar_germ").className += " active";
+            document.querySelector("#GSP-sidebar_somatic").className = "btn btn-default action-button shiny-bound-input";
+
+          ')
           shiny::updateTabsetPanel(session, "sidebar_tabset", "germ_nav")
         }
       })

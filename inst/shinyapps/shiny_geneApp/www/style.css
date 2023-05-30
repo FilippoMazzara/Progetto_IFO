@@ -78,6 +78,7 @@ div.container-fluid > nav > div > div > button{
   }
 
 #mainpage > nav {
+  overflow-x: clip;
   flex:0;
   width: 100%;
   height: auto;
@@ -102,6 +103,7 @@ div.navbar-header > span.navbar-brand {
 #logo1{
   height: 5em;
 }
+
 
 #mainpage > nav > div.container-fluid > div.navbar-header{
   padding-left: 5%;
@@ -145,8 +147,13 @@ div.navbar-header > span.navbar-brand {
 }
 
 #topnavbar{
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
   vertical-align: middle;
   padding-top: 5px;
+  justify-content: center;
+  margin: 0;
 }
 
 /* Main */
@@ -212,6 +219,7 @@ div.navbar-header > span.navbar-brand {
   margin-left:4em !important;
   display:flex;
   justify-content:center;
+  overflow-x: clip;
 }
 
 #home_title{
@@ -277,6 +285,7 @@ div.navbar-header > span.navbar-brand {
 }
 
 .footer {
+  overflow-x: clip;
   margin-top: 10px;
   flex:0;
   z-index: 1000;
@@ -327,6 +336,7 @@ div.navbar-header > span.navbar-brand {
   margin-bottom: 0 !important;
   width: 100%;
   flex: 0;
+  overflow-x: clip;
 }
 
 #nav_cont_2 > nav > div {
@@ -373,6 +383,7 @@ div.navbar-header > span.navbar-brand {
 /* nota: trovare selettori migliori */
 
 #nav_cont_2 > div.container-fluid {
+  z-index: 0;
   margin-top: 5px !important;
   padding-right:0 !important;
   padding-left:0 !important;
@@ -380,6 +391,7 @@ div.navbar-header > span.navbar-brand {
   height: 100%;
   width:100%;
 }
+
 
 #nav_cont_2 > div.container-fluid > div.tab-content {
   height: 100%;
@@ -501,6 +513,9 @@ div.file_side>div.well>div>div{
 /* Datatable */
 /*changes in styiling to the datatables package, */
 /*I changed the default header's filters and the cells' styling */
+
+
+
 .dataTables_filter{
   margin-right: 15px;
 }
@@ -516,6 +531,7 @@ div.file_side>div.well>div>div{
 
 div.dataTables_scrollHeadInner{
   padding:0;
+  width:100% !important;
 }
 
 table.display.dataTable.no-footer {
@@ -524,7 +540,6 @@ table.display.dataTable.no-footer {
 
 div.dataTables_scroll {
   width:100%;
-  padding-right: 15px;
   padding-left: 10px;
 }
 
@@ -588,6 +603,7 @@ td[data-type = "number"] > div > input {
 }
 
 .even > td:hover{
+  white-space: normal;
   overflow: visible !important;
   word-wrap: break-word;
   text-align:center !important;
@@ -595,6 +611,7 @@ td[data-type = "number"] > div > input {
 }
 
 .even > td{
+  white-space: nowrap;
   text-align:center !important;
   overflow:hidden !important;
   text-overflow: ellipsis;
@@ -603,12 +620,14 @@ td[data-type = "number"] > div > input {
 
 }
 .odd > td:hover{
+  white-space: normal;
   overflow: visible !important;
   word-wrap: break-word;
   text-align:center !important;
 }
 
 .odd > td {
+  white-space: nowrap;
   text-align:center !important;
   overflow:hidden !important;
   text-overflow: ellipsis;
@@ -627,9 +646,12 @@ thead > tr > td {
 }
 
 .dataTables_scrollFootInner{
-  margin-left: 0;
-}
+  width: 100% !important;
 
+}
+.dataTables_scrollFootInner > table{
+  margin-left:auto !important;
+}
 .dataTables_scrollFoot{
   display: inline-flex;
   flex-direction: column;
@@ -646,6 +668,7 @@ thead > tr > td {
 }
 
 .dataTables_scrollHead{
+
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -721,6 +744,7 @@ div.row_b > div.dt-buttons{
 }
 
 #GSP-SOM-som_table > div{
+  padding-right: 10px;
   width: 100%;
   height: 100%;
 }
@@ -757,6 +781,7 @@ div.row_b > div.dt-buttons{
 }
 
 #GSP-GERM-germ_table > div{
+  padding-right: 10px;
   width: 100%;
   height: 100%;
 }
@@ -787,17 +812,35 @@ tfoot > tr {
 }
 
 #topnavbar2{
-  margin-left: 5px;
+  margin-left: 6px;
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-right: 0;
+  display:flex;
+  flex-wrap: wrap;
+  align-content: center;
 }
 
 #topnavbar2 > li{
   min-width: 92px;
   text-align: center;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center
 }
 
+#topnavbar2 > li.active{
+  background: #e7e7e7;
+}
+
+#topnavbar2 > li.open{
+  background: #e7e7e7;
+}
 /*DATATABLE ADDONS*/
 
 .row_e{
+  width: 100%;
   overflow-y: visible;
   max-height: 1px;
   position: relative;
@@ -816,7 +859,7 @@ tfoot > tr {
 }
 
 .row_sc_cont{
-  margin-right: 15px;
+  margin-right: 0;
   z-index: 100;
   position: sticky;
   margin-left: 10px;
@@ -833,6 +876,9 @@ tfoot > tr {
 .img_footer{
   padding-left: 30px;
 }
+
+
+
 /* SCREEN OPTIONS*/
 
 @media screen and (max-width: 1200px) {
@@ -845,12 +891,19 @@ tfoot > tr {
 
 /*MOBILE WIDTH*/
 @media screen and (max-width: 767px) {
+  .navbar-collapse{
+    border:0;
+    width: 100%;
+    overflow-x: hidden !important;
+  }
 
   #sidebar{
     padding-right: 5px;
     padding-left: 5px;
     max-width: 100vw !important;
     padding-bottom: 10px;
+    min-width: 100px;
+    overflow-x: hidden;
   }
 
   .dataTables_paginate{
@@ -883,7 +936,8 @@ tfoot > tr {
   }
 
   #nav_cont_2 > nav > div > div.navbar-header {
-    justify-content: normal
+    justify-content: flex-start;
+    min-width: 100px !important;
   }
 
   #nav_cont_2 > nav > div > div.navbar-header > button {
@@ -901,5 +955,16 @@ tfoot > tr {
   #nav_cont_2 > nav > div > div.navbar-header > span.navbar-brand {
     padding-left: 0 ;
   }
-}
+  .navbar-nav .open .dropdown-menu{
+    -webkit-box-shadow: 0 6px 12px rgb(0 0 0 / 18%);
+    box-shadow: 0 6px 12px rgb(0 0 0 / 18%);
+    float: left;
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0,0,0,.15);
+    margin: 2px 0 0;
+    width:inherit;
+  }
 
+}

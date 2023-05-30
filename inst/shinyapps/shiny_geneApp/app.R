@@ -67,7 +67,7 @@ ui <- shiny::fluidPage(
 
           windowTitle = "GERSOM",
           position = "static-top",
-          collapsible = TRUE,
+          #collapsible = TRUE,
           id = "topnavbar2",
 
 
@@ -163,11 +163,14 @@ server <- function(input, output, session){
   #poi se nota un cambiamento nella pagina, crea l'observer opportuno
   #a sua volta quell'observer ridimensionerà lo scroller se la tabella cambia di width
   shinyjs::runjs('
+
     function addObserverIfDesiredNodeAvailable() {
+
       if(document.getElementById("colcol") == null) {
         window.setTimeout(addObserverIfDesiredNodeAvailable,500);
         return;
       }
+
       else{
 
         const config = {childList: true, subtree: true };
@@ -177,13 +180,17 @@ server <- function(input, output, session){
         const callback1 = (mutationList, observer) => {
             var x1 = document.querySelector("#GSP-SOM-som_table > div > div > div.dataTables_scrollBody > table");
             var y1 = document.querySelector("#rowsc1 > div");
-            if(y1 !== null){y1.style.width = x1.offsetWidth + "px";}
+            if(y1 !== null){
+              y1.style.width = x1.offsetWidth - 1 + "px";
+            }
         };
 
         const callback2 = (mutationList, observer) => {
             var x2 = document.querySelector("#GSP-GERM-germ_table > div > div > div.dataTables_scrollBody > table");
             var y2 = document.querySelector("#rowsc2 > div");
-            if(y2 !== null){y2.style.width = x2.offsetWidth + "px";}
+            if(y2 !== null){
+              y2.style.width = x2.offsetWidth - 1 + "px";
+            }
         };
 
         const callback3 = (mutationList, observer) => {
@@ -213,9 +220,11 @@ server <- function(input, output, session){
 
         const observer4 = new MutationObserver(callback4);
         observer4.observe(document.getElementById("tabcontainer2"), config);
+
       }
     }
     addObserverIfDesiredNodeAvailable();
+
   ')
 
   ##syncronize the scroll position of the two scrollers##
@@ -238,23 +247,51 @@ server <- function(input, output, session){
     });
 
   ')
-
+##SISTEMA QUESTO CODICE E COPIALO IN GERM E ASSICURATI CHE FUNZIONI
   ### OVERVIEW SIDEBAR TOGGLE ###
   shinyjs::onclick( id = "toggleSidebar", {
     shinyjs::runjs('
 
       var x = document.querySelector("#nav_cont_2 > nav > div > div");
-
+      var h1 = document.querySelector("#GSP-SOM-som_table > div > div.dataTables_scroll > div.dataTables_scrollHead > div.dataTables_scrollHeadInner > table");
+      var b1 = document.querySelector("#GSP-SOM-som_table > div > div.dataTables_scroll > div.dataTables_scrollBody");
+      var b2 = document.querySelector("#GSP-GERM-germ_table > div > div.dataTables_scroll > div.dataTables_scrollBody");
+      var h2 = document.querySelector("#GSP-GERM-germ_table > div > div.dataTables_scroll > div.dataTables_scrollHead > div.dataTables_scrollHeadInner > table");
       if (x.style.width == "93px") {
         x.style.width = "25%";
         x.style.minWidth = "inherit";
+
+        if(h1 !== null){
+          b1.style.maxWidth = "inherit";
+        }
+
+        if(h2 !== null){
+          b2.style.maxWidth = "inherit";
+        }
+
       }
       else {
-        x.style.setProperty("min-width", "auto", "important");
-        x.style.width="93px";
-      }
 
+        x.style.setProperty("min-width", "auto", "important");
+        x.style.width = "93px";
+
+        if (h1 !== null && h1.offsetWidth > 0){
+          b1.style.maxWidth = h1.offsetWidth + "px";
+        }
+        if (h1 !== null && h1.offsetWidth == 0){
+          b1.style.maxWidth = "fit-content";
+        }
+
+        if (h2 !== null && h2.offsetWidth > 0){
+          b2.style.maxWidth = h2.offsetWidth + "px";
+        }
+        if (h2 !== null && h2.offsetWidth == 0){
+          b2.style.maxWidth = "fit-content";
+        }
+
+      }
     ')
+
     shinyjs::toggle(
       id = "sidebar",
       anim = TRUE,
