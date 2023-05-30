@@ -1,3 +1,9 @@
+#' Somatic page sidebar ui module
+#' @description
+#' the function for creating the sidebar elements in the somatic visualization page
+#' @param id the id assigned to the module
+#' @return the instance of the sidebar
+#' @examples somTab_ui_sidebar("SOM")
 somTab_ui_sidebar <- function(id){
   ns <- shiny::NS(id)
   shiny::tabPanel(
@@ -67,6 +73,14 @@ somTab_ui_sidebar <- function(id){
     ), # CONTAINER END (FILE1)
   )
 }
+#' Somatic page table ui module
+#' @description
+#' the function for creating the main and table elements in the somatic visualization page
+#' @param id
+#' the id assigned to the element
+#' @return
+#' the instance of the msin somatic page
+#' @examples somTab_ui_table("SOM")
 somTab_ui_table <- function(id){
   ns <- shiny::NS(id)
   shiny::tabPanel(
@@ -89,6 +103,12 @@ somTab_ui_table <- function(id){
   )
 }
 
+#' Somatic page server module
+#' @description
+#' The module containing the server-side of the somatic page
+#' @param id the id assigned to the module
+#' @return the server instance
+#' @examples somTab_server("SOM")
 somTab_server <- function(id){
   shiny::moduleServer(
     id,

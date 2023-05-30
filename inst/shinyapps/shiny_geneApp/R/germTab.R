@@ -1,3 +1,9 @@
+#' Germ page sidebar ui module
+#' @description
+#' the function for creating the sidebar elements in the germ visualization page
+#' @param id the id assigned to the module
+#' @return the instance of the sidebar
+#' @examples germTab_ui_sidebar("GERM")
 germTab_ui_sidebar <- function(id){
   ns <- shiny::NS(id)
   shiny::tabPanel(
@@ -64,6 +70,14 @@ germTab_ui_sidebar <- function(id){
   )
 }
 
+#' Germ page table ui module
+#' @description
+#' the function for creating the main and table elements in the germ visualization page
+#' @param id
+#' the id assigned to the element
+#' @return
+#' the instance of the main germ page
+#' @examples germTab_ui_table("GERM")
 germTab_ui_table <- function(id){
   ns <- shiny::NS(id)
   shiny::tabPanel(
@@ -86,6 +100,12 @@ germTab_ui_table <- function(id){
   )
 }
 
+#' Germ page server module
+#' @description
+#' The module containing the server-side of the germ page
+#' @param id the id assigned to the module
+#' @return the server instance
+#' @examples germTab_server("GERM")
 germTab_server <- function(id){
   shiny::moduleServer(
     id,
@@ -380,7 +400,7 @@ germTab_server <- function(id){
 
         chk2 <- input$checkbox2
         if (!identical(union(names(proc_data2()),input$checkbox2), names(proc_data2()))){ chk2 <- c()}
-        if (length(ds2()) != length(chk2)){
+        if (length(ds2()) != length(chk2) || (length(ds2()) == length(chk2) && ds2()[[1]] != chk2[[1]])){
           d <- c()
           for (n in chk2){
             d <- append(d, (which(names(proc_data2()) == n))-1)
