@@ -148,6 +148,7 @@ make_ui <- function(x, var, id, n) {
 }
 
 #' make UI of germ file
+#' DEPRECATED
 #' @description
 #' this function creates the inputs for the supplied vectors
 #' @param x the vector

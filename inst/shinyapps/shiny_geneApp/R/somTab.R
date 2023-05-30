@@ -79,7 +79,7 @@ somTab_ui_sidebar <- function(id){
 #' @param id
 #' the id assigned to the element
 #' @return
-#' the instance of the msin somatic page
+#' the instance of the main somatic page
 #' @examples somTab_ui_table("SOM")
 somTab_ui_table <- function(id){
   ns <- shiny::NS(id)
