@@ -379,12 +379,12 @@ somTab_server <- function(id){
 
       ### SOMATIC TABLE CHECKBOX PROXY ###
       shiny::observe({
-        shiny::req(rec_val$df)
+        #shiny::req(rec_val$df)
         shiny::req(input$checkbox1)
 
         chk1 <- input$checkbox1
         if (!identical(union(names(proc_data1()),input$checkbox1), names(proc_data1()))){ chk1 <- c()}
-        if (length(ds()) != length(chk1)){
+        if (length(ds()) != length(chk1) || (length(ds()) == length(chk1) && ds()[[1]] != chk1[[1]])){
           d <- c()
           for (n in chk1){
             d <- append(d, (which(names(proc_data1()) == n))-1)

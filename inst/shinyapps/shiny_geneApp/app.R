@@ -264,7 +264,6 @@ server <- function(input, output, session){
         if(h1 !== null){
           b1.style.maxWidth = "inherit";
         }
-
         if(h2 !== null){
           b2.style.maxWidth = "inherit";
         }
@@ -281,7 +280,6 @@ server <- function(input, output, session){
         if (h1 !== null && h1.offsetWidth == 0){
           b1.style.maxWidth = "fit-content";
         }
-
         if (h2 !== null && h2.offsetWidth > 0){
           b2.style.maxWidth = h2.offsetWidth + "px";
         }
