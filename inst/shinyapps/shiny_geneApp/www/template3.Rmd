@@ -1,0 +1,41 @@
+---
+title: "Gene Report"
+output: 
+  pdf_document:
+    df_print: tibble
+class: report
+classoption: landscape
+header-includes:   \usepackage{booktabs} \usepackage{longtable} \usepackage{array} \usepackage{multirow} \usepackage{wrapfig} \usepackage{float} \usepackage{colortbl} \usepackage{pdflscape} \usepackage{tabu} \usepackage{threeparttable} \usepackage{threeparttablex} \usepackage[normalem]{ulem} \usepackage{makecell} \usepackage{xcolor} 
+params:
+  name1 : NA
+  table1: NA
+  graphd : NA
+---
+# ``r params$name1``
+```{r, message = FALSE, results='asis', echo=FALSE,warning=FALSE}
+library("maftools")
+maftools::plotmafSummary(params$graphd)
+
+```
+
+
+```{r, message = FALSE, results='asis', echo=FALSE, warning=FALSE}
+library("knitr")
+library("kableExtra")
+
+nr <- nrow(params$table1)
+stepn <- 0
+r <- nr - stepn %% 35 
+  v <- seq(from = 0, to = nr, by = 35)
+  ldf <- split(params$table1,cumsum(1:nr %in% (v+1)))
+  
+  for (i in 1:length(ldf)){
+    print(knitr::kable(ldf[[i]],format="latex",digits = 2,row.names = F, booktabs = T) %>%
+  kableExtra::kable_styling(latex_options=c("hold_position")))
+  }
+
+
+
+
+
+```

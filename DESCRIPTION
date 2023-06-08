@@ -12,7 +12,9 @@ Imports:
     data.table,
     dplyr,
     DT,
+    kableExtra,
     kit,
+    knitr,
     maftools,
     magrittr,
     profvis,
@@ -22,4 +24,5 @@ Imports:
     shinyFiles,
     shinyjs,
     shinyWidgets,
-    stringr
+    stringr,
+    writexl

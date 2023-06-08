@@ -65,6 +65,12 @@ gersomPanel_ui <- function(id){
 
               # ------ FIRST TAB - MAIN GERM-------
               germTab_ui_table(shiny::NS(id,"GERM")),
+
+              # ------ FIRST TAB - MAIN VISUAL-------
+              shiny::tabPanel(
+                id = "gersom_visual_panel",
+                title = "pannello3",
+                value = "pannello3")
             )
           )
         )

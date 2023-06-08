@@ -87,8 +87,12 @@ ui <- shiny::fluidPage(
 
           # second and third set of nav tabs
           #PER ORA NON FANNO NULLA
-          shiny::navbarMenu(title = "tab1", menuName = "tab1", "panel 1.1", shiny::tabPanel("1.1"), "panel 1.2", shiny::tabPanel("1.2")),
-          shiny::navbarMenu(title = "tab2", menuName = "tab2", shiny::tabPanel("2.1"), shiny::tabPanel("2.2")),
+          shiny::tabPanel(
+            title = "MULTI",
+            id = "multi_tab",
+            value =  "multi_tab")
+          #shiny::navbarMenu(title = "tab1", menuName = "tab1", "panel 1.1", shiny::tabPanel("1.1"), "panel 1.2", shiny::tabPanel("1.2")),
+          #shiny::navbarMenu(title = "tab2", menuName = "tab2", shiny::tabPanel("2.1"), shiny::tabPanel("2.2")),
 
         )
       ) #END FLUID ROW AND NAV PAGE AND CONTAINER
@@ -122,7 +126,7 @@ server <- function(input, output, session){
   #data.table::setDTthreads(4)
 
   # INCREASE HTTP REQUEST SIZE TO 30mb
-  options(shiny.maxRequestSize = 30 * 1024^2)
+  options(shiny.maxRequestSize = 120 * 1024^2)
 
   # ------ HOME SERVER MODULE -------
   homePanel_server("homepage")
@@ -180,7 +184,7 @@ server <- function(input, output, session){
         const callback1 = (mutationList, observer) => {
             var x1 = document.querySelector("#GSP-SOM-som_table > div > div > div.dataTables_scrollBody > table");
             var y1 = document.querySelector("#rowsc1 > div");
-            if(y1 !== null){
+            if(y1 !== null && x1 !== null){
               y1.style.width = x1.offsetWidth - 1 + "px";
             }
         };
@@ -188,7 +192,7 @@ server <- function(input, output, session){
         const callback2 = (mutationList, observer) => {
             var x2 = document.querySelector("#GSP-GERM-germ_table > div > div > div.dataTables_scrollBody > table");
             var y2 = document.querySelector("#rowsc2 > div");
-            if(y2 !== null){
+            if(y2 !== null && x2 !== null){
               y2.style.width = x2.offsetWidth - 1 + "px";
             }
         };
@@ -197,9 +201,10 @@ server <- function(input, output, session){
           if (document.querySelector("#GSP-SOM-som_table > div > div > div.dataTables_scrollBody > table") !== null && x == 0) {
             const observer1 = new MutationObserver(callback1);
             x = 1;
-            observer1.observe(document.querySelector("#GSP-SOM-som_table > div > div > div.dataTables_scrollBody > table"), config);
+            observer1.observe(document.getElementById("tabcontainer"), config);
           }
           if (x == 1){
+
             observer.disconnect();
           }
         };
@@ -208,7 +213,7 @@ server <- function(input, output, session){
           if (document.querySelector("#GSP-GERM-germ_table > div > div > div.dataTables_scrollBody > table") !== null && y == 0) {
             y = 1;
             const observer2 = new MutationObserver(callback2);
-            observer2.observe(document.querySelector("#GSP-GERM-germ_table > div > div > div.dataTables_scrollBody > table"), config);
+            observer2.observe(document.getElementById("tabcontainer2"), config);
           }
           if (y == 1){
             observer.disconnect();
@@ -257,10 +262,13 @@ server <- function(input, output, session){
       var b1 = document.querySelector("#GSP-SOM-som_table > div > div.dataTables_scroll > div.dataTables_scrollBody");
       var b2 = document.querySelector("#GSP-GERM-germ_table > div > div.dataTables_scroll > div.dataTables_scrollBody");
       var h2 = document.querySelector("#GSP-GERM-germ_table > div > div.dataTables_scroll > div.dataTables_scrollHead > div.dataTables_scrollHeadInner > table");
+      plot1 = document.querySelector("#GSP-SOM-som_plot2 > img ");
       if (x.style.width == "93px") {
         x.style.width = "25%";
         x.style.minWidth = "inherit";
-
+        if(plot1 !== null){
+          plot1.style.width = "auto";
+        }
         if(h1 !== null){
           b1.style.maxWidth = "inherit";
         }
@@ -273,7 +281,9 @@ server <- function(input, output, session){
 
         x.style.setProperty("min-width", "auto", "important");
         x.style.width = "93px";
-
+        if (plot1 != null){
+            plot1.style.width = "100%"
+        }
         if (h1 !== null && h1.offsetWidth > 0){
           b1.style.maxWidth = h1.offsetWidth + "px";
         }
@@ -297,6 +307,11 @@ server <- function(input, output, session){
       time = 0.1
     )
   })
+
+  shinyjs::onclick("GSP-SOM-reset_filter1",{
+    shinyjs::reset("well_filter_container1")
+  })
+
 
   # ------ ABOUT SERVER MODULE -------
   about_server("about")

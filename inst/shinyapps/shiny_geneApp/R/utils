@@ -777,4 +777,152 @@ ________________________________________________________________________________
           alert(xx.offsetWidth - ((xx.offsetWidth/100)*25))
           h1.style.width = "max-width";
           f1.style.width = "max-width";
+_        }
+___________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+
+      #PROCESS FILE 1
+      shiny::observeEvent(data1(),{
+        #initialize filter list
+        filter_vars1$l <- list()
+        #destroy old reactive observers
+        if (length(obs1()) > 0){
+          for (o in obs1()){
+            if (!is.null(o)){
+              o$destroy()
+              rm(o)
+            }
+          }
+          #reset observers
+          obs1(list())
         }
+        #pre process data
+        d <- data1()
+        #select = c("Actionable.O","Actionable.M","Actionable.C","Moderate.risk","azionabile","depth","High.risk","actionable","Amino_acids","Protein_position","cancervar_tier","tiering","POS","pos","SYMBOL","Symbol","symbol","hugo_symbol" ,"Hugo_Symbol","HUGO_SYMBOL","Gene.refGene","Gene","gene","CHROM", "Chromosome","Chr","chrom","chromosome","Ref","REF","Tumor_Seq_Allele1","Alt","ALT","Tumor_Seq_Allele2","alt","vaf","VAF","Vaf","Consequence","Variant_Classification","Func.refGene","consequence","VARIANT_CLASS","Variant_Type","ExonicFunc.refGene","variant_class","CLIN_SIG","clinvar","Clinvar","Start_Position","start","Start","End_Position","end","End","Existing_variation","AAChange.refGene","Variation","Var","variation","HGVSp_Short","HGVSp","hgvsp","Exon_Number","EXON","exon","Exon")
+        col_yes_y <- list()
+        col_yes <- list()
+        col_no <- list()
+        d2 <- NULL
+        for (n in names(d)){
+          #if table is a numerical range with NA values convert the column to char
+          #find another way to implement it
+          #here can be implemented other pre processing parameters
+          y <- check_names(n)
+          if (is.null(y)){col_no <- append(col_no,n)}
+          else {
+            if(y %in% col_yes){col_no <- append(col_no,n)}
+            else{col_yes <- append(col_yes,y)
+            col_yes_y <- append(col_yes_y,n)
+            }
+          }
+          #if (anyNA(d[[n]]) && is.numeric(d[[n]])){
+          #here converts "" to "NA"
+          #x1 <- lapply(d[[n]], function(y) {ifelse(is.na(y), "NA", y)})
+          #d[[n]] <- as.character(x1)
+          #}
+          #here can be implemented other pre processing parameters
+        }
+        pos <- c("Gene","Hugo_Symbol","Chromosome","VAF","Variant_Classification","Variant_Type","VARIANT_CLASS","Clinvar","Depth","Reference_Allele","Tumor_Seq_Allele2","Start_Position","End_Position","Variation","HGVSp","Exon","Tumor_Sample_Barcode")
+        pos_ok <- c("Gene","Symbol","Chromosome","VAF","Consequence","Variant Type","Variant Class","Clinvar","Depth","Alt","Ref","Start","End","Variation","HGVSp","Exon","Tumor_Sample_Barcode")
+        for (n in pos){
+          l <- which(col_yes == n)
+
+          if(length(l)> 0){
+
+            cl <- col_yes_y[[l]]
+            if(is.null(d2)){d2 <- data.frame(nome = d[[cl]])
+            data.table::setnames(d2,n)
+            }
+            else{
+              d2[[n]] <- d[[cl]]}
+          }
+        }
+        for(n in col_no){
+          if(is.null(d2)){d2 <- data.frame(nome = d[[n]])
+          data.table::setnames(d2,n)
+          }
+          else{
+            d2[[n]] <- d[[n]]}
+        }
+        pos2 <- c("Chromosome","VAF","Variant_Classification","Variant_Type","VARIANT_CLASS","Clinvar","Depth","Start_Position","End_Position")
+        pos3 <- c("Hugo_Symbol","Chromosome","Variant_Classification","Variant_Type","VARIANT_CLASS","Reference_Allele","Tumor_Seq_Allele2","Start_Position","End_Position","Tumor_Sample_Barcode")
+        c <- intersect(pos2,col_yes)
+        c2 <- setdiff(pos,col_yes)
+        form <- c("VAF","Start_Position","End_Position","Depth")
+        c3 <- intersect(form,col_yes)
+
+        nomi_format(unlist(c3))
+
+        nomi1_f(c)
+        if ("Tumor_Sample_Barcode" %in% c2){
+
+          c2 <- c2[!c2 =="Tumor_Sample_Barcode"]
+          #col_yes <- append(col_yes,"Tumor_Sample_Barcode")
+          d2$Tumor_Sample_Barcode <- substring(titolo11(),1,18)
+        }
+        nomi1(col_yes)
+        if (length(c2) > 0){
+          nomi_w(paste("Le colonne mancanti sono:",paste(c2,collapse = ", "), sep=" "))
+        } else {nomi_w("Non ci sono colonne mancanti") }
+
+        if (length(intersect(pos3,c2))==0){
+          #print(names(d2))
+          maf_data1(maftools::read.maf(d2))
+        }
+        else{maf_data1(NULL)}
+        proc_data1(d2)
+      })
+      -________________________________________________________________
+      _______________________________________________________________________
+      ________________________________________________
+      library("knitr")
+library("kableExtra")
+
+knitr::kable(params$table1,format="latex",digits = 2,row.names = FALSE, booktabs = T,longtable=T) %>%
+  kableExtra::kable_styling(latex_options=c("hold_position","scale_down","repeat_header")
+                            )
+
+library("knitr")
+library("kableExtra")
+
+knitr::kable(params$table1,format="latex",label = params$name1,digits = 2,row.names = FALSE, booktabs = T,longtable=T) %>%
+  kableExtra::landscape() %>%
+  kableExtra::kable_styling(latex_options=c("hold_position","repeat_header"),font_size = 7 )
+
+  library("knitr")
+library("kableExtra")
+
+knitr::kable(params$table1,format="latex",digits = 2,row.names = FALSE, booktabs = T) %>%
+  kableExtra::kable_styling(latex_options=c("scale_down","hold_position","repeat_header") )
+
+s<-1
+if(n>0){
+  for(i in 1 : n){
+
+  knitr::kable(params$table1[s:s+45,],format="latex",digits = 2,row.names = F,label = "tab1", booktabs = T) %>%
+  kableExtra::kable_styling(latex_options=c("scale_down","hold_position","repeat_header") )
+s <- s + 46
+  }
+
+
+
+
+
+
+   return "Splice_Site" if( $effect =~ /^(splice_acceptor_variant|splice_donor_variant|transcript_ablation)$/ );
+  return "Nonsense_Mutation" if( $effect eq 'stop_gained' );
+  return "Frame_Shift_Del" if ( $effect eq 'frameshift_variant' and $var_type eq 'DEL' );
+  return "Frame_Shift_Ins" if( $effect eq 'frameshift_variant' and $var_type eq 'INS' );
+  return "Nonstop_Mutation" if( $effect eq 'stop_lost' );
+  return "Translation_Start_Site" if( $effect =~ /^(initiator_codon_variant|start_lost)$/ );
+  return "In_Frame_Ins" if( $effect eq 'inframe_insertion' );
+  return "In_Frame_Del" if( $effect eq 'inframe_deletion' );
+  return "Missense_Mutation" if( $effect =~ /^(missense_variant|coding_sequence_variant|conservative_missense_variant|rare_amino_acid_variant)$/ );
+  return "Intron" if ( $effect =~ /^(transcript_amplification|splice_region_variant|intron_variant|INTRAGENIC|intragenic_variant)$/ );
+  return "Silent" if( $effect =~ /^(incomplete_terminal_codon_variant|synonymous_variant|stop_retained_variant|NMD_transcript_variant)$/ );
+  return "RNA" if( $effect =~ /^(mature_miRNA_variant|non_coding_exon_variant|non_coding_transcript_exon_variant|non_coding_transcript_variant|nc_transcript_variant)$/ );
+  return "5'UTR" if( $effect =~ /^(5_prime_UTR_variant|5_prime_UTR_premature_start_codon_gain_variant)$/ );
+  return "3'UTR" if( $effect eq '3_prime_UTR_variant' );
+  return "IGR" if( $effect =~ /^(TF_binding_site_variant|regulatory_region_variant|regulatory_region|intergenic_variant|intergenic_region)$/ );
+  return "5'Flank" if( $effect eq 'upstream_gene_variant' );
+  return "3'Flank" if ( $effect eq 'downstream_gene_variant' );

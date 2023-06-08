@@ -1,0 +1,44 @@
+---
+title: "Gene Report"
+output: 
+  pdf_document:
+    df_print: tibble
+class: report
+classoption: landscape
+header-includes:   \usepackage{booktabs} \usepackage{longtable} \usepackage{array} \usepackage{multirow} \usepackage{wrapfig} \usepackage{float} \usepackage{colortbl} \usepackage{pdflscape} \usepackage{tabu} \usepackage{threeparttable} \usepackage{threeparttablex} \usepackage[normalem]{ulem} \usepackage{makecell} \usepackage{xcolor} 
+params:
+  name1 : NA
+  table1: NA
+---
+# ``r params$name1``
+
+```{r, message = FALSE, results='asis', echo=FALSE, warning=FALSE}
+library("knitr")
+library("kableExtra")
+nr <- nrow(params$table1)
+stepn <- 40
+r <- nr - stepn %% 55
+v <- c()
+if( nr > stepn ){
+  v <- seq(from = stepn, to = nr, by = 55)
+  #if (r > 0){v <- append(v,nr)}
+  ldf <- split(params$table1,cumsum(1:nr %in% (v+1)))
+  
+  for (i in 1:length(ldf)){
+   print(kableExtra::kbl(ldf[[i]],format="latex",digits = 2,row.names = F, booktabs = T) %>%
+  kableExtra::kable_styling(latex_options=c("scale_down","hold_position")))
+    #if(i > 1){cat("\n")}
+  }
+
+}
+if ( nr <= stepn ){
+    kableExtra::kbl(params$table1,format="latex",digits = 2,row.names = F, booktabs = T) %>%
+  kableExtra::kable_styling(latex_options=c("scale_down","hold_position") )
+}
+
+
+
+
+
+
+```

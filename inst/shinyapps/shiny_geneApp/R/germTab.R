@@ -213,7 +213,7 @@ germTab_server <- function(id){
           #}
           #here can be implemented other pre processing parameters
         }
-        pos <- c("Gene","Chromosome","VAF","Consequence","Variant_Type","Clinvar","Depth","Ref","Alt","Start","End","Variation","HGVSp","Exon")
+        pos <- c("Gene","Hugo_Symbol","Chromosome","VAF","Variant_Classification","Variant_Type","VARIANT_CLASS","Clinvar","Depth","Reference_Allele","Tumor_Seq_Allele2","Start_Position","End_Position","Variation","HGVSp","Exon","Tumor_Sample_Barcode")
         for (n in pos){
           l <- which(col_yes == n)
 
@@ -234,10 +234,11 @@ germTab_server <- function(id){
           else{
             d2[[n]] <- d[[n]]}
         }
-        pos2 <- c("Chromosome","VAF","Consequence","Variant_Type","Clinvar","Depth","Start","End")
+        pos2 <- c("Chromosome","VAF","Variant_Classification","Variant_Type","VARIANT_CLASS","Clinvar","Depth","Start_Position","End_Position")
+        pos3 <- c("Hugo_Symbol","Chromosome","Variant_Classification","Variant_Type","VARIANT_CLASS","Reference_Allele","Tumor_Seq_Allele2","Start_Position","End_Position","Tumor_Sample_Barcode")
         c <- intersect(pos2,col_yes)
         c2 <- setdiff(pos,col_yes)
-        form <- c("VAF","Start","End","Depth")
+        form <- c("VAF","Start_Position","End_Position","Depth")
         c3 <- intersect(form,col_yes)
 
         nomi2_format(unlist(c3))
@@ -399,15 +400,22 @@ germTab_server <- function(id){
         shiny::req(input$checkbox2)
 
         chk2 <- input$checkbox2
-        if (!identical(union(names(proc_data2()),input$checkbox2), names(proc_data2()))){ chk2 <- c()}
-        if (length(ds2()) != length(chk2) || (length(ds2()) == length(chk2) && ds2()[[1]] != chk2[[1]])){
+        if (!is.null(chk2)){
+        if (!identical(union(names(proc_data2()),input$checkbox2), names(proc_data2()))){ chk2 <- names(proc_data2())}
+        if (length(ds2()) != length(chk2) || (length(ds2()) == length(chk2) && length(ds2()) > 1 && ds2()[[1]] != chk2[[1]])){
           d <- c()
           for (n in chk2){
             d <- append(d, (which(names(proc_data2()) == n))-1)
           }
           ds2(d)
         }
-        proxy2 %>% DT::showCols(ds2(),reset = T)
+        if(!is.null(ds2())){
+          proxy2 %>% DT::showCols(ds2(),reset = T)
+        }
+        else {
+          proxy2 %>% DT::showCols(names(proc_data2()),reset = T)
+        }
+        }
       })
       # END GERM SERVER
     })

@@ -13,7 +13,7 @@ The running application
 This is the launcher function to the geneApp package
 }
 \examples{
-run_geneApp()
+run_geneApp
 The only way to first start the app
 
 }

@@ -616,7 +616,7 @@ td[data-type = "number"] > div > input {
   overflow:hidden !important;
   text-overflow: ellipsis;
   max-width: 250px !important;
-  min-width: 50px !important;
+  min-width: 100px !important;
 
 }
 .odd > td:hover{
@@ -632,22 +632,21 @@ td[data-type = "number"] > div > input {
   overflow:hidden !important;
   text-overflow: ellipsis;
   max-width: 250px !important;
-  min-width: 50px !important;
+  min-width: 100px !important;
 }
 
 th {
   text-align:center !important;
   max-width: 250px !important;
-  min-width: 50px !important;
+  min-width: 100px !important;
 }
 thead > tr > td {
   max-width: 250px !important;
-  min-width: 50px !important;
+  min-width: 100px !important;
 }
 
 .dataTables_scrollFootInner{
   width: 100% !important;
-
 }
 .dataTables_scrollFootInner > table{
   margin-left:auto !important;
@@ -854,7 +853,7 @@ tfoot > tr {
 }
 
 .row_sc_i{
-  width: 1710px;
+  width: auto;
   height: 1px;
 }
 
@@ -877,6 +876,123 @@ tfoot > tr {
   padding-left: 30px;
 }
 
+/*SIDEBAR EXPORT*/
+#GSP-SOM-export_button1_mock {
+  height: fit-content;
+  margin-top: 5px;
+}
+
+#export_cont1{
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+#export_cont1 > div{
+  margin-bottom: 0;
+  min-width: 75px;
+  margin-right: 5px;
+}
+
+#filter1_controls_cont{
+  display: flex;
+  justify-content: center;
+}
+#GSP-GERM-export_button2_mock {
+  height: fit-content;
+  margin-top: 5px;
+}
+
+#export_cont2{
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+#export_cont2 > div{
+  margin-bottom: 0;
+  min-width: 75px;
+  margin-right: 5px;
+}
+
+#filter2_controls_cont{
+  display: flex;
+  justify-content: center;
+}
+
+.form-group .bootstrap-select{
+  padding-right:0 !important;
+}
+
+#maf_export_cont1{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 5px;
+}
+
+#maf_export_cont1 > button {
+  margin: 5px;
+}
+
+#GSP-SOM-pdf_export1{
+  display: flex;
+  justify-content: center;
+}
+
+#pdf_export_cont1{
+  width: 80%;
+  max-width: 220px;
+}
+
+#every_export_cont1{
+  display: flex;
+  margin-top: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+#maf_export_cont2{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 5px;
+}
+
+#maf_export_cont2 > button {
+  margin: 5px;
+}
+
+#GSP-GERM-pdf_export2{
+  display: flex;
+  justify-content: center;
+}
+
+#pdf_export_cont2{
+  width: 80%;
+  max-width: 220px;
+}
+
+#every_export_cont2{
+  display: flex;
+  margin-top: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.dataTables_info{
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+/*
+.dataTables_scrollHeadInner > table > thead {
+  white-space: nowrap;
+}
+.dataTables_scrollFootInner > table > tfoot {
+  white-space: nowrap;
+}*/
 
 
 /* SCREEN OPTIONS*/
@@ -891,6 +1007,14 @@ tfoot > tr {
 
 /*MOBILE WIDTH*/
 @media screen and (max-width: 767px) {
+  .tooltip {
+    left: 65vw !important;
+    transform: rotate(180deg);
+  }
+  .tooltip-inner {
+    transform: rotate(180deg);
+  }
+
   .navbar-collapse{
     border:0;
     width: 100%;
