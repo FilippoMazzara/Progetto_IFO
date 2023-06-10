@@ -499,9 +499,10 @@ somTab_server <- function(id){
             class = "collapse in",
             #purrr::map(names(proc_data1()), ~ make_ui(proc_data1()[[.x]], .x , id))
 
-            purrr::map(nomi1_f(), ~ make_ui(proc_data1()[[.x]], .x , id, "")),
+            purrr::map(nomi1_f(), ~ make_ui(proc_data1()[[.x]], .x , id, "","GSP-")),
             shiny::tags$div(
               id = "filter1_controls_cont",
+              class = "filter_controls_cont",
               shiny::actionButton(inputId = "GSP-SOM-reset_filter1", label = "Reset Filters")
             )
 
@@ -521,6 +522,7 @@ somTab_server <- function(id){
         if (input$export1_types == "pdf"){
           shiny::tags$div(
             id = "pdf_export_cont1",
+            class = "pdf_export_cont",
             shinyWidgets::pickerInput(
               paste("GSP-",shiny::NS(id,"pdf_export_options1"),sep=""),
               "",
@@ -542,6 +544,7 @@ somTab_server <- function(id){
         if (input$export1_types %in% c("tsv","csv","xlsx")){
           shiny::tags$div(
             id = "every_export_cont1",
+            class = "every_export_cont",
             shinyWidgets::materialSwitch(
               inputId = "GSP-SOM-every_export_switch1",
               label = "only selected cols",
@@ -557,6 +560,7 @@ somTab_server <- function(id){
         if (input$export1_types == "maf"){
           shiny::tags$div(
             id = "maf_export_cont1",
+            class = "maf_export_cont",
             shiny::actionButton(inputId = "GSP-SOM-export_genesum1_mock",label = "Gene summary", icon = shiny::icon("download")),
             shiny::downloadButton(outputId = "GSP-SOM-export_genesum1",style = "display:none;"),
             shiny::actionButton(inputId = "GSP-SOM-export_samplesum1_mock",label = "Sample summary", icon = shiny::icon("download")),
@@ -698,7 +702,7 @@ somTab_server <- function(id){
         if(ok){
           if (is.null(d)){error_txt("ERRORE")}
           else{
-            pre_genesummary_data(d)
+            pre_samplesum_data(d)
             shinyjs::click("export_samplesum1")
           }
         }
@@ -712,6 +716,7 @@ somTab_server <- function(id){
           paste(substring(titolo11(),1,20),"_", Sys.Date(),"_SampleSummary_",input$export1_modes,".txt", sep="")
         },
         content = function(file) {
+          print(pre_samplesum_data())
           try(
             write_sample_summary(pre_samplesum_data(),file)
             ,silent = T
@@ -733,7 +738,7 @@ somTab_server <- function(id){
         else{
           if (input$export1_modes == "All"){
             t <- try(
-              maftools::read.maf(maf_data1())@summary
+              maftools::read.maf(maf_data1())
               ,silent = T
             )
             if (inherits(t, "try-error")){
@@ -746,7 +751,7 @@ somTab_server <- function(id){
           }
           else if (input$export1_modes == "page"){
             t <- try(
-              maftools::read.maf((maf_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE)))[input$som_table_rows_current,])@summary
+              maftools::read.maf((maf_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE)))[input$som_table_rows_current,])
               ,silent = T
             )
             if (inherits(t, "try-error")){
@@ -759,7 +764,7 @@ somTab_server <- function(id){
           }
           else if (input$export1_modes == "filtered"){
             t <- try(
-              maftools::read.maf((maf_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE)))[input$som_table_rows_all,])@summary
+              maftools::read.maf((maf_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE)))[input$som_table_rows_all,])
               ,silent = T
             )
             if (inherits(t, "try-error")){
@@ -774,7 +779,7 @@ somTab_server <- function(id){
         if(ok){
           if (is.null(d)){error_txt("ERRORE")}
           else{
-            pre_genesummary_data(d)
+            pre_mafsummary_data(d@summary)
             shinyjs::click("export_mafsummary1")
           }
         }
@@ -801,6 +806,7 @@ somTab_server <- function(id){
         shiny::req(proc_data1())
         shiny::wellPanel(
           id = "well_export1",
+          class = "well_export",
           toggle_panel("toggle_export1", "well_export_container1","Esporta i dati:" ),
           shiny::tags$div(
             # CONTAINER TOGGLER INPUT ID + CLASS
@@ -808,6 +814,7 @@ somTab_server <- function(id){
             class = "collapse in",
             shiny::tags$div(
               id = "export_cont1",
+              class = "export_cont",
               shinyWidgets::pickerInput(
                 paste("GSP-",shiny::NS(id,"export1_types"),sep=""),
                 "",
@@ -902,7 +909,7 @@ somTab_server <- function(id){
           }
           else {
             t <- try(
-              maftools::read.maf(maf_data1()[input$som_table_rows_all,])
+              maftools::read.maf((maf_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE)))[input$som_table_rows_all,])
               ,silent = T
             )
             if (inherits(t, "try-error")){
@@ -914,10 +921,10 @@ somTab_server <- function(id){
                 d <- proc_data1()
               }
               else if (input$export1_modes == "page"){
-                d <- (proc_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE)))[input$som_table_rows_current,]
+                d <- ((proc_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE)))[input$som_table_rows_current,])
               }
               else if (input$export1_modes == "filtered"){
-                d <- (proc_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE)))[input$som_table_rows_all,]
+                d <- ((proc_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE)))[input$som_table_rows_all,])
               }
             }
           }
@@ -1025,7 +1032,7 @@ somTab_server <- function(id){
               if (input$pdf_export_options1 == "Template 1"){
                 n <- substring(titolo11(),1,18)
                 out <- try(
-                  rmarkdown::render("www/template1.Rmd",output_format = "pdf_document",params = list(name1 =n, table1 = pre_print_data()[,input$checkbox1]),envir = new.env(parent = globalenv()))
+                  rmarkdown::render("www/templates/template1.Rmd",output_format = "pdf_document",params = list(name1 =n, table1 = pre_print_data()[,input$checkbox1]),envir = new.env(parent = globalenv()))
                   ,silent = T
                 )
                 file.rename(out, file)
@@ -1034,7 +1041,7 @@ somTab_server <- function(id){
                 n <- substring(titolo11(),1,18)
                 if (!is.null(maf_data1())){
                   out <- try(
-                    rmarkdown::render("www/template2.Rmd",output_format = "pdf_document",params = list(name1 =n, table1 = pre_print_data()[,input$checkbox1], graphd = maftools::read.maf(maf_data1()[input$som_table_rows_all,])),envir = new.env(parent = globalenv()))
+                    rmarkdown::render("www/templates/template2.Rmd",output_format = "pdf_document",params = list(name1 =n, table1 = pre_print_data()[,input$checkbox1], graphd = maftools::read.maf((maf_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE)))[input$som_table_rows_all,])),envir = new.env(parent = globalenv()))
                     ,silent = T
                   )
                   file.rename(out, file)
@@ -1044,7 +1051,7 @@ somTab_server <- function(id){
                 n <- substring(titolo11(),1,18)
                 if (!is.null(maf_data1())){
                   out <- try(
-                    rmarkdown::render("www/template3.Rmd",output_format = "pdf_document",params = list(name1 =n, table1 = pre_print_data()[,input$checkbox1], graphd = maftools::read.maf(maf_data1()[input$som_table_rows_all,])),envir = new.env(parent = globalenv()))
+                    rmarkdown::render("www/templates/template3.Rmd",output_format = "pdf_document",params = list(name1 =n, table1 = pre_print_data()[,input$checkbox1], graphd = maftools::read.maf((maf_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE)))[input$som_table_rows_all,])),envir = new.env(parent = globalenv()))
                     ,silent = T
                   )
                   file.rename(out, file)

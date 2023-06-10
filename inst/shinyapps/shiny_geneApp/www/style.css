@@ -1,5 +1,5 @@
 html{
-  height:100% !important;
+  height:99% !important;
   width:100%!important;
 }
 
@@ -402,12 +402,23 @@ div.navbar-header > span.navbar-brand {
   height: 100%;
 }
 
+#multi_container{
+  width: 100%;
+  height: 100%;
+}
+
 .row{
   margin-right: 0;
   margin-left: 0;
 }
 
 #overview_container > div.row{
+  display: flex;
+  height:100%;
+  width:100%;
+}
+
+#multi_container > div.row{
   display: flex;
   height:100%;
   width:100%;
@@ -436,6 +447,26 @@ div.navbar-header > span.navbar-brand {
   padding-left:0;
 }
 
+#sidebar_multi {
+  min-width: 230px;
+  z-index: 1000;
+  background: #FFF;
+  height: auto;
+  padding-right: 0;
+  max-width: 24.95vw;
+  padding-left: 10px;
+}
+
+#sidebar_multi > div > form {
+  margin-bottom:0;
+}
+
+#sidebar_multi > div {
+  height: 100%;
+  width: 100%;
+  padding-right:0;
+  padding-left:0;
+}
 /* Input sidebar */
 
 form.well{
@@ -476,6 +507,9 @@ div.file_side>div.well>div>div{
 #GSP-GERM-fromfile2_progress{
   margin-bottom:10px;
 }
+#GSP-MULTI-fromfile_progress{
+  margin-bottom:10px;
+}
 
 
 /* Main tabset overview */
@@ -506,7 +540,40 @@ div.file_side>div.well>div>div{
   width: 100%;
 }
 
+#colcol_multi{
+  overflow-x : clip;
+  margin-bottom: 10px;
+  margin-right: 0;
+  padding-right:0;
+  padding-left:0;
+  flex: 1;
+  height: 100%;
+}
+
+#colcol_multi > div{
+  padding:0;
+  width: 100%!important;
+  height: 100%;
+}
+
+#colcol_multi > div > div > ul {
+ margin-left:5px;
+}
+
+#colcol_multi > div > div > div {
+ margin-left:15px;
+}
+#colcol_multi > div > div > div > div.tab-pane{
+  width: 100%;
+}
+
 #tabcontainer{
+  width: 100%;
+}
+#tabcontainer2{
+  width: 100%;
+}
+#tabcontainer3{
   width: 100%;
 }
 
@@ -800,7 +867,37 @@ div.row_b > div.dt-buttons{
 #GSP-GERM-germ_table > div > div > div.dataTables_scrollBody{
   overflow-x: auto !important;
 }
+/*MULTI table styling*/
+#GSP-MULTI-multi_table{
+  width: 100%;
+  height: 100%;
+}
 
+#GSP-MULTI-multi_table > div{
+  padding-right: 10px;
+  width: 100%;
+  height: 100%;
+}
+
+#GSP-MULTI-multi_table > div > table > thead{
+  top: 0;
+  z-index: 100;
+  background: #FFF;
+}
+
+#GSP-MULTI-multi_table > div > table > tfoot{
+  bottom: 0;
+  z-index: 100;
+  background: #FFF;
+}
+
+#GSP-MULTI-multi_table > div > div > div.dataTables_scrollBody{
+  overflow-x: auto !important;
+}
+
+#GSP-MULTI-multi_table > div > table{
+  padding-right: 30px;
+}
 
 tfoot > tr {
   position: relative;
@@ -882,20 +979,20 @@ tfoot > tr {
   margin-top: 5px;
 }
 
-#export_cont1{
+.export_cont{
   display: flex;
   align-items: flex-end;
   justify-content: center;
   flex-wrap: wrap;
 }
 
-#export_cont1 > div{
+.export_cont > div{
   margin-bottom: 0;
   min-width: 75px;
   margin-right: 5px;
 }
 
-#filter1_controls_cont{
+.filter_controls_cont{
   display: flex;
   justify-content: center;
 }
@@ -903,37 +1000,23 @@ tfoot > tr {
   height: fit-content;
   margin-top: 5px;
 }
-
-#export_cont2{
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-#export_cont2 > div{
-  margin-bottom: 0;
-  min-width: 75px;
-  margin-right: 5px;
-}
-
-#filter2_controls_cont{
-  display: flex;
-  justify-content: center;
+#GSP-MULTI-export_button3_mock {
+  height: fit-content;
+  margin-top: 5px;
 }
 
 .form-group .bootstrap-select{
   padding-right:0 !important;
 }
 
-#maf_export_cont1{
+.maf_export_cont{
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   margin-top: 5px;
 }
 
-#maf_export_cont1 > button {
+.maf_export_cont > button {
   margin: 5px;
 }
 
@@ -942,44 +1025,30 @@ tfoot > tr {
   justify-content: center;
 }
 
-#pdf_export_cont1{
+.pdf_export_cont{
   width: 80%;
   max-width: 220px;
 }
 
-#every_export_cont1{
+.every_export_cont{
   display: flex;
   margin-top: 10px;
   justify-content: center;
   flex-wrap: wrap;
 }
-#maf_export_cont2{
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 5px;
-}
 
-#maf_export_cont2 > button {
-  margin: 5px;
-}
 
 #GSP-GERM-pdf_export2{
   display: flex;
   justify-content: center;
 }
 
-#pdf_export_cont2{
-  width: 80%;
-  max-width: 220px;
+#GSP-MULTI-pdf_export3{
+  display: flex;
+  justify-content: center;
 }
 
-#every_export_cont2{
-  display: flex;
-  margin-top: 10px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
+
 
 .dataTables_info{
   display: flex;
@@ -1030,6 +1099,15 @@ tfoot > tr {
     overflow-x: hidden;
   }
 
+  #sidebar_multi{
+    padding-right: 5px;
+    padding-left: 5px;
+    max-width: 100vw !important;
+    padding-bottom: 10px;
+    min-width: 100px;
+    overflow-x: hidden;
+  }
+
   .dataTables_paginate{
     left: 0;
   }
@@ -1069,6 +1147,10 @@ tfoot > tr {
   }
 
   #overview_container > div.row{
+    flex-direction: column;
+  }
+
+  #multi_container > div.row{
     flex-direction: column;
   }
 

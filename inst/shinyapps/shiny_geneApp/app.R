@@ -85,12 +85,13 @@ ui <- shiny::fluidPage(
 
           gersomPanel_ui("GSP"),
 
+          # ------ MULTIPLE FILES UI -------
+
+          multiPanel_ui("MULTI"),
+
           # second and third set of nav tabs
           #PER ORA NON FANNO NULLA
-          shiny::tabPanel(
-            title = "MULTI",
-            id = "multi_tab",
-            value =  "multi_tab")
+
           #shiny::navbarMenu(title = "tab1", menuName = "tab1", "panel 1.1", shiny::tabPanel("1.1"), "panel 1.2", shiny::tabPanel("1.2")),
           #shiny::navbarMenu(title = "tab2", menuName = "tab2", shiny::tabPanel("2.1"), shiny::tabPanel("2.2")),
 
@@ -140,6 +141,10 @@ server <- function(input, output, session){
 
   gersomPanel_server("GSP")
 
+  # ------ MULTIPLE FILES SERVER MODULE -------
+
+  multiPanel_server("MULTI")
+
   ### SOM TABLE STICKY SCROLLER###
   shinyjs::onevent( event = "scroll", id = "rowsc1", {
     shinyjs::runjs("
@@ -157,6 +162,17 @@ server <- function(input, output, session){
 
       var x = document.querySelector('#GSP-GERM-germ_table > div > div > div.dataTables_scrollBody');
       var y = document.querySelector('#rowsc2');
+      x.scrollLeft = y.scrollLeft;
+
+    ")
+  })
+
+  ### MULTI TABLE STICKY SCROLLER###
+  shinyjs::onevent( event = "scroll", id = "rowsc3", {
+    shinyjs::runjs("
+
+      var x = document.querySelector('#MULTI-multi_table > div > div > div.dataTables_scrollBody');
+      var y = document.querySelector('#rowsc3');
       x.scrollLeft = y.scrollLeft;
 
     ")
@@ -180,6 +196,7 @@ server <- function(input, output, session){
         const config = {childList: true, subtree: true };
         var x = 0;
         var y = 0;
+        var z = 0;
 
         const callback1 = (mutationList, observer) => {
             var x1 = document.querySelector("#GSP-SOM-som_table > div > div > div.dataTables_scrollBody > table");
@@ -194,6 +211,14 @@ server <- function(input, output, session){
             var y2 = document.querySelector("#rowsc2 > div");
             if(y2 !== null && x2 !== null){
               y2.style.width = x2.offsetWidth - 1 + "px";
+            }
+        };
+
+        const callback5 = (mutationList, observer) => {
+            var x5 = document.querySelector("#MULTI-multi_table > div > div > div.dataTables_scrollBody > table");
+            var y5 = document.querySelector("#rowsc3 > div");
+            if(y5 !== null && x5 !== null){
+              y5.style.width = x5.offsetWidth - 1 + "px";
             }
         };
 
@@ -220,11 +245,26 @@ server <- function(input, output, session){
           }
         };
 
+        const callback6 = (mutationList, observer) => {
+          if (document.querySelector("#MULTI-multi_table > div > div > div.dataTables_scrollBody > table") !== null && z == 0) {
+            z = 1;
+            const observer5 = new MutationObserver(callback5);
+            observer5.observe(document.getElementById("tabcontainer3"), config);
+          }
+          if (z == 1){
+            observer.disconnect();
+          }
+        };
+
+
         const observer3 = new MutationObserver(callback3);
         observer3.observe(document.getElementById("tabcontainer"), config);
 
         const observer4 = new MutationObserver(callback4);
         observer4.observe(document.getElementById("tabcontainer2"), config);
+
+        const observer6 = new MutationObserver(callback5);
+        observer6.observe(document.getElementById("tabcontainer3"), config);
 
       }
     }
@@ -252,6 +292,16 @@ server <- function(input, output, session){
     });
 
   ')
+
+  shinyjs::runjs('
+
+    $("#MULTI-multi_table").on("mouseup",function() {
+      var x = document.querySelector("#MULTI-multi_table > div > div > div.dataTables_scrollBody");
+      var y = document.querySelector("#rowsc3");
+      y.scrollLeft = x.scrollLeft;
+    });
+
+  ')
 ##SISTEMA QUESTO CODICE E COPIALO IN GERM E ASSICURATI CHE FUNZIONI
   ### OVERVIEW SIDEBAR TOGGLE ###
   shinyjs::onclick( id = "toggleSidebar", {
@@ -262,18 +312,31 @@ server <- function(input, output, session){
       var b1 = document.querySelector("#GSP-SOM-som_table > div > div.dataTables_scroll > div.dataTables_scrollBody");
       var b2 = document.querySelector("#GSP-GERM-germ_table > div > div.dataTables_scroll > div.dataTables_scrollBody");
       var h2 = document.querySelector("#GSP-GERM-germ_table > div > div.dataTables_scroll > div.dataTables_scrollHead > div.dataTables_scrollHeadInner > table");
+      var b3 = document.querySelector("#MULTI-multi_table > div > div.dataTables_scroll > div.dataTables_scrollBody");
+      var h3 = document.querySelector("#MULTI-multi_table > div > div.dataTables_scroll > div.dataTables_scrollHead > div.dataTables_scrollHeadInner > table");
       plot1 = document.querySelector("#GSP-SOM-som_plot2 > img ");
+      plot2 = document.querySelector("#GSP-GERM-germ_plot2 > img ");
+      plot3 = document.querySelector("#MULTI-multi_plot2 > img ");
       if (x.style.width == "93px") {
         x.style.width = "25%";
         x.style.minWidth = "inherit";
         if(plot1 !== null){
           plot1.style.width = "auto";
         }
+        if(plot2 !== null){
+          plot2.style.width = "auto";
+        }
+        if(plot3 !== null){
+          plot3.style.width = "auto";
+        }
         if(h1 !== null){
           b1.style.maxWidth = "inherit";
         }
         if(h2 !== null){
           b2.style.maxWidth = "inherit";
+        }
+        if(h3 !== null){
+          b3.style.maxWidth = "inherit";
         }
 
       }
@@ -283,6 +346,12 @@ server <- function(input, output, session){
         x.style.width = "93px";
         if (plot1 != null){
             plot1.style.width = "100%"
+        }
+        if (plot2 != null){
+            plot2.style.width = "100%"
+        }
+        if (plot3 != null){
+            plot3.style.width = "100%"
         }
         if (h1 !== null && h1.offsetWidth > 0){
           b1.style.maxWidth = h1.offsetWidth + "px";
@@ -296,6 +365,12 @@ server <- function(input, output, session){
         if (h2 !== null && h2.offsetWidth == 0){
           b2.style.maxWidth = "fit-content";
         }
+        if (h3 !== null && h3.offsetWidth > 0){
+          b3.style.maxWidth = h3.offsetWidth + "px";
+        }
+        if (h3 !== null && h3.offsetWidth == 0){
+          b3.style.maxWidth = "fit-content";
+        }
 
       }
     ')
@@ -306,11 +381,26 @@ server <- function(input, output, session){
       animType = "fade",
       time = 0.1
     )
+    shinyjs::toggle(
+      id = "sidebar_multi",
+      anim = TRUE,
+      animType = "fade",
+      time = 0.1
+    )
   })
 
   shinyjs::onclick("GSP-SOM-reset_filter1",{
     shinyjs::reset("well_filter_container1")
   })
+
+  shinyjs::onclick("GSP-GERM-reset_filter2",{
+    shinyjs::reset("well_filter_container2")
+  })
+
+  shinyjs::onclick("MULTI-reset_filter3",{
+    shinyjs::reset("well_filter_container3")
+  })
+
 
 
   # ------ ABOUT SERVER MODULE -------

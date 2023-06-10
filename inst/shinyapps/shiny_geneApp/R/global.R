@@ -22,7 +22,7 @@ write_sample_summary <- function(maf, basename = NULL){
     stop('Please provide a basename for output file.')
   }
   #write sample summary.
-  write.table(x = maf, file = paste(basename,".txt",sep=""), sep='\t', quote = FALSE, row.names = FALSE)
+  write.table(x = maf, file = basename, sep='\t', quote = FALSE, row.names = FALSE)
 }
 
 write_maf_summary <- function(maf, basename = NULL){
@@ -30,7 +30,7 @@ write_maf_summary <- function(maf, basename = NULL){
     stop('Please provide a basename for output file.')
   }
   #write summary
-  write.table(x = maf,file = paste(basename,".txt",sep=""), sep='\t', quote = FALSE, row.names = FALSE)
+  write.table(x = maf,file = basename, sep='\t', quote = FALSE, row.names = FALSE)
 }
 
 
@@ -167,20 +167,20 @@ check_ui <- function(x) {
 #' @param id the module's id where the inputs will be created
 #' @return the filter created according to the conditions in the function
 #' @examples make_ui(vector,name,moduleid)
-make_ui <- function(x, var, id, n) {
+make_ui <- function(x, var, id, n, s) {
   var2 <- paste(var,n,sep="")
   #NUMERIC VECTORS
   if (is.numeric(x)) {
     rng <- range(x, na.rm = T)
     if (!(rng[1] == rng[2])){
-    shiny::sliderInput(paste("GSP-",shiny::NS(id,var2),sep=""), var, min = rng[1], max = rng[2], value = rng)
+    shiny::sliderInput(paste(s,shiny::NS(id,var2),sep=""), var, min = rng[1], max = rng[2], value = rng)
     }
     else {NULL}
   }
   #FACTORS
   else if (is.factor(x)) {
     levs <- levels(factor(x, exclude = NULL))
-    shinyWidgets::pickerInput(paste("GSP-",shiny::NS(id,var2),sep=""), var, choices = levs, selected = levs, multiple = TRUE, options = shinyWidgets::pickerOptions(actionsBox= TRUE, size = 10),choicesOpt = list(content = stringr::str_trunc(c(levs), width = 40)) )
+    shinyWidgets::pickerInput(paste(s,shiny::NS(id,var2),sep=""), var, choices = levs, selected = levs, multiple = TRUE, options = shinyWidgets::pickerOptions(actionsBox= TRUE, size = 10),choicesOpt = list(content = stringr::str_trunc(c(levs), width = 40)) )
   }
   #CARACTER VECTORS AND ARRAYS
   else if ( is.array(x) || is.character(x)) {
@@ -191,7 +191,7 @@ make_ui <- function(x, var, id, n) {
     #FILTERING OF VECTORS
     #if (length(levs) < (length(x)/8)){
     #if (length(levs) < 600 && length(levs) > 1){
-      shinyWidgets::pickerInput(paste("GSP-",shiny::NS(id,var2),sep=""), var, choices = levs, selected = levs, multiple = TRUE, options = shinyWidgets::pickerOptions(actionsBox= TRUE, size = 10, virtualScroll= TRUE ),choicesOpt = list(content = stringr::str_trunc(c(levs), width = 40)) )
+      shinyWidgets::pickerInput(paste(s,shiny::NS(id,var2),sep=""), var, choices = levs, selected = levs, multiple = TRUE, options = shinyWidgets::pickerOptions(actionsBox= TRUE, size = 10, virtualScroll= TRUE ),choicesOpt = list(content = stringr::str_trunc(c(levs), width = 40)) )
       #shiny::selectizeInput(var, var, choices = levs, selected = levs, multiple = TRUE)
     #}
    # else {NULL}
@@ -202,7 +202,7 @@ make_ui <- function(x, var, id, n) {
     if(all(is.na(x)) || all(is.null(x))) {NULL}
     else{
       levs <- levels(factor(x, exclude = NULL))
-      shinyWidgets::pickerInput(paste("GSP-",shiny::NS(id,var2),sep=""), var, choices = levs, selected = levs, multiple = TRUE, options = shinyWidgets::pickerOptions(actionsBox= TRUE, size = 10),choicesOpt = list(content = stringr::str_trunc(c(levs), width = 40)))
+      shinyWidgets::pickerInput(paste(s,shiny::NS(id,var2),sep=""), var, choices = levs, selected = levs, multiple = TRUE, options = shinyWidgets::pickerOptions(actionsBox= TRUE, size = 10),choicesOpt = list(content = stringr::str_trunc(c(levs), width = 40)))
     }
   }
   else {
