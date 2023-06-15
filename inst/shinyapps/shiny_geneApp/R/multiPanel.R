@@ -52,7 +52,8 @@ multiPanel_ui <- function(id){
                     # LABEL + TOOLTIP (WORKAROUND)
                     label = htmltools::HTML('Carica un file .tsv </label><span data-toggle="tooltip" style="float:right" data-placement="right" title="" data-original-title="A tooltip"><i class="far fa-circle-question" role="presentation" aria-label="circle-question icon"></i></span>'),
                     # LIST HERE THE ALLOWED FILE FORMATS
-                    accept = c(".tsv",".csv",".maf",".xlsx",".xls")
+                    accept = c(".tsv",".csv",".maf",".xlsx",".xls"),
+                    multiple = T
                   ),
 
                   # ------ FILE INPUT - MULTI FROM SERVER FILESYSTEM -------
@@ -62,15 +63,17 @@ multiPanel_ui <- function(id){
                     label = "Seleziona un campione dai datasets...",
                     title = "Pick a file:" ,
                     viewtype = "detail",
-                    multiple = FALSE,
+                    multiple = T,
                     style = "overflow: hidden; width: auto; max-width: 100%;"
                   ),
 
                   # FILE NAME SELECTED FROM SERVER (FILE3)
-                  shiny::tags$div(
+
                     shiny::textOutput(shiny::NS(id,"titolo32")),
-                    style = "white-space: nowrap;overflow: auto;"
-                  ),
+
+
+                    shiny::textOutput(shiny::NS(id,"titolo33")),
+
                   shiny::tags$div(
                     id = "warning_3",
                     shiny::textOutput(shiny::NS(id,"warning3")),
@@ -155,6 +158,8 @@ multiPanel_server <- function(id){ #oltre id puoi passare altri parametri
       # REACTIVE TITLES
       titolo31 <- shiny::reactiveVal("CARICA FILES MULTIPLI")
       titolo32 <- shiny::reactiveVal("")
+      titoli_multi <- shiny::reactiveVal()
+      titoli_multi_no <- shiny::reactiveVal()
 
       # REACTIVE DATA VALUES
       data3 <- shiny::reactiveVal()
@@ -175,24 +180,32 @@ multiPanel_server <- function(id){ #oltre id puoi passare altri parametri
       # ------ FILE INPUT -------
       shiny::observeEvent(input$fromfile3,{
         file_error3("")
-        t <- try(
-          data.table::fread(
-            input$fromfile3$datapath,
-            data.table = FALSE,
-            na.strings = base::getOption("NA")
-          ),
-          silent = T)
+        l <- list()
+        nl <- list()
+        nl_not <- list()
+        for (i in 1:length(input$fromfile3$datapath)){
+          t <- try(
+            data.table::fread(
+              input$fromfile3$datapath[[i]],
+              data.table = FALSE,
+              #na.strings = base::getOption(NA)
+            ),
+            silent = T)
 
-        if (inherits(t, "try-error")){
-          file_error3("Il file non puo essere letto")
-          data3(NULL)
-        }
-        else{
-          titolo31(input$fromfile3$name)
-          titolo32("")
-          data3(t)
-        }
+          if (inherits(t, "try-error")){
+            nl_not <- append(nl_not,input$fromfile3$name[[i]])
+          }
+          else{
+            nl <- append(nl,input$fromfile3$name[[i]])
+            l <- append(l,list(t))
 
+          }
+        }
+        titolo31("Files multipli:")
+        titoli_multi(nl)
+        titoli_multi_no(nl_not)
+        titolo32("")
+        data3(l)
       })
 
       #CONNECTION BETWEEN SERVER AND CLIENT TO ACCESS FILESYSTEM
@@ -210,26 +223,33 @@ multiPanel_server <- function(id){ #oltre id puoi passare altri parametri
       #INPUT FROM SERVER (MULTI FILE)
       shiny::observeEvent(input$dataset_files3, {
         if (!is.null(input$dataset_files3)){
+          l <- list()
+          nl <- list()
+          nl_not <- list()
           inFile <- shinyFiles::parseFilePaths(roots = c(wd = "C:/Users/facke/Desktop/datasets"), input$dataset_files3)
           if (length(inFile$datapath) != 0 ){
-            file_error3("")
-            t <- try(
-              data.table::fread(
-                as.character(inFile$datapath),
-                data.table = F,
-                na.strings = base::getOption("NA")
-              ),
-              silent = T)
+            for (i in 1:length(inFile$datapath)){
+              t <- try(
+                data.table::fread(
+                  as.character(inFile$datapath[[i]]),
+                  data.table = F,
+                  #na.strings = base::getOption("NA")
+                ),
+                silent = T)
 
-            if (inherits(t, "try-error")){
-              file_error3("Il file non puo essere letto")
-              data3(NULL)
+              if (inherits(t, "try-error")){
+                nl_not <- append(nl_not,inFile$name[[i]])
+              }
+              else{
+                nl <- append(nl,inFile$name[[i]])
+                l <- append(l,list(t))
+              }
             }
-            else{
-              titolo31(inFile$name)
-              titolo32(inFile$name)
-              data3(t)
-            }
+            titolo31("Files multipli:")
+            titoli_multi(nl)
+            titoli_multi_no(nl_not)
+            titolo32("")
+            data3(l)
           }
         }
       })
@@ -251,205 +271,258 @@ multiPanel_server <- function(id){ #oltre id puoi passare altri parametri
           #reset observers
           obs3(list())
         }
-
+        datasets <- list()
+        datasets_maf <- list()
+        mancanti_each <- list()
+        g = 1
+        for (d in data3()){
         #pre process data
-        d <- data3()
-        d_n <- names(data3())
-        col_yes_y <- list()
-        col_yes <- list()
-        col_no <- list()
-        d2 <- NULL
-        d3 <- NULL
-        for (n in d_n){
-          y <- check_names(n)
-          if (is.null(y)){col_no <- append(col_no,n)}
-          else {
-            if(y %in% col_yes){col_no <- append(col_no,n)}
+          d_n <- names(d)
+          col_yes_y <- list()
+          col_yes <- list()
+          col_no <- list()
+          d2 <- NULL
+          d3 <- NULL
+          for (n in d_n){
+            y <- check_names(n)
+            if (is.null(y)){col_no <- append(col_no,n)}
+            else {
+              if(y %in% col_yes){col_no <- append(col_no,n)}
+              else{
+                col_yes <- append(col_yes,y)
+                col_yes_y <- append(col_yes_y,n)
+              }
+            }
+          }
+
+          pos <- c("Gene","Hugo_Symbol","Chromosome","VAF","Variant_Classification","Variant_Type","VARIANT_CLASS","CLIN_SIG","t_depth","Reference_Allele","Tumor_Seq_Allele2","Start_Position","End_Position","Existing_Variation","HGVSp","EXON","Tumor_Sample_Barcode")
+          col_mancanti <- setdiff(pos,col_yes)
+          if (length(col_mancanti)>0){
+            for(n in col_mancanti){
+              if (n == "Hugo_Symbol"){
+                p <- which(d_n %in% c("SYMBOL","Symbol","symbol"))
+                if(length(p)>0){
+                  col_yes <- append(col_yes,"Hugo_Symbol")
+                  col_yes_y <- append(col_yes_y,d_n[[p]])
+                }
+              }
+              else if (n == "Reference_Allele"){
+                p <- which(d_n %in% c("Tumor_Seq_Allele1"))
+                if(length(p)>0){
+                  col_yes <- append(col_yes,"Reference_Allele")
+                  col_yes_y <- append(col_yes_y,d_n[[p]])
+                }
+              }
+
+              else if (n == "HGVSp"){
+                p <- which(d_n %in% c("HGVSp_Short"))
+                if(length(p)>0){
+                  col_yes <- append(col_yes,"HGVSp")
+                  col_yes_y <- append(col_yes_y,d_n[[p]])
+                }
+              }
+              else if (n == "EXON"){
+                p <- which(d_n %in% c("Exon_Number"))
+                if(length(p)>0){
+                  col_yes <- append(col_yes,"EXON")
+                  col_yes_y <- append(col_yes_y,d_n[[p]])
+                }
+              }
+              else if (n == "VAF"){
+                ##calcola il vaf
+              }
+              else if (n == "Tumor_Sample_Barcode"){
+                col_yes <- append(col_yes,"Tumor_Sample_Barcode")
+                col_yes_y <- append(col_yes_y,"Tumor_Sample_Barcode")
+                d$Tumor_Sample_Barcode <- substring(titoli_multi()[[g]],1,18)
+              }
+            }
+          }
+          if(!("Variant_Type" %in% col_yes) && ("VARIANT_CLASS" %in% col_yes)){
+            ref <- NULL
+            if ("Reference_Allele" %in% col_yes){
+              j <- which(col_yes == "Reference_Allele")
+              ref_j <- col_yes_y[[j]]
+              ref <- d[[ref_j]]
+            }
+            alt <- NULL
+            if ("Tumor_Seq_Allele2" %in% col_yes){
+              k <- which(col_yes == "Tumor_Seq_Allele2")
+              alt_k <- col_yes_y[[k]]
+              alt <- d[[alt_k]]
+            }
+            i <- which(col_yes == "VARIANT_CLASS")
+            vc_i <- col_yes_y[[i]]
+            vc <- d[[vc_i]]
+            l <- vc_gen(vc,ref,alt)
+            if (length(col_yes)>6){
+              col_yes <- append(col_yes,list(x = "Variant_Type"),5)
+              col_yes_y <- append(col_yes_y,list(x = "Variant_Type"),5)
+            }
             else{
-              col_yes <- append(col_yes,y)
-              col_yes_y <- append(col_yes_y,n)
+              col_yes <- append(col_yes,"Variant_Type")
+              col_yes_y <- append(col_yes_y,"Variant_Type")
             }
+            d$Variant_Type <- l
           }
-        }
 
-        pos <- c("Gene","Hugo_Symbol","Chromosome","VAF","Variant_Classification","Variant_Type","VARIANT_CLASS","CLIN_SIG","t_depth","Reference_Allele","Tumor_Seq_Allele2","Start_Position","End_Position","Existing_Variation","HGVSp","EXON","Tumor_Sample_Barcode")
-        col_mancanti <- setdiff(pos,col_yes)
-        if (length(col_mancanti)>0){
-          for(n in col_mancanti){
-            if (n == "Hugo_Symbol"){
-              p <- which(d_n %in% c("SYMBOL","Symbol","symbol"))
-              if(length(p)>0){
-                col_yes <- append(col_yes,"Hugo_Symbol")
-                col_yes_y <- append(col_yes_y,d_n[[p]])
+          if (!("Variant_Classification" %in% col_yes) && ("Consequence" %in% col_no || "consequence" %in% col_no)){
+            vt <- NULL
+            if ("Variant_Type" %in% col_yes){
+              j <- which(col_yes == "Variant_Type")
+              vt_j <- col_yes_y[[j]]
+              vt <- d[[vt_j]]
+            }
+            cq <- list()
+            if ("Consequence" %in% col_no){
+              cq <- d[["Consequence"]]
+            }
+            else {
+              cq <- d[["consequence"]]
+            }
+            l <- consq_gen(cq,vt)
+            if (length(col_yes)>5){
+              col_yes <- append(col_yes,list(x = "Variant_Classification"),4)
+              col_yes_y <- append(col_yes_y,list(x = "Variant_Classification"),4)
+            }
+            else{
+              col_yes <- append(col_yes,"Variant_Classification")
+              col_yes_y <- append(col_yes_y,"Variant_Classification")
+            }
+            d$Variant_Classification <- l
+          }
+
+          for (n in pos){
+            l <- which(col_yes == n)
+
+            if(length(l)> 0){
+              nok <- check_names_ok(n)
+              cl <- col_yes_y[[l]]
+
+
+              if(is.null(d2)){
+
+                d2 <- data.frame(nome = d[[cl]])
+                data.table::setnames(d2,nok)
+              }
+              else{
+                d2[[nok]] <- d[[cl]]
+              }
+              if(is.null(d3)){
+                d3 <- data.frame(nome = d[[cl]])
+                data.table::setnames(d3,n)
+              }
+              else{
+                d3[[n]] <- d[[cl]]
               }
             }
-            else if (n == "Reference_Allele"){
-              p <- which(d_n %in% c("Tumor_Seq_Allele1"))
-              if(length(p)>0){
-                col_yes <- append(col_yes,"Reference_Allele")
-                col_yes_y <- append(col_yes_y,d_n[[p]])
-              }
-            }
+          }
 
-            else if (n == "HGVSp"){
-              p <- which(d_n %in% c("HGVSp_Short"))
-              if(length(p)>0){
-                col_yes <- append(col_yes,"HGVSp")
-                col_yes_y <- append(col_yes_y,d_n[[p]])
-              }
-            }
-            else if (n == "EXON"){
-              p <- which(d_n %in% c("Exon_Number"))
-              if(length(p)>0){
-                col_yes <- append(col_yes,"EXON")
-                col_yes_y <- append(col_yes_y,d_n[[p]])
-              }
-            }
-            else if (n == "VAF"){
-              ##calcola il vaf
-            }
-            else if (n == "Tumor_Sample_Barcode"){
-              col_yes <- append(col_yes,"Tumor_Sample_Barcode")
-              col_yes_y <- append(col_yes_y,"Tumor_Sample_Barcode")
-              d$Tumor_Sample_Barcode <- substring(titolo31(),1,18)
-            }
-          }
-        }
-
-        if(!("Variant_Type" %in% col_yes) && ("VARIANT_CLASS" %in% col_yes)){
-          ref <- NULL
-          if ("Reference_Allele" %in% col_yes){
-            j <- which(col_yes == "Reference_Allele")
-            ref_j <- col_yes_y[[j]]
-            ref <- d[[ref_j]]
-          }
-          alt <- NULL
-          if ("Tumor_Seq_Allele2" %in% col_yes){
-            k <- which(col_yes == "Tumor_Seq_Allele2")
-            alt_k <- col_yes_y[[k]]
-            alt <- d[[alt_k]]
-          }
-          i <- which(col_yes == "VARIANT_CLASS")
-          vc_i <- col_yes_y[[i]]
-          vc <- d[[vc_i]]
-          l <- vc_gen(vc,ref,alt)
-          if (length(col_yes)>6){
-            col_yes <- append(col_yes,list(x = "Variant_Type"),5)
-            col_yes_y <- append(col_yes_y,list(x = "Variant_Type"),5)
-          }
-          else{
-            col_yes <- append(col_yes,"Variant_Type")
-            col_yes_y <- append(col_yes_y,"Variant_Type")
-          }
-          d$Variant_Type <- l
-        }
-
-        if (!("Variant_Classification" %in% col_yes) && ("Consequence" %in% col_no || "consequence" %in% col_no)){
-          vt <- NULL
-          if ("Variant_Type" %in% col_yes){
-            j <- which(col_yes == "Variant_Type")
-            vt_j <- col_yes_y[[j]]
-            vt <- d[[vt_j]]
-          }
-          cq <- list()
-          if ("Consequence" %in% col_no){
-            cq <- d[["Consequence"]]
-          }
-          else {
-            cq <- d[["consequence"]]
-          }
-          l <- consq_gen(cq,vt)
-          if (length(col_yes)>5){
-            col_yes <- append(col_yes,list(x = "Variant_Classification"),4)
-            col_yes_y <- append(col_yes_y,list(x = "Variant_Classification"),4)
-          }
-          else{
-            col_yes <- append(col_yes,"Variant_Classification")
-            col_yes_y <- append(col_yes_y,"Variant_Classification")
-          }
-          d$Variant_Classification <- l
-        }
-
-        for (n in pos){
-          l <- which(col_yes == n)
-
-          if(length(l)> 0){
-            nok <- check_names_ok(n)
-            cl <- col_yes_y[[l]]
+          for(n in col_no){
             if(is.null(d2)){
-              d2 <- data.frame(nome = d[[cl]])
-              data.table::setnames(d2,nok)
+              d2 <- data.frame(n = d[[n]])
+              data.table::setnames(d2,n)
             }
             else{
-              d2[[nok]] <- d[[cl]]
+              d2[[n]] <- d[[n]]
             }
             if(is.null(d3)){
-              d3 <- data.frame(nome = d[[cl]])
+              d3 <- data.frame(n = d[[n]])
               data.table::setnames(d3,n)
             }
             else{
-              d3[[n]] <- d[[cl]]
+              d3[[n]] <- d[[n]]
             }
           }
+          if ("Chromosome" %in% col_yes && is.numeric(d2[["Chromosome"]])){
+            d2[["Chromosome"]] <- as.character(d2[["Chromosome"]])
+            d3[["Chromosome"]] <- as.character(d3[["Chromosome"]])
+          }
+          if ("seqnames" %in% col_no && is.numeric(d2[["seqnames"]])){
+            d2[["seqnames"]] <- as.character(d2[["seqnames"]])
+            d3[["seqnames"]] <- as.character(d3[["seqnames"]])
+          }
+          doubles <- c("gnomAD_AF","gnomAD_SAS_AF","gnomAD_NFE_AF","gnomAD_AFR_AF","gnomAD_FIN_AF","gnomAD_AMR_AF","gnomAD_ASJ_AF","gnomAD_EAS_AF")
+          for (n in doubles){
+            if (n %in% col_no && is.character(d2[[n]])){
+              d2[[n]] <- as.double(d2[[n]])
+              d3[[n]] <- as.double(d3[[n]])
+            }
+          }
+          pos_ok_1 <- c("Gene","HugoSymbol","Chromosome","VAF","Classification","VariantType","VariantClass","Clinvar","Depth","Ref","Alt","Start","End","Variation","HGVSp","Exon")
+          c_each <- setdiff(pos_ok_1,names(d2))
+          datasets <- append(datasets,list(d2))
+          datasets_maf <- append(datasets_maf,list(d3))
+          mancanti_each[[substring(titoli_multi()[[g]],1,18)]] <- c_each
+          g <- g + 1
         }
-
-        for(n in col_no){
-          if(is.null(d2)){
-            d2 <- data.frame(n = d[[n]])
-            data.table::setnames(d2,n)
-          }
-          else{
-            d2[[n]] <- d[[n]]
-          }
-          if(is.null(d3)){
-            d3 <- data.frame(n = d[[n]])
-            data.table::setnames(d3,n)
-          }
-          else{
-            d3[[n]] <- d[[n]]
-          }
+        total_maf <- NULL
+        total_d <- NULL
+        t1 <- try(
+          dplyr::bind_rows(datasets,.id = "NFILE")
+        )
+        t2 <- try(
+          dplyr::bind_rows(datasets_maf,.id = "NFILE")
+        )
+        if (!inherits(t1, "try-error")){
+          total_d <- t1
+        }
+        if (!inherits(t2, "try-error")){
+          total_maf <- t2
         }
         #qui puoi provare a fare il check su variant_classification
         # if ("Variant_Classification" %in% col_yes){effettua in place il check in d2 e d3}
-        pos2 <- c("Chromosome","VAF","Classification","Variant Type","Variant Class","Clinvar","Depth","Start","End")
-        pos3 <- c("Hugo_Symbol","Chromosome","Variant_Classification","Variant_Type","VARIANT_CLASS","Reference_Allele","Tumor_Seq_Allele2","Start_Position","End_Position","Tumor_Sample_Barcode")
+          pos2 <- c("SampleBarcode","Chromosome","VAF","Classification","VariantType","VariantClass","Clinvar","Depth","Start","End")
+          pos3 <- c("Hugo_Symbol","Chromosome","Variant_Classification","Variant_Type","VARIANT_CLASS","Reference_Allele","Tumor_Seq_Allele2","Start_Position","End_Position","Tumor_Sample_Barcode")
 
-        pos_ok <- c("Gene","Hugo Symbol","Chromosome","VAF","Classification","Variant Type","Variant Class","Clinvar","Depth","Ref","Alt","Start","End","Variation","HGVSp","Exon")
-        form <- c("VAF","Start","End","Depth") #nomi di colonne da formattare nella table
-        if (!is.null(d2)){
-          nomi_format3(unlist(intersect(form,names(d2))))
-          nomi3_f(unlist(intersect(pos2,names(d2))))
-          nomi3(unlist(intersect(pos_ok,names(d2))))
-        }
-        else{
-          nomi_format3(c())
-          nomi3_f(c())
-          nomi3(c())
-        }
-
-        c2 <- setdiff(pos_ok,names(d2))
-        if (length(c2) > 0){
-          nomi_w3(paste("Le colonne mancanti sono:",paste(c2,collapse = ", "), sep=" "))
-        }
-        else {
-          nomi_w3("Non ci sono colonne mancanti")
-        }
-
-        if (length(setdiff(pos3,names(d3)))==0){
-          #print(names(d2))
-          t <- try(
-            maftools::read.maf(d3),
-            silent = T
-          )
-          if (inherits(t, "try-error")){
-            maf_data3(NULL)
+          pos_ok <- c("SampleBarcode","Gene","HugoSymbol","Chromosome","VAF","Classification","VariantType","VariantClass","Clinvar","Depth","Ref","Alt","Start","End","Variation","HGVSp","Exon")
+          form <- c("VAF","Start","End","Depth") #nomi di colonne da formattare nella table
+          if (!is.null(total_d)){
+            nomi_format3(unlist(intersect(form,names(total_d))))
+            nomi3_f(unlist(intersect(pos2,names(total_d))))
+            nomi3(unlist(intersect(pos_ok,names(total_d))))
           }
           else{
-            maf_data3(d3)
+            nomi_format3(c())
+            nomi3_f(c())
+            nomi3(c())
           }
-        }
-        else{maf_data3(NULL)}
-        proc_data3(d2)
+
+          c2 <- setdiff(pos_ok,names(total_d))
+          if (length(c2) > 0 || length(mancanti_each) > 0){
+            s <- ""
+            for (c in names(mancanti_each)){
+              s <- paste(s, "Al file ", c," mancano le colonne: " ,paste(mancanti_each[[c]],"\n",collapse = ", "),sep="")
+            }
+            if (length(c2) == 0){
+              nomi_w3(
+                paste(s,"\n","In totale non mancano colonne", sep=" ")
+              )
+            }
+            else{
+            nomi_w3(
+              paste(s,"\n","Le colonne totali mancanti sono:",paste(c2,collapse = ", "), sep=" ")
+            )}
+          }
+          else {
+            nomi_w3("Non ci sono colonne mancanti totali")
+          }
+
+          if (length(setdiff(pos3,names(total_maf)))==0){
+            #print(names(d2))
+            t4 <- try(
+              maftools::read.maf(total_maf),
+              silent = T
+            )
+            if (inherits(t4, "try-error")){
+              maf_data3(NULL)
+            }
+            else{
+              maf_data3(total_maf)
+            }
+          }
+          else{maf_data3(NULL)}
+          proc_data3(total_d)
       })
 
       #DYNAMICALLY CREATE OBSERVERS FOR MULTI FILTERS' INPUTS
@@ -462,7 +535,7 @@ multiPanel_server <- function(id){ #oltre id puoi passare altri parametri
             shiny::observeEvent(input[[x]], {
               #questionable if, check for redundant initialization of observers
               if(!is.null(input[[x]]) && !is.null(proc_data3())){
-                f <- filter_var(proc_data3()[[y]], input[[x]])
+                f <- filter_var_multi(proc_data3()[[y]], input[[x]])
                 if (all(f)){
                   if (x %in% names(filter_vars3$l)){
                     filter_vars3$l[[x]] <- f
@@ -1086,7 +1159,26 @@ multiPanel_server <- function(id){ #oltre id puoi passare altri parametri
 
       # RENDER OF TITLES
       output$titolo31 <- shiny::renderText(titolo31())
-      output$titolo32 <- shiny::renderText(titolo32())
+      output$titolo32 <- shiny::renderText(
+        {shiny::req(titoli_multi())
+          if(!is.null(titoli_multi())){
+          c(
+          "Files letti:",
+          paste(as.character(titoli_multi()), sep = ", \n "))}
+          else{NULL}
+        },
+        sep = "\n"
+      )
+      output$titolo33 <- shiny::renderText(
+        {shiny::req(titoli_multi_no())
+          if(!is.null(titoli_multi_no()) && length(titoli_multi_no())>0)
+          {c(
+          "Files non letti:",
+          paste(as.character(titoli_multi_no()), sep = ", \n "))}
+          else{NULL}
+        },
+        sep = "\n"
+      )
       output$warning3 <- shiny::renderText(nomi_w3())
       output$file_error3 <- shiny::renderText(file_error3())
 
@@ -1143,7 +1235,7 @@ multiPanel_server <- function(id){ #oltre id puoi passare altri parametri
         shiny::req(proc_data3())
         if (is.data.frame(proc_data3())){
           DT::datatable(
-            shiny::isolate(proc_data3()),
+            proc_data3(),
             extensions = c('Buttons','FixedHeader','Select'),
             rownames = FALSE,
             filter = 'top',
@@ -1172,7 +1264,7 @@ multiPanel_server <- function(id){ #oltre id puoi passare altri parametri
                 exportOptions = list(columns = ":visible")
               )
               )
-              ,lengthMenu = list(c(10,25,50,100,1000,-1),c(10,25,50,100,1000,"All"))
+              ,lengthMenu = list(c(10,25,50,100,1000),c(10,25,50,100,1000))
             )
           ) %>% DT::formatRound(nomi_format3())
         }
@@ -1192,6 +1284,7 @@ multiPanel_server <- function(id){ #oltre id puoi passare altri parametri
         shiny::req(proc_data3())
         shiny::req(filter_vars3$l)
         fv1 <- filter_vars3$l
+
         if (is.data.frame(proc_data3())){
           if (length(filter_vars3$l) != 0 && !identical(length(filter_vars3$l[[1]]),nrow(proc_data3()))){fv1 <- list()}
           rec_val3$df <<- proc_data3()%>% dplyr::filter(purrr::reduce(fv1,`&`,.init = TRUE))

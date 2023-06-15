@@ -926,3 +926,97 @@ s <- s + 46
   return "IGR" if( $effect =~ /^(TF_binding_site_variant|regulatory_region_variant|regulatory_region|intergenic_variant|intergenic_region)$/ );
   return "5'Flank" if( $effect eq 'upstream_gene_variant' );
   return "3'Flank" if ( $effect eq 'downstream_gene_variant' );
+
+
+        shiny::observe({
+        #shiny::req(rec_val$df)
+        shiny::req(input$checkbox2)
+        chk1 <- input$checkbox2
+        if (!is.null(chk1) && is.data.frame(proc_data2())){
+
+          if (!identical(union(names(proc_data2()),input$checkbox2), names(proc_data2()))){
+            chk1 <- names(proc_data2())
+          }
+
+          if (length(ds2()) != length(chk1) || (length(ds2()) == length(chk1) && length(ds2())>1 && ds2()[[1]] != chk1[[1]])){#{
+            d <- c()
+            for (n in chk1){
+              d <- append(d, (which(names(proc_data2()) == n))-1)
+            }
+            ds2(d)
+          }
+          if(!is.null(ds2())){
+            proxy2 %>% DT::showCols(ds2(),reset = T)}
+          else {
+            proxy2 %>% DT::showCols(names(proc_data2()),reset = T)}
+        }
+      })
+
+
+                  print(dss2)
+            if(!is.null(intersect(input[["order"]],d))) {
+              if(length(dss2)>0){
+                for (i in d){
+                  d2 <- append(d2,which(input[["order"]]==i)-1)#intersect(input[["order"]],d)
+                }
+              }
+              else{
+                for (i in d){
+                  d2 <- append(d2,which(input[["order"]]==i)-1)#intersect(input[["order"]],d)
+                }
+              }
+
+
+            }
+            else {
+              d2 <- d
+            }
+
+            dss2 <- d2
+            print(dss2)
+            print("---------------")
+
+              if (length(chk1) <= length(input[["order"]])){
+                for (n in chk1){
+                  d <- append(d, (which(intersect(input[["order"]],names(proc_data2())) == n))-1)
+                }
+              }
+              else{
+                c <- setdiff(chk1,input[["order"]])
+                c1 <- intersect(chk1,input[["order"]])
+                s <- input[["order"]]
+                #s <- append(s,c)
+                for (n in c1){
+                  d <- append(d, (which(intersect(input[["order"]],names(proc_data2())) == n))-1)
+                }
+                for (n in c){
+                  d <- append(d, which(names(proc_data2()) == n)-1)
+                }
+              }
+                          if(!is.null(input[["order"]])){
+              print("cioa")
+              d1 <- c()
+              d2 <- c()
+              for (n in chk1){
+                d1 <- append(d1, (which(names(proc_data2()) == n))-1)
+              }
+              for (m in input[["order"]]){
+                d2 <- append(d2, (which(names(proc_data2()) == m))-1)
+              }
+              print(d1)
+              print(d2)
+              #for (i in d1){
+               # d <- append(d,which(d2 == i)-1)
+              #}
+              if (length(d1) > length(d2)){
+                d <- append(d2,setdiff(d1,d2))
+              }
+              else {
+                d <- intersect(d2,d1)
+              }
+
+            }
+            else{
+
+-------------------------------------------------------------------
+

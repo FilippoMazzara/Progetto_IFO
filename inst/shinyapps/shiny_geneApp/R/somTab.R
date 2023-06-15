@@ -325,7 +325,7 @@ somTab_server <- function(id){
           if ("Consequence" %in% col_no){
             cq <- d[["Consequence"]]
           }
-          else {
+          else if ("consequence" %in% col_no) {
             cq <- d[["consequence"]]
           }
           l <- consq_gen(cq,vt)
@@ -381,10 +381,10 @@ somTab_server <- function(id){
         }
         #qui puoi provare a fare il check su variant_classification
         # if ("Variant_Classification" %in% col_yes){effettua in place il check in d2 e d3}
-        pos2 <- c("Chromosome","VAF","Classification","Variant Type","Variant Class","Clinvar","Depth","Start","End")
+        pos2 <- c("Chromosome","VAF","Classification","VariantType","VariantClass","Clinvar","Depth","Start","End")
         pos3 <- c("Hugo_Symbol","Chromosome","Variant_Classification","Variant_Type","VARIANT_CLASS","Reference_Allele","Tumor_Seq_Allele2","Start_Position","End_Position","Tumor_Sample_Barcode")
 
-        pos_ok <- c("Gene","Hugo Symbol","Chromosome","VAF","Classification","Variant Type","Variant Class","Clinvar","Depth","Ref","Alt","Start","End","Variation","HGVSp","Exon")
+        pos_ok <- c("Gene","HugoSymbol","Chromosome","VAF","Classification","VariantType","VariantClass","Clinvar","Depth","Ref","Alt","Start","End","Variation","HGVSp","Exon")
         form <- c("VAF","Start","End","Depth") #nomi di colonne da formattare nella table
         if (!is.null(d2)){
           nomi_format(unlist(intersect(form,names(d2))))

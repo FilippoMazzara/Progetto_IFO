@@ -122,6 +122,7 @@ germTab_server <- function(id){
       titolo22 <- shiny::reactiveVal("")
 
       # REACTIVE DATA VALUES
+      ordine <- shiny::reactiveVal(NULL)
       data2 <- shiny::reactiveVal()
       proc_data2 <- shiny::reactiveVal()
       maf_data2 <- shiny::reactiveVal()
@@ -151,11 +152,13 @@ germTab_server <- function(id){
         if (inherits(t, "try-error")){
           file_error2("Il file non puo essere letto")
           data2(NULL)
+          ordine(NULL)
         }
         else{
           titolo21(input$fromfile2$name)
           titolo22("")
           data2(t)
+          ordine(NULL)
         }
 
       })
@@ -189,11 +192,14 @@ germTab_server <- function(id){
             if (inherits(t, "try-error")){
               file_error2("Il file non puo essere letto")
               data2(NULL)
+              ordine(NULL)
             }
             else{
               titolo21(inFile$name)
               titolo22(inFile$name)
               data2(t)
+              dss2 <- c()
+              ordine(NULL)
             }
           }
         }
@@ -376,10 +382,10 @@ germTab_server <- function(id){
         }
         #qui puoi provare a fare il check su variant_classification
         # if ("Variant_Classification" %in% col_yes){effettua in place il check in d2 e d3}
-        pos2 <- c("Chromosome","VAF","Classification","Variant Type","Variant Class","Clinvar","Depth","Start","End")
+        pos2 <- c("Chromosome","VAF","Classification","VariantType","VariantClass","Clinvar","Depth","Start","End")
         pos3 <- c("Hugo_Symbol","Chromosome","Variant_Classification","Variant_Type","VARIANT_CLASS","Reference_Allele","Tumor_Seq_Allele2","Start_Position","End_Position","Tumor_Sample_Barcode")
 
-        pos_ok <- c("Gene","Hugo Symbol","Chromosome","VAF","Classification","Variant Type","Variant Class","Clinvar","Depth","Ref","Alt","Start","End","Variation","HGVSp","Exon")
+        pos_ok <- c("Gene","HugoSymbol","Chromosome","VAF","Classification","VariantType","VariantClass","Clinvar","Depth","Ref","Alt","Start","End","Variation","HGVSp","Exon")
         form <- c("VAF","Start","End","Depth") #nomi di colonne da formattare nella table
         if (!is.null(d2)){
           nomi_format2(unlist(intersect(form,names(d2))))
@@ -1103,24 +1109,43 @@ germTab_server <- function(id){
         }
       })
 
+      js <- c(
+        'table.on("column-reorder", function(e, settings, details){
+        var table = document.getElementById("GSP-GERM-germ_table");
+        var thead = table.getElementsByTagName("thead");
+        var ths = thead[0].getElementsByTagName("th");
+        var tableFields = [];
+        for (let i = 0; i < ths.length; i++) {
+            tableFields[i] = ths[i].innerHTML;
+        }
+        Shiny.onInputChange("GSP-GERM-order", tableFields);
+        });'
+      )
+      js2 <- c(
+        'table.on("column-reorder", function(e, settings, details){
+        Shiny.onInputChange("GSP-GERM-order", table.colReorder.order());
+         });'
+      )
 
       output$germ_table <- DT::renderDT({
         shiny::req(proc_data2())
         if (is.data.frame(proc_data2())){
         DT::datatable(
-          shiny::isolate(proc_data2()),
-          extensions = c('Buttons','FixedHeader','Select'),
+          isolate(proc_data2()),
+          extensions = c('Buttons','FixedHeader','Select','ColReorder'),
           rownames = FALSE,
           filter = 'top',
           #fillContainer = T,
           container = htmltools::withTags(table(DT::tableHeader(names(proc_data2())),DT::tableFooter(names(proc_data2())))),
           selection = "none",#list(mode = "multiple"),
-
+          callback = DT::JS(js2),
           editable = FALSE,
           class = 'display',
           options = list(
+            stateSave = TRUE,
+            colReorder = TRUE,
             select = T,
-            order = list(0,"desc"),#asc
+            #order = list(0,"desc"),#asc questo non fa funzionare il col reorder
             serverSide = TRUE,
             paging = T,
             processing = TRUE,
@@ -1156,6 +1181,7 @@ germTab_server <- function(id){
       shiny::observe({
         shiny::req(proc_data2())
         shiny::req(filter_vars2$l)
+
         fv1 <- filter_vars2$l
         if (is.data.frame(proc_data2())){
           if (length(filter_vars2$l) != 0 && !identical(length(filter_vars2$l[[1]]),nrow(proc_data2()))){fv1 <- list()}
@@ -1164,29 +1190,54 @@ germTab_server <- function(id){
         }
       })
 
-      ### GERM TABLE CHECKBOX PROXY ###
-      shiny::observe({
-        #shiny::req(rec_val$df)
-        shiny::req(input$checkbox2)
-        chk1 <- input$checkbox2
-        if (!is.null(chk1) && is.data.frame(proc_data2())){
 
-          if (!identical(union(names(proc_data2()),input$checkbox2), names(proc_data2()))){
-            chk1 <- names(proc_data2())
+
+    shiny::observe({
+      shiny::req(input$checkbox2)
+      chk1 <- input$checkbox2
+      #ord <- ordine()
+      #if (is.null(ord)){
+        #for(i in 1:length(chk1)){
+          #ord[[chk1[[i]]]] <- i-1
+        #}
+      #}
+
+
+
+      if (!is.null(chk1) && is.data.frame(proc_data2())){
+        d <- c()
+        if (!identical(union(names(proc_data2()),input$checkbox2), names(proc_data2()))){
+          chk1 <- names(proc_data2())
+        }
+
+        if (length(ds2()) != length(chk1) || (length(ds2()) == length(chk1) && length(ds2())>1 && ds2()[[1]] != chk1[[1]])){
+            d1 <- c()
+            d2 <- c()
+
+            for (n in chk1){
+              d1 <- append(d1, which(names(proc_data2())==n)-1)
+            }
+            if(is.null(input[["order"]])){
+              print("cioa")
+              for (n in d1){
+                d2 <- d1
+              }
+            }
+            else{
+              for (n in d1){
+                d2 <- append(d2,which(input[["order"]]==n)-1)
+              }
+            }
+            d <- d2
           }
-
-          if (length(ds2()) != length(chk1) || (length(ds2()) == length(chk1) && length(ds2())>1 && ds2()[[1]] != chk1[[1]])){#{
-            d <- c()
+          else{
             for (n in chk1){
               d <- append(d, (which(names(proc_data2()) == n))-1)
             }
-            ds2(d)
           }
-          if(!is.null(ds2())){
-            proxy2 %>% DT::showCols(ds2(),reset = T)}
-          else {
-            proxy2 %>% DT::showCols(names(proc_data2()),reset = T)}
-        }
-      })
+        proxy2 %>% DT::showCols(d,reset = T)
+      }
+    })
+
     })
 }

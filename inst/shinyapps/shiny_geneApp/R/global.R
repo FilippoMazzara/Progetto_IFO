@@ -103,14 +103,14 @@ check_names <- function(n) {
 
 check_names_ok <- function(n) {
   if (n == "Gene"){"Gene"}
-  else if (n == "Hugo_Symbol"){"Hugo Symbol"}
+  else if (n == "Hugo_Symbol"){"HugoSymbol"}
   else if (n == "Chromosome"){"Chromosome"}
   else if (n == "Reference_Allele"){"Ref"}
   else if (n == "Tumor_Seq_Allele2"){"Alt"}
   else if (n == "VAF"){"VAF"}
   else if (n == "Variant_Classification"){"Classification"}
-  else if (n == "Variant_Type"){"Variant Type"}
-  else if (n == "VARIANT_CLASS"){"Variant Class"}
+  else if (n == "Variant_Type"){"VariantType"}
+  else if (n == "VARIANT_CLASS"){"VariantClass"}
   else if (n == "CLIN_SIG"){"Clinvar"}
   else if (n == "t_depth"){"Depth"}
   else if (n == "Start_Position"){"Start"}
@@ -118,7 +118,7 @@ check_names_ok <- function(n) {
   else if (n == "Existing_Variation"){"Variation"}
   else if (n == "HGVSp"){"HGVSp"}
   else if (n == "EXON"){"Exon"}
-  else if (n == "Tumor_Sample_Barcode"){"Sample Barcode"}
+  else if (n == "Tumor_Sample_Barcode"){"SampleBarcode"}
   else {NULL}
 }
 
@@ -187,6 +187,10 @@ make_ui <- function(x, var, id, n, s) {
     ### --- TEST VARIOUS INPUTS HERE --- ###
     levs <- kit::funique(x)
 
+    if (NA %in% levs){
+      levs <- levs[!is.na(levs)]
+      levs <- append(levs,"NA")
+    }
     #per un select normalepuoi fare il truncate e fare un vettore con c(nomi,valori) per le select
     #FILTERING OF VECTORS
     #if (length(levs) < (length(x)/8)){
@@ -268,15 +272,57 @@ filter_var <- function(x, val) {
   if (is.numeric(x) ) {
     if (val[1]==val[2]) {TRUE}
     else {
-      !is.na(x)& x >= val[1] & x <= val[2]
+      !is.na(x) & x >= val[1] & x <= val[2]
     }
   }
   else if (is.factor(x)){
+
     x %in% val
   }
   else if (is.character(x)) {
     #v <- levels(factor(x, exclude = NULL))
-    as.factor(x) %in% val
+    l <- c()
+    for( c in x){
+      if(c %in% val){l <- append(l,T)}
+      else if (is.na(c) && "NA" %in% val){l <- append(l,T)}
+      else{l <- append(l,F)}
+    }
+    l
+    #x %in% val
+  }
+  else if (is.logical(x)) {T}
+  else {
+    # No control, so don't filter
+    TRUE
+  }
+}
+#' Filter function
+#' @description
+#' this function decide if the values in the table are to keep or not
+#' @param x the vector to filter
+#' @param val the values supplied from the inputs
+#' @return a logical vector mapping the values to remove from the tableù
+#' @examples filter_var(vector,inputvalues)
+filter_var_multi <- function(x, val) {
+  if (is.numeric(x) ) {
+    if (val[1]==val[2]) {TRUE}
+    else {
+      is.na(x) | (x >= val[1] & x <= val[2])
+    }
+  }
+  else if (is.factor(x)){
+
+    x %in% val
+  }
+  else if (is.character(x)) {
+    #v <- levels(factor(x, exclude = NULL))
+    l <- c()
+    for( c in x){
+      if(c %in% val){l <- append(l,T)}
+      else if (is.na(c) && "NA" %in% val){l <- append(l,T)}
+      else{l <- append(l,F)}
+    }
+    l
     #x %in% val
   }
   else if (is.logical(x)) {T}
