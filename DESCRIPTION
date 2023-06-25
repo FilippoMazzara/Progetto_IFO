@@ -21,6 +21,7 @@ Imports:
     purrr,
     reactlog,
     shiny,
+    shinydashboard,
     shinyFiles,
     shinyjs,
     shinyWidgets,

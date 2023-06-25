@@ -70,7 +70,15 @@ gersomPanel_ui <- function(id){
               shiny::tabPanel(
                 id = "gersom_visual_panel",
                 title = "pannello3",
-                value = "pannello3")
+                value = "pannello3",
+                shiny::tags$div(
+                  id = "value_boxes_gersom",
+                  shinydashboard::valueBoxOutput(shiny::NS(id,"totmut")),
+                  shinydashboard::valueBoxOutput(shiny::NS(id,"sommut")),
+                  shinydashboard::valueBoxOutput(shiny::NS(id,"germmut"))
+                )
+
+              )
             )
           )
         )
@@ -141,6 +149,30 @@ gersomPanel_server <- function(id){ #oltre id puoi passare altri parametri
           shiny::updateTabsetPanel(session, "sidebar_tabset", "germ_nav")
         }
       })
+
+
+      #---- pagina confronto ----#
+      output$totmut <- shinydashboard::renderValueBox({
+        shinydashboard::valueBox(
+          paste0(25 + input$count, "%"), "Progress", icon = shiny::icon("list"),
+          color = "lightblue"
+        )
+      })
+
+      output$sommut <- shinydashboard::renderValueBox({
+        shinydashboard::valueBox(
+          paste0(25 + input$count, "%"), "Progress", icon = shiny::icon("list"),
+          color = "lightblue"
+        )
+      })
+
+      output$germmut <- shinydashboard::renderValueBox({
+        shinydashboard::valueBox(
+          paste0(25 + input$count, "%"), "Progress", icon = shiny::icon("list"),
+          color = "lightblue"
+        )
+      })
+
 
     }
 

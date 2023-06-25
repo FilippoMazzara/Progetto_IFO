@@ -358,58 +358,65 @@ toggle_panel <- function(id, target, text) {
 }
 
 consq_gen <- function(cq,vt){
-  Splice_Site <- c("Splice_Site","splice_site","splice_acceptor_variant","splice_acceptor_variant&splice_polypyrimidine_tract_variant&intron_variant","coding_sequence_variant&intron_variant","splice_polypyrimidine_tract_variant&coding_sequence_variant&5_prime_UTR_variant&intron_variant","splice_polypyrimidine_tract_variant&coding_sequence_variant&3_prime_UTR_variant&intron_variant","splice_polypyrimidine_tract_variant&coding_sequence_variant&intron_variant","splice_acceptor_variant&splice_polypyrimidine_tract_variant&coding_sequence_variant&intron_variant","splice_donor_variant&frameshift_variant","splice_donor_variant,frameshift_variant","splice_donor_variant","splice_donor_variant&intron_variant","splice_donor_variant,intron_variant","transcript_ablation")
+  Splice_Site <- c("Splice_Site","splice_site","splice_acceptor_variant","splice_polypyrimidine_tract_variant","splice_donor_variant","transcript_ablation")
   In_Frame_Ins <- c("inframe_insertion","In_Frame_Ins","in_frame_ins")
-  Nonsense_Mutation <- c("stop_gained","stop_gained,frameshift_variant","stop_gained&frameshift_variant","Nonsense_Mutation")
+  Nonsense_Mutation <- c("stop_gained","Stop_gained","Nonsense_Mutation")
   Nonstop_Mutation <- c("Nonstop_Mutation","nonstop_mutation","stop_lost")
-  Frame_Shift_Del <- c("frameshift_variant","Frame_Shift_Del")
+  Frame_Shift_Del <- c("frameshift_variant","Frame_Shift_Del","frame_shift_del")
   IGR <- c("TF_binding_site_variant","regulatory_region_variant","regulatory_region","intergenic_region","intergenic_variant","IGR","igr")
-  Splice_Region <- c("protein_altering_variant","splice_region","Splice_Region","splice_region_variant&splice_polypyrimidine_tract_variant&intron_variant","splice_region_variant&synonymous_variant","splice_region_variant,synonymous_variant","splice_region_variant&intron_variant","splice_polypyrimidine_tract_variant,splice_region_variant,intron_variant","splice_polypyrimidine_tract_variant&splice_region_variant&intron_variant","splice_region_variant,intron_variant","splice_region_variant&intron_variant&splice_polypyrimidine_tract_variant","splice_region_variant,intron_variant,splice_polypyrimidine_tract_variant")
+  Splice_Region <- c("splice_region_variant","protein_altering_variant","splice_region","Splice_Region","splice_donor_region_variant")
   In_Frame_Del <- c("in_frame_del","In_Frame_Del","inframe_deletion")
   tre_prime_UTR <- c("3_prime_UTR","3'UTR","3_prime_UTR_variant")
   tre_prime_flank <- c("downstream_gene_variant","3'Flank", "3_prime_Flank_variant")
   five_prime_UTR <- c("5_prime_UTR","5_prime_UTR_premature_start_codon_gain_variant","5'UTR","5_prime_UTR_variant")
   five_prime_flank <- c("upstream_gene_variant","5'Flank","5_prime_Flank_variant")
-  Frame_Shift_Ins <- c("Frame_Shift_Ins","frame_shift_ins","frameshift_variant","frameshift_variant&splice_region_variant","frameshift_variant,splice_region_variant")
+  Frame_Shift_Ins <- c("Frame_Shift_Ins","frame_shift_ins","frameshift_variant") ##ce ne sono due con frame shift variant
   Translation_Start_Site <- c("Translation_Start_Site","translation_start_site","initiator_codon_variant","start_lost")
-  Missense_Mutation <- c("coding_sequence_variant","conservative_missense_variant","rare_amino_acid_variant","Missense_Mutation","missense_mutation","missense_variant","missense_variant&splice_region_variant","missense_variant,splice_region_variant")
+  Missense_Mutation <- c("coding_sequence_variant","conservative_missense_variant","rare_amino_acid_variant","Missense_Mutation","missense_mutation","missense_variant")
   RNA <- c("RNA","rna","mature_miRNA_variant","non_coding_exon_variant","non_coding_transcript_exon_variant","non_coding_transcript_variant","nc_transcript_variant")
   Silent <- c("incomplete_terminal_codon_variant","stop_retained_variant","NMD_transcript_variant","Silent","silent","synonymous_variant")
   Targeted_Region <- c("","Targeted_Region","targeted_region")
-  Intron <- c("transcript_amplification","INTRAGENIC","intragenic_variant","Intron","intron_variant","splice_polypyrimidine_tract_variant,intron_variant","splice_polypyrimidine_tract_variant&intron_variant","intron_variant&splice_polypyrimidine_tract_variant","intron_variant,splice_polypyrimidine_tract_variant","intron_variant&non_coding_transcript_variant","intron_variant,non_coding_transcript_variant","intron_variant&splice_donor_5th_base_variant","splice_donor_5th_base_variant,intron_variant","splice_donor_5th_base_variant&intron_variant","intron_variant,splice_donor_5th_base_variant","intron_variant&splice_donor_region_variant","intron_variant,splice_donor_region_variant","splice_donor_region_variant,intron_variant","splice_donor_region_variant&intron_variant","intron")
+  Intron <- c("transcript_amplification","INTRAGENIC","intragenic_variant","Intron","intron_variant","splice_donor_5th_base_variant","intron")
   #"splice_region_variant" "protein_altering_variant" "splice_region_variant&splice_polypyrimidine_tract_variant&intron_variant" "splice_acceptor_variant&splice_polypyrimidine_tract_variant&coding_sequence_variant&intron_variant"
   lout <- c()
   for(i in 1:length(cq)){
     x <- ""
-    if (cq[[i]] %in% Splice_Site){x <- "Splice_Site"}
-    else if (cq[[i]] %in% In_Frame_Ins ){x <- "In_Frame_Ins"}
-    else if (cq[[i]] %in% Nonsense_Mutation){x <- "Nonsense_Mutation"}
-    else if (cq[[i]] %in% Frame_Shift_Del){
+    cx <- cq[[i]]
+    if (grepl("&",cq[[i]],fixed=T)){
+      cx <- unlist(strsplit(cq[[i]],"&"))[[1]]
+    }
+    else if (grepl(",",cq[[i]],fixed=T)){
+      cx <- unlist(strsplit(cq[[i]],","))[[1]]
+    }
+    if (cx %in% Splice_Site){x <- "Splice_Site"}
+    else if (cx %in% In_Frame_Ins ){x <- "In_Frame_Ins"}
+    else if (cx %in% Nonsense_Mutation){x <- "Nonsense_Mutation"}
+    else if (cx %in% Frame_Shift_Del){
       if(!is.null(vt) && vt[[i]] == "DEL"){
         x <- "Frame_Shift_Del"
       }
-      if (!is.null(vt) && cq[[i]] == "frameshift_variant" && vt[[i]] == "INS"){x <- "Frame_Shift_Ins"}
+      if (!is.null(vt) && cx == "frameshift_variant" && vt[[i]] == "INS"){x <- "Frame_Shift_Ins"}
     }
-    else if (cq[[i]] %in% Translation_Start_Site){x <- "Translation_Start_Site"}
-    else if (cq[[i]] %in% IGR){x <- "IGR"}
-    else if (cq[[i]] %in% RNA){x <- "RNA"}
-    else if (cq[[i]] %in% Splice_Region){x <- "Splice_Region"}
-    else if (cq[[i]] %in% Nonstop_Mutation){x <- "Nonstop_Mutation"}
-    else if (cq[[i]] %in% In_Frame_Del){x <- "In_Frame_Del"}
-    else if (cq[[i]] %in% tre_prime_UTR){x <- "3'UTR"}
-    else if (cq[[i]] %in% tre_prime_flank){x <- "3'Flank"}
-    else if (cq[[i]] %in% five_prime_UTR){x <- "5'UTR"}
-    else if (cq[[i]] %in% five_prime_flank){x <- "5'Flank"}
-    else if (cq[[i]] %in% Frame_Shift_Ins){
+    else if (cx %in% Translation_Start_Site){x <- "Translation_Start_Site"}
+    else if (cx %in% IGR){x <- "IGR"}
+    else if (cx %in% RNA){x <- "RNA"}
+    else if (cx %in% Splice_Region){x <- "Splice_Region"}
+    else if (cx %in% Nonstop_Mutation){x <- "Nonstop_Mutation"}
+    else if (cx %in% In_Frame_Del){x <- "In_Frame_Del"}
+    else if (cx %in% tre_prime_UTR){x <- "3'UTR"}
+    else if (cx %in% tre_prime_flank){x <- "3'Flank"}
+    else if (cx %in% five_prime_UTR){x <- "5'UTR"}
+    else if (cx %in% five_prime_flank){x <- "5'Flank"}
+    else if (cx %in% Frame_Shift_Ins){
       if(!is.null(vt) && vt[[i]] == "INS"){
         x <- "Frame_Shift_Ins"
       }
-      if (!is.null(vt) && cq[[i]] == "frameshift_variant" && vt[[i]] == "DEL"){x <- "Frame_Shift_Del"}
+      if (!is.null(vt) && cx == "frameshift_variant" && vt[[i]] == "DEL"){x <- "Frame_Shift_Del"}
     }
-    else if (cq[[i]] %in% Missense_Mutation){x <- "Missense_Mutation"}
-    else if (cq[[i]] %in% Silent){x <- "Silent"}
-    else if (cq[[i]] %in% Targeted_Region){x <- "Targeted_Region"}
-    else if (cq[[i]] %in% Intron){x <- "Intron"}
+    else if (cx %in% Missense_Mutation){x <- "Missense_Mutation"}
+    else if (cx %in% Silent){x <- "Silent"}
+    else if (cx %in% Targeted_Region){x <- "Targeted_Region"}
+    else if (cx %in% Intron){x <- "Intron"}
     lout<-append(lout,x)
   }
   return(lout)

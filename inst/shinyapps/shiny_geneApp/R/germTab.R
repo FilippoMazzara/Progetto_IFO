@@ -126,6 +126,8 @@ germTab_server <- function(id){
       data2 <- shiny::reactiveVal()
       proc_data2 <- shiny::reactiveVal()
       maf_data2 <- shiny::reactiveVal()
+      nomi_obs2 <- shiny::reactiveVal(c())
+      nomi_filtri2 <- shiny::reactiveVal(c())
       nomi2 <- shiny::reactiveVal()
       nomi2_f <- shiny::reactiveVal()
       nomi_w2 <- shiny::reactiveVal()
@@ -220,6 +222,8 @@ germTab_server <- function(id){
             }
           }
           #reset observers
+          nomi_obs2(c())
+          nomi_filtri2(c())
           obs2(list())
         }
 
@@ -277,6 +281,30 @@ germTab_server <- function(id){
               }
             }
             else if (n == "VAF"){
+              if ("t_depth" %in% col_yes && "t_alt_count" %in% col_no){
+                tc <- d[["t_alt_count"]]
+                dp <- c()
+                v <- c()
+                if("Depth" %in% d_n){
+                  dp <- d[["Depth"]]
+                }
+                else if ("depth" %in% d_n){
+                  dp <- d[["depth"]]
+                }
+                else if ("t_depth" %in% d_n){
+                  dp <- d[["t_depth"]]
+                }
+                if (is.numeric(dp) && is.numeric(tc)){
+                  for (i in 1:length(dp)){
+                    v[i] <- round(tc[[i]]/dp[[i]],3)
+                  }
+                }
+                if(length(v) > 0){
+                  d$VAF <- v
+                  col_yes <- append(col_yes,"VAF")
+                  col_yes_y <- append(col_yes_y,"VAF")
+                }
+              }
               ##calcola il vaf
             }
             else if (n == "Tumor_Sample_Barcode"){
@@ -383,6 +411,7 @@ germTab_server <- function(id){
         #qui puoi provare a fare il check su variant_classification
         # if ("Variant_Classification" %in% col_yes){effettua in place il check in d2 e d3}
         pos2 <- c("Chromosome","VAF","Classification","VariantType","VariantClass","Clinvar","Depth","Start","End")
+        #pos2 <- c("End","Start","Depth","Clinvar","VariantClass","VariantType","Classification","VAF","Chromosome")
         pos3 <- c("Hugo_Symbol","Chromosome","Variant_Classification","Variant_Type","VARIANT_CLASS","Reference_Allele","Tumor_Seq_Allele2","Start_Position","End_Position","Tumor_Sample_Barcode")
 
         pos_ok <- c("Gene","HugoSymbol","Chromosome","VAF","Classification","VariantType","VariantClass","Clinvar","Depth","Ref","Alt","Start","End","Variation","HGVSp","Exon")
@@ -424,31 +453,7 @@ germTab_server <- function(id){
       })
 
       #DYNAMICALLY CREATE OBSERVERS FOR GERM FILTERS' INPUTS
-      shiny::observeEvent(proc_data2(),{
-        if(!is.null(proc_data2())){
-          li <- nomi2_f()
-          res <- lapply(li, function (y) {
-            x <- paste(y,"2",sep="")
 
-            shiny::observeEvent(input[[x]], {
-              #questionable if, check for redundant initialization of observers
-              if(!is.null(input[[x]]) && !is.null(proc_data2())){
-                f <- filter_var(proc_data2()[[y]], input[[x]])
-                if (all(f)){
-                  if (x %in% names(filter_vars2$l)){
-                    filter_vars2$l[[x]] <- f
-                  }
-                }
-                else if (!all(f)){
-                  filter_vars2$l[[x]] <- f
-                }
-              }
-            },ignoreInit = T ) #inner observer end
-          }) #lapply end
-          obs2(res)
-
-        }
-      }, priority =  10) #end outer observer
 
       #FIRST CHECK BOX
       output$checkbox2 <- shiny::renderUI({
@@ -479,7 +484,7 @@ germTab_server <- function(id){
       })
 
       #RENDER FILTERS FOR GERM SIDEBAR
-      output$filter2 <- shiny::renderUI({
+      output$filter2x <- shiny::renderUI({
         shiny::req(proc_data2())
         shiny::wellPanel(
           id = "well_filter2",
@@ -500,6 +505,104 @@ germTab_server <- function(id){
           )
         )
       })
+
+      output$filter2 <- shiny::renderUI({
+        shiny::req(proc_data2())
+        shiny::wellPanel(
+          id = "well_filter2",
+          toggle_panel("toggle_filter2", "well_filter_container2","Seleziona i filtri:" ),
+          shiny::tags$div(
+            # CONTAINER TOGGLER INPUT ID + CLASS
+            id = "well_filter_container2",
+            class = "collapse in",
+            shinyWidgets::pickerInput(
+              paste("GSP-",shiny::NS(id,"checkbox_filters2"),sep=""),
+              "",
+              choices = nomi2_f(),
+              selected = nomi2_f(),
+              multiple = TRUE,
+              options = shinyWidgets::pickerOptions(
+                dropdownAlignRight = F,
+                actionsBox= TRUE,
+                size = 10,
+                liveSearch = T
+              )
+            ),
+            shiny::tags$div(
+              id = "filter2_cont"
+              ),
+            #purrr::map(nomi2_f(), ~ make_ui(proc_data2()[[.x]], .x , id, "2","GSP-")),
+            shiny::tags$div(
+              id = "filter2_controls_cont",
+              class = "filter_controls_cont",
+              shiny::actionButton(inputId = "GSP-GERM-reset_filter2", label = "Reset Filters")
+            )
+
+          )
+        )
+      })
+
+      shiny::observeEvent(input$checkbox_filters2,{
+          chk <- input$checkbox_filters2
+          if (is.null(chk)){
+            chk <- c()
+          }
+        #if(!is.null(input$checkbox_filters2) && length(input$checkbox_filters2)>0){
+          #chk <- rev(chk)
+          togli <- setdiff(nomi_filtri2(),chk)
+          metti <- setdiff(chk,nomi_filtri2())
+          if (length(metti) > 0){
+            li <- c()
+            for (n in metti){
+
+              if (!(n %in% nomi_obs2())){
+                li<- append(li,n)
+
+              }
+              shiny::insertUI(
+                selector = "#filter2_cont",
+                where = "beforeEnd",
+                ui = shiny::tags$div(id =paste("cont_",n,"2",sep=""), make_ui(proc_data2()[[n]], n , id, "2","GSP-"))
+              )
+              nomi_filtri2(append(nomi_filtri2(),n))
+            }
+            if(length(li)>0){
+              res <- lapply(li, function (y) {
+                x <- paste(y,"2",sep="")
+
+                shiny::observeEvent(input[[x]], {
+                  #questionable if, check for redundant initialization of observers
+                  if(!is.null(input[[x]]) && !is.null(proc_data2())){
+                    f <- filter_var(proc_data2()[[y]], input[[x]])
+                    if (all(f)){
+                      if (x %in% names(filter_vars2$l)){
+                        filter_vars2$l[[x]] <- f
+                      }
+                    }
+                    else if (!all(f)){
+                      filter_vars2$l[[x]] <- f
+                    }
+                  }
+                },ignoreInit = T ) #inner observer end
+              }) #lapply end
+              obs2(append(obs2(),res))
+              nomi_obs2(append(nomi_obs2(),li))
+            }
+          }
+          if (length(togli) > 0){
+            for (n in togli){
+              shiny::removeUI(
+                selector = paste("#cont_",n,"2",sep="")
+              )
+              nf <- nomi_filtri2()
+              nf <- nf[!nf == n]
+              nomi_filtri2(nf)
+              x <- paste(n,"2",sep="")
+              filter_vars2$l[[x]] <- NULL
+            }
+          }
+       # }
+      },priority = 10, ignoreNULL = FALSE) #end outer observer
 
       error_txt2 <- shiny::reactiveVal("")
       output$export_error2 <- shiny::renderText({
@@ -1143,7 +1246,7 @@ germTab_server <- function(id){
           class = 'display',
           options = list(
             stateSave = TRUE,
-            colReorder = TRUE,
+            colReorder = list(realtime = F),
             select = T,
             #order = list(0,"desc"),#asc questo non fa funzionare il col reorder
             serverSide = TRUE,

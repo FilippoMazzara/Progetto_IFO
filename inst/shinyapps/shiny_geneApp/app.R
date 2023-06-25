@@ -394,8 +394,8 @@ server <- function(input, output, session){
   })
 
   shinyjs::onclick("GSP-GERM-reset_filter2",{
-    shinyjs::reset("well_filter_container2")
-  })
+    shinyjs::reset("filter2_cont")
+  })#well_filter_container2
 
   shinyjs::onclick("MULTI-reset_filter3",{
     shinyjs::reset("well_filter_container3")
