@@ -7,6 +7,7 @@ output: github_document
 ## Overview
 You are visiting the Github repository of the GeneApp package. \
 GeneApp is a shiny based web app supporting interactive exploratory analysis of genomic data. \
+
 The ultimate goal of the project is to provide an intuitive interface, with a comprehensive set of tools, 
 that will help researchers to import, explore and visualize cancer genomics data sets. \
 Users also have the opportunity to download summaries and reports in various formats to best reflect their analysis. \
@@ -32,8 +33,8 @@ if (!require("devtools")) {
   install.packages("devtools")
 }
 
-install.packages(c("data.table", "dplyr", "DT", "kableExtra", "kit", "knitr", "maftools", "magrittr", "purrr", 
-"shiny", "shinydashboard", "shinyFiles", "shinyjs", "shinyWidgets", "stringr", "writexl"))
+install.packages(c("data.table", "dplyr", "DT", "kableExtra", "kit", "knitr", "maftools", "magrittr", 
+"purrr", "shiny", "shinydashboard", "shinyFiles", "shinyjs", "shinyWidgets", "stringr", "writexl"))
 
 devtools::install_github("FilippoMazzara/Progetto_IFO")
 
@@ -130,14 +131,16 @@ When a file that is not already in maf standard is chosen the app will try to tu
 standard in order to interpret the data more easily. If the transformation is not possible then the app will still 
 show the file but display a warning and many of the funcionalities will not be available. 
 If the file is not readable at all it will show an error.  \
+
 If you are having problems visualizing your file you should check whether they are maf compatible [here](https://www.bioconductor.org/packages/devel/bioc/vignettes/maftools/inst/doc/maftools.html#1_Introduction). \
 There is a possibility that with a few tweaks your file can also be adapted to work fine in the app, 
 still in many cases if your file is using another genetic standard is very likely that you don't need 
 this because the app will handle all the conversions for you! \
+
 If you are still having problems or if you just want to make a contribution for the project here 
 are some of the inner workings of the conversion:
 
-  - all the column names in your files are tried to be matched with the maf standard 
+   All the column names in your files are tried to be matched with the maf standard 
     column names through these pairing lists:
     
       ```
@@ -186,6 +189,7 @@ The app was developed with best Shiny practices in mind, as the use of Shiny mod
 to name a few. In total about 5000 lines of code were written for this app in a few months. \
 This time included app design and development but also all the required research to program in R, a language that was foreign to me. 
 Here are listed some of the invaluable sources I used to gather all this knowledge:\
+
   links
   
 ## Further Information
@@ -200,8 +204,8 @@ references of the package documentation, available at \
 
 + GitHub: [PROGETTOIFO - Github](https://github.com/FilippoMazzara/Progetto_IFO)
 
-page of prof andrea sterbini 
-page of ifo 
-other links?
+page of prof andrea sterbini \
+page of ifo \
+other links?\
 
 Enjoy\!
