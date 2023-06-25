@@ -1,5 +1,5 @@
 
-# GeneApp: Interactively Explore Genetic Data <img src="inst/shinyapps/shiny_geneApp/www/img/logo.jpg" align="right" style="width:100px;height:100px"/>
+# GeneApp: Interactively Explore Genetic Data <img src="inst/shinyapps/shiny_geneApp/www/img/logo1.jpg" align="right" style="width:115px;height:110px"/>
 
 ## Overview
 
@@ -236,10 +236,16 @@ few. In total about 5000 lines of code were written for this app in a
 few months.  
 This time included app design and development but also all the required
 research to program in R, a language that was foreign to me. Here are
-listed some of the invaluable sources I used to gather all this
+listed just some of the invaluable sources I used to gather all this
 knowledge:  
 
-links
+- [R for Data Science](https://r4ds.had.co.nz/index.html)  
+- [Advanced R](http://adv-r.had.co.nz/)  
+- [Mastering Shiny](https://mastering-shiny.org/index.html)  
+- [Engineering Shiny](https://engineering-shiny.org/index.html)  
+- [R Packages (2e)](https://r-pkgs.org/)  
+- [R Markdown: The Definitive
+  Guide](https://bookdown.org/yihui/rmarkdown/)  
 
 ## Further Information
 
@@ -256,9 +262,11 @@ references of the package documentation, available at
 
 - GitHub: [PROGETTOIFO -
   Github](https://github.com/FilippoMazzara/Progetto_IFO)
-
-page of prof andrea sterbini  
-page of ifo  
-other links?  
+- University “La Sapienza”: [Professor Andrea
+  Sterbini](https://www.di.uniroma1.it/it/docenti/sterbini)
+- Istituti Fisioterapici Ospitalieri: [IFO](https://www.ifo.it/)
+- Linkedin: [Matteo
+  Pallocca](https://it.linkedin.com/in/matteo-pallocca-b38742142)
+- un mio contatto che non ho
 
 Enjoy!
