@@ -6,6 +6,7 @@
 You are visiting the Github repository of the GeneApp package.  
 GeneApp is a shiny based web app supporting interactive exploratory
 analysis of genomic data.  
+
 The ultimate goal of the project is to provide an intuitive interface,
 with a comprehensive set of tools, that will help researchers to import,
 explore and visualize cancer genomics data sets.  
@@ -41,8 +42,8 @@ Github. (not in a docker container)
       install.packages("devtools")
     }
 
-    install.packages(c("data.table", "dplyr", "DT", "kableExtra", "kit", "knitr", "maftools", "magrittr", "purrr", 
-    "shiny", "shinydashboard", "shinyFiles", "shinyjs", "shinyWidgets", "stringr", "writexl"))
+    install.packages(c("data.table", "dplyr", "DT", "kableExtra", "kit", "knitr", "maftools", "magrittr", 
+    "purrr", "shiny", "shinydashboard", "shinyFiles", "shinyjs", "shinyWidgets", "stringr", "writexl"))
 
     devtools::install_github("FilippoMazzara/Progetto_IFO")
 
@@ -161,6 +162,7 @@ the data more easily. If the transformation is not possible then the app
 will still show the file but display a warning and many of the
 funcionalities will not be available. If the file is not readable at all
 it will show an error.  
+
 If you are having problems visualizing your file you should check
 whether they are maf compatible
 [here](https://www.bioconductor.org/packages/devel/bioc/vignettes/maftools/inst/doc/maftools.html#1_Introduction).  
@@ -168,13 +170,15 @@ There is a possibility that with a few tweaks your file can also be
 adapted to work fine in the app, still in many cases if your file is
 using another genetic standard is very likely that you don’t need this
 because the app will handle all the conversions for you!  
+
 If you are still having problems or if you just want to make a
 contribution for the project here are some of the inner workings of the
 conversion:
 
-- all the column names in your files are tried to be matched with the
-  maf standard column names through these pairing lists:
+All the column names in your files are tried to be matched with the maf
+standard column names through these pairing lists:
 
+      ```
       Gene <- c("Gene.refGene","Gene","gene")
       Hugo_Symbol <- c("hugo_symbol" ,"Hugo_Symbol","HUGO_SYMBOL") 
       Chromosome <- c("CHROM", "Chromosome","Chr","chrom","chromosome")
@@ -193,30 +197,30 @@ conversion:
       HGVSp <- c("HGVSp","hgvsp") 
       EXON <- c("EXON","exon","Exon") 
       Tumor_Sample_Barcode <- c("Tumor_Sample_Barcode", "tumor_sample_barcode")
+      ```
 
-  If these don’t work a second round of conversion starts where other
-  pairings are applied in order to address different possible standards
-  and the missing columns that can be deducted from the other data are
-  computed like so:
+If these don’t work a second round of conversion starts where other
+pairings are applied in order to address different possible standards
+and the missing columns that can be deducted from the other data are
+computed like so:
 
+      ```
       Hugo_Symbol <- c("SYMBOL","Symbol","symbol")
       Reference_Allele <- c("Tumor_Seq_Allele1")
       HGVSp <- c("HGVSp_Short")
       EXON <- c("Exon_Number")
+      ```
 
-  If not present the following will be tried to be inferred using values
-  from other columns, if they exist:
-
-  - Tumor_Sample_Barcode is inferred from the file or the data set
-    names  
-  - Vaf is calculated dividing t_depth for t_alt_count  
-  - Variant_Type is inferred from VARIANT_CLASS, Reference_Allele and
-    Tumor_Seq_Allele2  
-  - Variant_Classification is inferred using Consequence and
-    Variant_Type  
-  - Most of the column types are reduced to the ones that correspond to
-    the maf standard and values formatting errors are tried to be fixed
-    as well, this is most significant when merging multiple data sets  
+If not present the following will be tried to be inferred using values
+from other columns, if they exist: - Tumor_Sample_Barcode is inferred
+from the file or the data set names  
+- Vaf is calculated dividing t_depth for t_alt_count   - Variant_Type is
+inferred from VARIANT_CLASS, Reference_Allele and Tumor_Seq_Allele2  
+- Variant_Classification is inferred using Consequence and
+Variant_Type  
+- Most of the column types are reduced to the ones that correspond to
+the maf standard and values formatting errors are tried to be fixed as
+well, this is most significant when merging multiple data sets  
 
 ## Development
 
@@ -234,6 +238,7 @@ This time included app design and development but also all the required
 research to program in R, a language that was foreign to me. Here are
 listed some of the invaluable sources I used to gather all this
 knowledge:  
+
 links
 
 ## Further Information
@@ -252,6 +257,8 @@ references of the package documentation, available at
 - GitHub: [PROGETTOIFO -
   Github](https://github.com/FilippoMazzara/Progetto_IFO)
 
-page of prof andrea sterbini page of ifo other links?
+page of prof andrea sterbini  
+page of ifo  
+other links?  
 
 Enjoy!
