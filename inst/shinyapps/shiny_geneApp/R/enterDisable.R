@@ -28,7 +28,7 @@ enterDisable_server <- function(id) {
     function(input, output, session) {
 
       #useless button
-      output$enterDis <- shiny::renderUI(htmltools::HTML( '<button type="submit" disabled style="display: none" aria-hidden="true"></button>'))
+      output$enterDis <- shiny::renderUI(htmltools::HTML( '<button type = "submit" disabled style = "display: none" aria-hidden = "true"></button>'))
 
     }
   )

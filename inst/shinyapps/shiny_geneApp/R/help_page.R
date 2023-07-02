@@ -1,27 +1,27 @@
-#' about_ui
+#' help_page_ui
 #' @description
-#' ABOUT PAGE UI MODULE
+#' HELP PAGE UI MODULE
 #' @param id
 #' module's id
 #' @examples
-#' about_ui("modulename")
+#' help_page_ui("modulename")
 #'
-about_ui <- function(id) {
+help_page_ui <- function(id) {
 
   ns <- shiny::NS(id)
 
-  ### ABOUT TAB ###
+  ### HELP TAB ###
   shiny::tabPanel(
-    title = "About us",
-    value = "about",
-    id = "about",
+    title = "Help",
+    value = "help_page",
+    id = "help_page",
     class = "topchoice",
 
-    # CONTENTS OF ABOUT PAGE
+    # CONTENTS OF HELP PAGE
     shiny::fluidRow(
       style = "margin-right: 4em; margin-left: 4em; display: flex; justify-content: center;",
       shiny::tags$br(),
-      shiny::includeHTML(rmarkdown::render('www/about.Rmd')),
+
       shiny::tags$br()
     )
   )
@@ -29,15 +29,15 @@ about_ui <- function(id) {
 
 
 
-#' about_server
+#' help_page_server
 #' @description
-#' server module for the about page
+#' server module for the helpt page
 #' @param id
 #' modules'id
 #' @examples
-#' about_server("modulename")
+#' help_page_server("modulename")
 #'
-about_server <- function(id) {
+help_page_server <- function(id) {
   shiny::moduleServer(
     id,
     function(input, output, session) {

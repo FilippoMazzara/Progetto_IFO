@@ -12,33 +12,39 @@ params:
   graphd : NA
 ---
 # ``r params$name1``
-```{r, message = FALSE, results='asis', echo=FALSE, warning=FALSE}
+
+```{r, message = FALSE, results = 'asis', echo = FALSE, warning = FALSE}
 library("maftools")
+
+#MAF SUMMARY PLOT
 maftools::plotmafSummary(params$graphd)
 
 ```
 
 
-```{r, message = FALSE, results='asis', echo=FALSE, warning=FALSE}
+```{r, message = FALSE, results = 'asis', echo = FALSE, warning = FALSE}
 library("knitr")
 library("kableExtra")
 
+# --- SOLUTION WITH UNCROPPED TABLES, SPLIT BY RECORDS WITH FIXED WIDTH --- 
 nr <- nrow(params$table1)
+
+#how many records to put in each table
+
+#minimum records
 stepn <- 0
+
+#average records
 r <- nr - stepn %% 35
-v <- c()
 
-  v <- seq(from = 0, to = nr, by = 35)
-  #if (r > 0){v <- append(v,nr)}
-  ldf <- split(params$table1,cumsum(1:nr %in% (v+1)))
-  
-  for (i in 1:length(ldf)){
-    print(knitr::kable(ldf[[i]],format="latex",digits = 2,row.names = F, booktabs = T) %>%
-  kableExtra::kable_styling(full_width = T,latex_options=c("hold_position")))
-  }
+#split the original table in smaller tables
+v <- seq(from = 0, to = nr, by = 35)
+ldf <- split(params$table1,cumsum(1:nr %in% (v + 1)))
 
-
-
-
+#render the tables
+for (i in 1:length(ldf)){
+  print(knitr::kable(ldf[[i]], format = "latex", digits = 2, row.names = F, booktabs = T) %>%
+  kableExtra::kable_styling(full_width = T, latex_options = c("hold_position")))
+}
 
 ```

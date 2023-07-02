@@ -1,21 +1,28 @@
 
-# GeneApp: Interactively Explore Genetic Data <img src="inst/shinyapps/shiny_geneApp/www/img/logo1.jpg" align="right" style="width:115px;height:110px"/>
+# GeneApp: Interactively Explore Genetic Data <img src = "inst/shinyapps/shiny_geneApp/www/img/logo1.jpg" align = "right" style = "width: 115px; height: 110px;"/>
 
 ## Overview
 
 You are visiting the Github repository of the GeneApp package.  
-GeneApp is a shiny based web app supporting interactive exploratory
-analysis of genomic data.  
+
+GeneApp is a browser-based interface for interactive exploratory
+analysis of genomic data in [R](https://www.r-project.org/). The
+application is based on the [Shiny](https://shiny.rstudio.com/) package
+and can be run locally or on a server.
 
 The ultimate goal of the project is to provide an intuitive interface,
 with a comprehensive set of tools, that will help researchers to import,
-explore and visualize cancer genomics data sets.  
+explore and visualize large cancer genomics studies.  
 Users also have the opportunity to download summaries and reports in
 various formats to best reflect their analysis.  
 Due to the heterogeneous nature of genomic data there are some
 restrictions on the formatting of the files and data sets that the app
 can handle, all the details are listed in the [Advanced
 Usage](#advanced-usage) section.  
+
+Please use the issue tracker on GitHub to suggest enhancements or report
+problems: <https://github.com/FilippoMazzara/Progetto_IFO/issues>. For
+other questions and comments please contact the author Filippo Mazzara.
 
 GeneApp has two main purposes:  
 - Provide a fast way to researchers to explore and confront somatic and
@@ -24,7 +31,8 @@ germline data with different metrics.
 meaningful analyses and summaries of large  
 cancer genetic studies.  
 
-GeneApp is a tool made with the purpose of making life easier to
+GeneApp is interactive. Results update immediately when inputs are
+changed. GeneApp is a tool made with the aim of making life easier to
 genetics researchers, so I am hopeful that it will be particularly
 helpful in assisting in the genetic research effort.  
 
@@ -36,6 +44,14 @@ here.(link)
 If you are in to test GeneApp from within R, run the following in your R
 session to install the GeneApp package current development version from
 Github. (not in a docker container)  
+GeneApp works on Windows, Mac, or Linux. It can run without an Internet
+connection and no data will leave your computer. You can also run the
+app as a web application on a server.
+
+- Required: [R](https://cran.r-project.org/) version 4.0.0 or later
+- Required: [Rstudio](https://posit.co/download/rstudio-server/)
+
+<!-- -->
 
 
     if (!require("devtools")) {
@@ -48,6 +64,11 @@ Github. (not in a docker container)
     devtools::install_github("FilippoMazzara/Progetto_IFO")
 
     library("geneApp") 
+
+    devtools::load_all(".")
+
+then to run the app simply call the launcher function
+`geneApp::run_geneApp()` from the console.
 
 unfortunately there is not yet a release available on CRAN.  
 
@@ -101,15 +122,18 @@ This will be the steps required to set it up.
     The installation will take a few minutes.  
 
 8.  Open the file `app.R` and hit the “Run app” button in the toolbar of
-    the script editor (or type `shiny::runApp("geneApp")` in the R
-    session window). The Shiny app should open in a new window. You may
-    need to instruct your browser to not block popup windows for this
-    URL.  
+    the script editor (or type `geneApp::run_geneApp()` in the R session
+    window). The Shiny app should open in a new window. You may need to
+    instruct your browser to not block popup windows for this URL.  
 
 ## Basic Usage
 
-The main section of the app is the overview page, this is where the
-users will find all the important functions.  
+When GeneApp starts you will see the blank overview page where you can
+upload your data. To close the application close the browser window and
+then click `Stop`. The GeneApp process will stop and the browser window
+will close (Chrome) or gray-out. The main section of the app is the
+overview page, this is where the users will find all the important
+functions.  
 The two main services are the comparison between somatic and germline
 data sets and the combining of multiple different data sets. They mainly
 differ in their purposes and in the way the data is presented but both
@@ -145,9 +169,6 @@ sprinkled along the UI. In the Help page you’ll find more helpful tips
 and all the useful links and contact information. The app should also be
 working perfectly on mobile but there could be some quirks that are not
 yet addressed.  
-If you are having problems running the app or you experience something
-out of the ordinary please feel free to report it on the project’s
-Github page and I’ll try to address it.
 
 ## Advanced Usage
 
@@ -176,27 +197,26 @@ contribution for the project here are some of the inner workings of the
 conversion:
 
 All the column names in your files are tried to be matched with the maf
-standard column names through these pairing lists:
+standard column names through these case insensitive pairing lists:
 
       ```
-      Gene <- c("Gene.refGene","Gene","gene")
-      Hugo_Symbol <- c("hugo_symbol" ,"Hugo_Symbol","HUGO_SYMBOL") 
-      Chromosome <- c("CHROM", "Chromosome","Chr","chrom","chromosome")
-      Reference_Allele <- c("reference_allele","Reference_Allele","Ref","REF") 
-      Tumor_Seq_Allele2 <- c("Alt","ALT","Tumor_Seq_Allele2","alt")
-      VAF <- c("vaf","VAF","Vaf")
-      Variant_Classification <- c("Variant_Classification","Func.refGene")
-      Variant_Type <- c("Variant_Type","variant_type","ExonicFunc.refGene")
-      VARIANT_CLASS <- c("VARIANT_CLASS","variant_class")
-      CLIN_SIG <- c("CLIN_SIG","clinvar","Clinvar")
-      t_depth <- c("t_depth","depth","Depth")
-      Start_Position <- c("Start_Position","start","Start")
-      End_Position <- c("End_Position","end","End")
-      Existing_Variation <- c("Existing_Variation","Existing_variation","AAChange.refGene",
-                              "Variation","Var","variation")
-      HGVSp <- c("HGVSp","hgvsp") 
-      EXON <- c("EXON","exon","Exon") 
-      Tumor_Sample_Barcode <- c("Tumor_Sample_Barcode", "tumor_sample_barcode")
+      Gene <- c("gene.refgene", "gene")
+      Hugo_Symbol <- c("hugo_symbol") 
+      Chromosome <- c("chr", "chrom", "chromosome")
+      Reference_Allele <- c("reference_allele", "ref")
+      Tumor_Seq_Allele2 <- c("tumor_seq_allele2", "alt")
+      VAF <- c("vaf", "t_vaf")
+      Variant_Classification <- c("variant_classification", "func.refgene")
+      Variant_Type <- c("variant_type", "exonicfunc.refgene")
+      VARIANT_CLASS <- c("variant_class")
+      CLIN_SIG <- c("clin_sig", "clinvar")
+      t_depth <- c("depth", "t_depth")
+      Start_Position <- c("start_position", "start")
+      End_Position <- c("end_position", "end")
+      Existing_Variation <- c("existing_variation", "aachange.refgene", "variation", "var")
+      HGVSp <- c("hgvsp") 
+      EXON <- c("exon") 
+      Tumor_Sample_Barcode <- c("tumor_sample_barcode")
       ```
 
 If these don’t work a second round of conversion starts where other
@@ -205,15 +225,15 @@ and the missing columns that can be deducted from the other data are
 computed like so:
 
       ```
-      Hugo_Symbol <- c("SYMBOL","Symbol","symbol")
-      Reference_Allele <- c("Tumor_Seq_Allele1")
-      HGVSp <- c("HGVSp_Short")
-      EXON <- c("Exon_Number")
+      Hugo_Symbol <- c("symbol")
+      Reference_Allele <- c("tumor_seq_allele1")
+      HGVSp <- c("hgvsp_Short")
+      EXON <- c("exon_number")
       ```
 
 If not present the following will be tried to be inferred using values
-from other columns, if they exist: - Tumor_Sample_Barcode is inferred
-from the file or the data set names  
+from other columns, if they exist:  
+- Tumor_Sample_Barcode is inferred from the file or the data set names  
 - Vaf is calculated dividing t_depth for t_alt_count   - Variant_Type is
 inferred from VARIANT_CLASS, Reference_Allele and Tumor_Seq_Allele2  
 - Variant_Classification is inferred using Consequence and
@@ -221,6 +241,12 @@ Variant_Type
 - Most of the column types are reduced to the ones that correspond to
 the maf standard and values formatting errors are tried to be fixed as
 well, this is most significant when merging multiple data sets  
+
+## Reporting issues
+
+Please use the GitHub issue tracker at
+<a href="https://github.com/FilippoMazzara/Progetto_IFO/issues" target="_blank">github.com/FilippoMazzara/Progetto_IFO/issues</a>
+if you have any problems using Radiant.
 
 ## Development
 

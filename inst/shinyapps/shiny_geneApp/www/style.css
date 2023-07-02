@@ -1,20 +1,20 @@
-html{
+html {
   height:99% !important;
   width:100%!important;
 }
 
-body{
+body {
   height:100% !important;
   width:100% !important;
 }
 
-h2 {margin-top:10px;}
-
+h2 {
+  margin-top:10px;
+}
 
 /* Body */
 
-
-#mainpage{
+#mainpage {
     height: 100%;
     margin: 0;
     padding: 0;
@@ -25,18 +25,24 @@ h2 {margin-top:10px;}
 
 /* Navbar global */
 
-.navbar{
+.navbar {
   min-height: auto;
 }
 
+/*TOOLTIPS STYLING*/
 
-/* Tooltip */
-/*questa sezione contiene lo styling per i tooltips*/
 .tooltip {
+  max-width: 300px !important;
+  width: max-content;
+  opacity: 1 !important;
   pointer-events: none;
+  max-width: 600px;
 }
 
 .tooltip > .tooltip-inner {
+  white-space: pre-line;
+  width: 100%;
+  max-width: 100%;
   pointer-events: none;
   box-sizing: border-box;
   -moz-box-sizing:border-box;
@@ -53,10 +59,10 @@ h2 {margin-top:10px;}
   font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
   font-size: 14px;
   line-height: 1.42857143;
-  color:#333;
-  text-align: justify;
+  color: #333;
+  text-align: left;
   margin-left: 0;
-  max-width: 1000px;
+
 }
 
 .tooltip.right .tooltip-arrow {
@@ -67,10 +73,9 @@ h2 {margin-top:10px;}
   border-left-color: #e3e3e3;
 }
 
-/* Header */
-/*questa sezione contiene lo styling per l'header della pagina, anche quando collapsed*/
+/* Main Header Styling */
 
-div.container-fluid > nav > div > div > button{
+div.container-fluid > nav > div > div > button {
     margin-left: 0;
     margin-right: 0;
     margin-top: 16%;
@@ -100,16 +105,15 @@ div.navbar-header > span.navbar-brand {
   padding:0;
 }
 
-#logo1{
+#logo1 {
   height: 5em;
 }
 
-
-#mainpage > nav > div.container-fluid > div.navbar-header{
+#mainpage > nav > div.container-fluid > div.navbar-header {
   padding-left: 5%;
 }
 
-#mainpage > nav > div.container-fluid{
+#mainpage > nav > div.container-fluid {
   margin: 0;
   padding-right: 0;
   padding-left: 0;
@@ -119,12 +123,12 @@ div.navbar-header > span.navbar-brand {
   justify-content: space-evenly;
 }
 
-#topnavbar>li {
+#topnavbar> li {
   padding-left: 2.5em;
   padding-right: 2.5em;
 }
 
-#topnavbar>li>a {
+#topnavbar> li> a {
   transition-duration: 0.25s;
   line-height: 28px;
   white-space: nowrap;
@@ -139,14 +143,14 @@ div.navbar-header > span.navbar-brand {
   background-color: transparent !important;
 }
 
-#topnavbar>.active>a {
+#topnavbar> .active> a {
   text-decoration: underline !important;
 }
-#topnavbar>li>a:hover{
+#topnavbar> li> a:hover {
   text-decoration: underline !important;
 }
 
-#topnavbar{
+#topnavbar {
   display: flex;
   flex-wrap: wrap;
   align-content: center;
@@ -156,12 +160,10 @@ div.navbar-header > span.navbar-brand {
   margin: 0;
 }
 
-/* Main */
-/*styling per la parte centrale della pagina*/
+/* Main page styling */
 
-.tab-content>.active {
+.tab-content> .active {
   height:100%;
-
 }
 
 #mainpage > div.container-fluid {
@@ -174,7 +176,7 @@ div.navbar-header > span.navbar-brand {
   margin-left: 0;
 }
 
-#mainpage > div.container-fluid > div{
+#mainpage > div.container-fluid > div {
   height: 100%;
   width: 100%;
 }
@@ -182,28 +184,28 @@ div.navbar-header > span.navbar-brand {
 /*Toggler Header*/
 /* toggle filter panel in the sidebar */
 
-.toggle_well_link{
-  display:flex;
-  cursor:pointer;
+.toggle_well_link {
+  display: flex;
+  cursor: pointer;
   align-items: center;
   margin-top: 4px;
   margin-bottom: 4px;
 }
 
-.toggle_panel_text{
+.toggle_panel_text {
   display: inline-block;
   max-width: 100%;
   font-weight: 700;
 }
 
-.toggle_panel{
+.toggle_panel {
   padding-top: 0 !important;
   display: flex;
   justify-content: space-between;
-  margin-bottom:0;
+  margin-bottom: 0;
 }
 
-.toggle_panel_line{
+.toggle_panel_line {
   border-radius: 2px;
   width: 15px;
   height: 4px;
@@ -212,43 +214,43 @@ div.navbar-header > span.navbar-brand {
 }
 
 /* Home */
-/*styling pagina home*/
+/*styling home page*/
 
-.home_wellpanel{
-  margin-right:4em !important;
-  margin-left:4em !important;
-  display:flex;
-  justify-content:center;
+.home_wellpanel {
+  margin-right: 4em !important;
+  margin-left: 4em !important;
+  display: flex;
+  justify-content: center;
   overflow-x: clip;
 }
 
-#home_title{
+#home_title {
   line-height: 1.5;
   text-align: center;
-  font-size:4vw;
+  font-size: 4vw;
 }
 
-#home_title_cont{
+#home_title_cont {
   justify-content: center;
   display: flex;
   align-items: center;
 }
 
-#linkapp:hover{
-  text-decoration:underline !important;
+#linkapp:hover {
+  text-decoration: underline !important;
 }
 
-#linkapp:active{
-  text-decoration:underline !important;
+#linkapp:active {
+  text-decoration: underline !important;
 }
 
-#linkapp{
+#linkapp {
   font-weight: 500;
   letter-spacing: 2px;
-  font-size:3.5vw !important;
-  display:flex;
-  justify-content:center;
-  line-height:1.5 !important;
+  font-size: 3.5vw !important;
+  display: flex;
+  justify-content: center;
+  line-height: 1.5 !important;
   transition-duration: 0.25s;
   white-space: nowrap;
   font-family: 'Open Sans', sans-serif !important;
@@ -259,21 +261,20 @@ div.navbar-header > span.navbar-brand {
 }
 
 /* About */
-/*styling pagina about*/
-#about{
+/*styling about page*/
+#about {
   width:100%;
   font-family: 'Open Sans', sans-serif !important;
   white-space: nowrap;
 }
 
-/* Footer */
-/*styling del footer delle pagine*/
+/* MAIN FOOTER STYLING */
 
-#footertxt{
-  color:#777;
+#footertxt {
+  color: #777;
 }
 
-#footer2{
+#inner_custom_footer {
   display: flex;
   width: 100%;
   height: 100%;
@@ -281,19 +282,19 @@ div.navbar-header > span.navbar-brand {
   text-align: center;
   align-items: center;
   justify-content: space-between;
-  margin-top:10px;
+  margin-top: 10px;
 }
 
 .footer {
   overflow-x: clip;
   margin-top: 10px;
-  flex:0;
+  flex: 0;
   z-index: 1000;
   align-items: center;
   display: flex;
   justify-content: space-between;
   position: relative;
-  bottom:0;
+  bottom: 0;
   width: 100%;
   box-shadow: 0 6px 5px -7px grey inset;
   height: 80px;
@@ -301,11 +302,11 @@ div.navbar-header > span.navbar-brand {
   text-align: center;
 }
 
-#footertxt_cont{
+#footertxt_cont {
   width: 40%;
 }
 
-.logoContainerFooter{
+.logoContainerFooter {
   padding-top: 0;
   float: left;
 }
@@ -314,12 +315,10 @@ div.navbar-header > span.navbar-brand {
   height: 70px;
 }
 
+/* SECOND NAVBAR STYLING */
 
-/* seconda navbar */
-/* navbar della pagina principale */
-
-.navbar-collapse{
-  border:0;
+.navbar-collapse {
+  border: 0;
 }
 
 #nav_cont_2 {
@@ -333,6 +332,7 @@ div.navbar-header > span.navbar-brand {
 }
 
 #nav_cont_2 > nav {
+  z-index: 0;
   margin-bottom: 0 !important;
   width: 100%;
   flex: 0;
@@ -362,7 +362,7 @@ div.navbar-header > span.navbar-brand {
   padding-left: 22px;
 }
 
-.toggleLine{
+.toggleLine {
     border-radius: 2px;
     width: 70%;
     height: 4px;
@@ -370,61 +370,59 @@ div.navbar-header > span.navbar-brand {
     margin: 3px;
 }
 
-.toggleSidebar{
+.toggleSidebar {
   display: flex;
   flex-wrap: wrap;
   align-content: center;
-  cursor:pointer;
-  height:50px;
-  width:60px;
+  cursor: pointer;
+  height: 50px;
+  width: 60px;
 }
 
-/* Pagina overview main */
-/* nota: trovare selettori migliori */
+/* TABLE VIEW SECTION */
 
 #nav_cont_2 > div.container-fluid {
   z-index: 0;
   margin-top: 5px !important;
-  padding-right:0 !important;
-  padding-left:0 !important;
+  padding-right: 0 !important;
+  padding-left: 0 !important;
   flex: 1;
   height: 100%;
-  width:100%;
+  width: 100%;
 }
-
 
 #nav_cont_2 > div.container-fluid > div.tab-content {
   height: 100%;
 }
 
-#overview_container{
+#overview_container {
   width: 100%;
   height: 100%;
 }
 
-#multi_container{
+#multi_container {
   width: 100%;
   height: 100%;
 }
 
-.row{
+.row {
   margin-right: 0;
   margin-left: 0;
 }
 
-#overview_container > div.row{
+#overview_container > div.row {
   display: flex;
-  height:100%;
-  width:100%;
+  height: 100%;
+  width: 100%;
 }
 
-#multi_container > div.row{
+#multi_container > div.row {
   display: flex;
-  height:100%;
-  width:100%;
+  height: 100%;
+  width: 100%;
 }
 
-/* Sidebar overview */
+/* Sidebar FOR TABLE VIEW */
 
 #sidebar {
   min-width: 230px;
@@ -437,14 +435,14 @@ div.navbar-header > span.navbar-brand {
 }
 
 #sidebar > div > form {
-  margin-bottom:0;
+  margin-bottom: 0;
 }
 
 #sidebar > div {
   height: 100%;
   width: 100%;
-  padding-right:0;
-  padding-left:0;
+  padding-right: 0;
+  padding-left: 0;
 }
 
 #sidebar_multi {
@@ -458,173 +456,181 @@ div.navbar-header > span.navbar-brand {
 }
 
 #sidebar_multi > div > form {
-  margin-bottom:0;
+  margin-bottom: 0;
 }
 
 #sidebar_multi > div {
   height: 100%;
   width: 100%;
-  padding-right:0;
-  padding-left:0;
-}
-/* Input sidebar */
-
-form.well{
-  height:100%
+  padding-right: 0;
+  padding-left: 0;
 }
 
-div.file_side>div.well{
+/* Input from sidebar */
+
+form.well {
+  height: 100%
+}
+
+div.file_side> div.well {
   padding-left: 10px;
   padding-right: 10px;
 }
 
-div.file_side>div.well>div.collapse.in{
+div.file_side> div.well> div.collapse.in {
   padding-right: 10px;
   padding-left: 10px;
-  margin-bottom:5px;
+  margin-bottom: 5px;
 }
 
-div.file_side>div.well>div.collapse{
+div.file_side> div.well> div.collapse {
   padding-right: 10px;
   padding-left: 10px;
-  margin-bottom:0;
+  margin-bottom: 0;
 }
 
-div.file_side>div.well>div.collapsing{
+div.file_side> div.well> div.collapsing {
   padding-right: 10px;
   padding-left: 10px;
-  margin-bottom:0;
+  margin-bottom: 0;
 }
 
-div.file_side>div.well>div>div{
-  padding-top:5px;
-  margin-bottom:0;
+div.file_side> div.well> div> div {
+  padding-top: 5px;
+  margin-bottom: 0;
 }
 
-#GSP-SOM-fromfile_progress{
-  margin-bottom:10px;
-}
-#GSP-GERM-fromfile2_progress{
-  margin-bottom:10px;
-}
-#MULTI-fromfile3_progress{
+#GSP-SOM-som_file_input_client_progress {
   margin-bottom:10px;
 }
 
+#GSP-GERM-germ_file_input_client_progress {
+  margin-bottom:10px;
+}
 
-/* Main tabset overview */
-#colcol{
+#MULTI-multi_file_input_client_progress {
+  margin-bottom:10px;
+}
+
+/* tab container styling*/
+#colcol {
   overflow-x : clip;
   margin-bottom: 10px;
   margin-right: 0;
-  padding-right:0;
-  padding-left:0;
+  padding-right: 0;
+  padding-left: 0;
   flex: 1;
   height: 100%;
 }
 
-#colcol > div{
-  padding:0;
+#colcol > div {
+  padding: 0;
   width: 100%!important;
   height: 100%;
 }
 
 #colcol > div > div > ul {
- margin-left:5px;
+ margin-left: 5px;
 }
 
 #colcol > div > div > div {
- margin-left:15px;
+ margin-left: 15px;
 }
-#colcol > div > div > div > div.tab-pane{
+
+#colcol > div > div > div > div.tab-pane {
   width: 100%;
 }
 
-#colcol_multi{
+#colcol_multi {
   overflow-x : clip;
   margin-bottom: 10px;
   margin-right: 0;
-  padding-right:0;
-  padding-left:0;
+  padding-right: 0;
+  padding-left: 0;
   flex: 1;
   height: 100%;
 }
 
-#colcol_multi > div{
-  padding:0;
+#colcol_multi > div {
+  padding: 0;
   width: 100%!important;
   height: 100%;
 }
 
 #colcol_multi > div > div > ul {
- margin-left:5px;
+ margin-left: 5px;
 }
 
 #colcol_multi > div > div > div {
- margin-left:15px;
+ margin-left: 15px;
 }
-#colcol_multi > div > div > div > div.tab-pane{
+
+#colcol_multi > div > div > div > div.tab-pane {
   width: 100%;
 }
 
-#tabcontainer{
+.main_tab_container {
   width: 100%;
 }
-#tabcontainer2{
+
+#som_tab_container_main {
   width: 100%;
 }
-#tabcontainer3{
+
+#germ_tab_container_main {
+  width: 100%;
+}
+
+#multi_tab_container_main {
   width: 100%;
 }
 
 /* Datatable */
-/*changes in styiling to the datatables package, */
+/*changes in styling to the datatables package, */
 /*I changed the default header's filters and the cells' styling */
 
-
-
-.dataTables_filter{
+.dataTables_filter {
   margin-right: 15px;
 }
 
-.dt-buttons{
+.dt-buttons {
   margin-left: 15px;
 }
 
-.dataTables_length{
+.dataTables_length {
   margin-left: 15px;
   margin-top: 3px;
 }
 
-div.dataTables_scrollHeadInner{
-  padding:0;
-  width:100% !important;
+div.dataTables_scrollHeadInner {
+  padding: 0;
+  width: 100% !important;
 }
 
 table.display.dataTable.no-footer {
-  width:100% !important;
+  width: 100% !important;
 }
 
 div.dataTables_scroll {
-  width:100%;
+  width: 100%;
   padding-left: 10px;
 }
 
-.dt-button-info{
-  z-index:100 !important;
+.dt-button-info {
+  z-index: 100 !important;
 }
 
-#datatables_buttons_info{
-  z-index:100 !important;
+#datatables_buttons_info {
+  z-index: 100 !important;
 }
 
-.form-control{
-  padding-right:5px!important;
+.form-control {
+  padding-right: 5px!important;
   min-width: 60px;
 }
 
-td div:nth-of-type(2){
-  display:none !important;
+td div:nth-of-type(2) {
+  display: none !important;
 }
 
 td[data-type = "integer"] {
@@ -641,17 +647,17 @@ td[data-type = "integer"] > div {
   opacity: 1;
 }
 
-td[data-type = "integer"] > div > input{
+td[data-type = "integer"] > div > input {
   pointer-events: none !important;
-  color:transparent;
-  font-size:0;
+  color: transparent;
+  font-size: 0;
   background-color: #eee !important;
   opacity: 1 !important;
 }
 
-input[disabled]{
-  color:transparent;
-  font-size:0;
+input[disabled] {
+  color: transparent;
+  font-size: 0;
 }
 
 td[data-type = "number"] > div {
@@ -663,62 +669,67 @@ td[data-type = "number"] > div {
 
 td[data-type = "number"] > div > input {
   pointer-events: none !important;
-  color:transparent;
-  font-size:0;
+  color: transparent;
+  font-size: 0;
   background-color: #eee !important;
   opacity: 1 !important;
 }
 
-.even > td:hover{
+.even > td:hover {
   white-space: normal;
   overflow: visible !important;
   word-wrap: break-word;
-  text-align:center !important;
+  text-align: center !important;
 
 }
 
-.even > td{
+.even > td {
   white-space: nowrap;
-  text-align:center !important;
-  overflow:hidden !important;
+  text-align: center !important;
+  overflow: hidden !important;
   text-overflow: ellipsis;
   max-width: 250px !important;
   min-width: 100px !important;
 
 }
-.odd > td:hover{
+.odd > td:hover {
   white-space: normal;
   overflow: visible !important;
   word-wrap: break-word;
-  text-align:center !important;
+  text-align: center !important;
 }
 
 .odd > td {
   white-space: nowrap;
-  text-align:center !important;
-  overflow:hidden !important;
+  text-align: center !important;
+  overflow: hidden !important;
   text-overflow: ellipsis;
   max-width: 250px !important;
   min-width: 100px !important;
 }
 
+/* sticky table header and footer */
+
 th {
-  text-align:center !important;
+  text-align: center !important;
   max-width: 250px !important;
   min-width: 100px !important;
 }
+
 thead > tr > td {
   max-width: 250px !important;
   min-width: 100px !important;
 }
 
-.dataTables_scrollFootInner{
+.dataTables_scrollFootInner {
   width: 100% !important;
 }
-.dataTables_scrollFootInner > table{
-  margin-left:auto !important;
+
+.dataTables_scrollFootInner > table {
+  margin-left: auto !important;
 }
-.dataTables_scrollFoot{
+
+.dataTables_scrollFoot {
   display: inline-flex;
   flex-direction: column;
   justify-content: space-around;
@@ -733,8 +744,7 @@ thead > tr > td {
   z-index: 101;
 }
 
-.dataTables_scrollHead{
-
+.dataTables_scrollHead {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -742,29 +752,30 @@ thead > tr > td {
   position: sticky !important;
   -webkit-position: sticky ;
   -moz-position: sticky;
-  top:0;
+  top: 0;
   z-index: 99;
   background-color: #FFF;
 }
 
-.dataTables_scroll{
+.dataTables_scroll {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  align-items: center;}
+  align-items: center;
+}
 
-.row_i{
+.row_i {
   background: #FFF;
   display: flex;
   flex-direction: row-reverse;
   width: 100%;
   text-align: right;
   justify-content: space-between;
-  position:relative;
+  position: relative;
   z-index: 103;
 }
 
-.row_b{
+.row_b {
   position: relative;
   z-index: 103;
   background: #FFF;
@@ -775,127 +786,127 @@ thead > tr > td {
   justify-content: space-between;
 }
 
-div.row_b > div.dt-buttons{
-  margin-left:0;
+div.row_b > div.dt-buttons {
+  margin-left: 0;
   padding-left: 10px;
   float: left;
 }
 
-.dataTables_paginate{
-  right:0;
+.dataTables_paginate {
+  right: 0;
   background: #FFF;
   z-index: 99;
 
 }
-.dataTables_info{
+.dataTables_info {
   padding-left: 10px;
 }
 
-.dataTables_length{
-  margin-left:0;
+.dataTables_length {
+  margin-left: 0;
   padding-left: 10px;
 }
 
-.dataTables_filter{
-  margin-right:0;
+.dataTables_filter {
+  margin-right: 0;
   padding-right: 10px;
   right: 0;
 }
 
 /*TABLE CONTAINERS*/
 /*SOM table styling*/
-#GSP-SOM-som_table{
+#GSP-SOM-som_table {
   width: 100%;
   height: 100%;
 }
 
-#GSP-SOM-som_table > div{
+#GSP-SOM-som_table > div {
   padding-right: 10px;
   width: 100%;
   height: 100%;
 }
 
-#GSP-SOM-som_table > div > table > thead{
+#GSP-SOM-som_table > div > table > thead {
   top: 0;
   z-index: 100;
   background: #FFF;
 }
 
-#GSP-SOM-som_table > div > table > tfoot{
+#GSP-SOM-som_table > div > table > tfoot {
   bottom: 0;
   z-index: 100;
   background: #FFF;
 }
 
-#GSP-SOM-som_table > div > div > div.dataTables_scrollBody{
+#GSP-SOM-som_table > div > div > div.dataTables_scrollBody {
   overflow-x: auto !important;
 }
 
-#GSP-SOM-som_table > div > table{
+#GSP-SOM-som_table > div > table {
   padding-right: 30px;
 }
 
 /*GERM table styling*/
-
-#GSP-GERM-germ_table > div > table{
+#GSP-GERM-germ_table > div > table {
   padding-right: 30px;
 }
 
-#GSP-GERM-germ_table{
+#GSP-GERM-germ_table {
   width: 100%;
   height: 100%;
 }
 
-#GSP-GERM-germ_table > div{
+#GSP-GERM-germ_table > div {
   padding-right: 10px;
   width: 100%;
   height: 100%;
 }
 
-#GSP-GERM-germ_table > div > table > thead{
+#GSP-GERM-germ_table > div > table > thead {
   top: 0;
   z-index: 100;
   background: #FFF;
 }
 
-#GSP-GERM-germ_table > div > table > tfoot{
+#GSP-GERM-germ_table > div > table > tfoot {
   bottom: 0;
   z-index: 100;
   background: #FFF;
 }
 
-#GSP-GERM-germ_table > div > div > div.dataTables_scrollBody{
+#GSP-GERM-germ_table > div > div > div.dataTables_scrollBody {
   overflow-x: auto !important;
 }
+
 /*MULTI table styling*/
-#MULTI-multi_table{
+#MULTI-multi_table {
   width: 100%;
   height: 100%;
 }
 
-#MULTI-multi_table > div{
+#MULTI-multi_table > div {
   padding-right: 10px;
   width: 100%;
   height: 100%;
 }
 
-#MULTI-multi_table > div > table > thead{
+#MULTI-multi_table > div > table > thead {
   top: 0;
   z-index: 100;
   background: #FFF;
 }
 
-#MULTI-multi_table > div > table > tfoot{
+#MULTI-multi_table > div > table > tfoot {
   bottom: 0;
   z-index: 100;
   background: #FFF;
 }
 
-#MULTI-multi_table > div > div > div.dataTables_scrollBody{
+#MULTI-multi_table > div > div > div.dataTables_scrollBody {
   overflow-x: auto !important;
 }
 
-#MULTI-multi_table > div > table{
+#MULTI-multi_table > div > table {
   padding-right: 30px;
 }
 
@@ -903,21 +914,21 @@ tfoot > tr {
   position: relative;
 }
 
-#GSP-sidebar_tabset{
-  display:none !important;
+#GSP-sidebar_tabset {
+  display: none !important;
 }
 
-#topnavbar2{
+#topnavbar2 {
   margin-left: 6px;
   margin-top: 0;
   margin-bottom: 0;
   margin-right: 0;
-  display:flex;
+  display: flex;
   flex-wrap: wrap;
   align-content: center;
 }
 
-#topnavbar2 > li{
+#topnavbar2 > li {
   min-width: 92px;
   text-align: center;
   height: 50px;
@@ -926,35 +937,35 @@ tfoot > tr {
   justify-content: center
 }
 
-#topnavbar2 > li.active{
+#topnavbar2 > li.active {
   background: #e7e7e7;
 }
 
-#topnavbar2 > li.open{
+#topnavbar2 > li.open {
   background: #e7e7e7;
 }
 /*DATATABLE ADDONS*/
 
-.row_e{
+.row_e {
   width: 100%;
   overflow-y: visible;
   max-height: 1px;
   position: relative;
 }
 
-.row_e_overlay{
+.row_e_overlay {
   padding-bottom: 20px;
   z-index: 103;
   background: #FFF;
   position: relative;
 }
 
-.row_sc_i{
+.row_sc_i {
   width: auto;
   height: 1px;
 }
 
-.row_sc_cont{
+.row_sc_cont {
   margin-right: 0;
   z-index: 100;
   position: sticky;
@@ -965,51 +976,43 @@ tfoot > tr {
   justify-content: center;
 }
 
-.row_sc{
+.row_sc {
  overflow-x: auto;
 }
 
-.img_footer{
+.img_footer {
   padding-left: 30px;
 }
 
 /*SIDEBAR EXPORT*/
-#GSP-SOM-export_button1_mock {
-  height: fit-content;
-  margin-top: 5px;
-}
 
-.export_cont{
+.export_cont {
   display: flex;
   align-items: flex-end;
   justify-content: center;
   flex-wrap: wrap;
 }
 
-.export_cont > div{
+.export_cont > div {
   margin-bottom: 0;
   min-width: 75px;
   margin-right: 5px;
 }
 
-.filter_controls_cont{
+.export_cont > button {
+  margin-top: 10px;
+}
+
+.filter_controls_cont {
   display: flex;
   justify-content: center;
 }
-#GSP-GERM-export_button2_mock {
-  height: fit-content;
-  margin-top: 5px;
-}
-#MULTI-export_button3_mock {
-  height: fit-content;
-  margin-top: 5px;
+
+.form-group .bootstrap-select {
+  padding-right: 0 !important;
 }
 
-.form-group .bootstrap-select{
-  padding-right:0 !important;
-}
-
-.maf_export_cont{
+.maf_export_cont {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -1020,17 +1023,17 @@ tfoot > tr {
   margin: 5px;
 }
 
-#GSP-SOM-pdf_export1{
+#GSP-SOM-pdf_som_table_export {
   display: flex;
   justify-content: center;
 }
 
-.pdf_export_cont{
+.pdf_export_cont {
   width: 80%;
   max-width: 220px;
 }
 
-.every_export_cont{
+.every_export_cont {
   display: flex;
   margin-top: 10px;
   justify-content: center;
@@ -1038,67 +1041,94 @@ tfoot > tr {
 }
 
 
-#GSP-GERM-pdf_export2{
+#GSP-GERM-pdf_germ_table_export {
   display: flex;
   justify-content: center;
 }
 
-#MULTI-pdf_export3{
+#MULTI-pdf_multi_table_export {
   display: flex;
   justify-content: center;
 }
 
-
-
-.dataTables_info{
+.dataTables_info {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
 }
-/*
-.dataTables_scrollHeadInner > table > thead {
-  white-space: nowrap;
+
+.main_plot_container {
+  margin-right: 10px;
 }
-.dataTables_scrollFootInner > table > tfoot {
-  white-space: nowrap;
-}*/
-/* MULTI */
-#MULTI-titolo32 {
-  white-space: pre-line;
-  word-break: break-all;
-}
+
+/* MULTI page styling*/
+
 #MULTI-titolo33 {
   white-space: pre-line;
   word-break: break-all;
 }
 
+/* MAIN TITLES */
+.file_title1:hover{
+  white-space: normal;
+  overflow: visible !important;
+  word-wrap: break-word;
+  text-align: center !important;
+}
+
+.file_title_start{
+    min-width: 100px !important;
+    white-space: break-spaces;
+    text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+}
+
+.file_title1{
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+  max-width: 74vw !important;
+  min-width: 100px !important;
+  white-space: nowrap;
+  text-align: center;
+}
+
 /* SCREEN OPTIONS*/
 
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 900px) {
 
   #nav_cont_2 > nav > div > div.navbar-header {
-    min-width:230px !important;
+    min-width: 230px !important;
   }
 
 }
 
 /*MOBILE WIDTH*/
 @media screen and (max-width: 767px) {
+
+  .file_title1{
+    max-width: 95vw !important;
+  }
+
   .tooltip {
     left: 65vw !important;
     transform: rotate(180deg);
   }
+
   .tooltip-inner {
     transform: rotate(180deg);
   }
 
-  .navbar-collapse{
-    border:0;
+  .navbar-collapse {
+    border: 0;
     width: 100%;
     overflow-x: hidden !important;
   }
 
-  #sidebar{
+  #sidebar {
     padding-right: 5px;
     padding-left: 5px;
     max-width: 100vw !important;
@@ -1107,7 +1137,7 @@ tfoot > tr {
     overflow-x: hidden;
   }
 
-  #sidebar_multi{
+  #sidebar_multi {
     padding-right: 5px;
     padding-left: 5px;
     max-width: 100vw !important;
@@ -1116,19 +1146,19 @@ tfoot > tr {
     overflow-x: hidden;
   }
 
-  .dataTables_paginate{
+  .dataTables_paginate {
     left: 0;
   }
 
-  .dataTables_filter{
+  .dataTables_filter {
     left: 0;
   }
 
-  #mainpage > nav > div.container-fluid{
+  #mainpage > nav > div.container-fluid {
     flex-direction: column;
   }
 
-  .row_i{
+  .row_i {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -1137,11 +1167,11 @@ tfoot > tr {
     align-content: space-between;
     justify-content: space-between;
     align-items: flex-start;
-    position:relative;
+    position: relative;
     z-index: 103;
   }
 
-  #nav_cont_2 > nav > div{
+  #nav_cont_2 > nav > div {
     justify-content: space-around;
   }
 
@@ -1154,22 +1184,23 @@ tfoot > tr {
     margin-left: 10px;
   }
 
-  #overview_container > div.row{
+  #overview_container > div.row {
     flex-direction: column;
   }
 
-  #multi_container > div.row{
+  #multi_container > div.row {
     flex-direction: column;
   }
 
-  #mainpage > nav > div.container-fluid{
+  #mainpage > nav > div.container-fluid {
     justify-content: flex-start;
   }
 
   #nav_cont_2 > nav > div > div.navbar-header > span.navbar-brand {
-    padding-left: 0 ;
+    padding-left: 0;
   }
-  .navbar-nav .open .dropdown-menu{
+
+  .navbar-nav .open .dropdown-menu {
     -webkit-box-shadow: 0 6px 12px rgb(0 0 0 / 18%);
     box-shadow: 0 6px 12px rgb(0 0 0 / 18%);
     float: left;
@@ -1178,7 +1209,6 @@ tfoot > tr {
     border: 1px solid #ccc;
     border: 1px solid rgba(0,0,0,.15);
     margin: 2px 0 0;
-    width:inherit;
+    width: inherit;
   }
-
 }

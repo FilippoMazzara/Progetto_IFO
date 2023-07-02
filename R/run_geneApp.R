@@ -8,7 +8,7 @@
 #' The only way to first start the app
 #'
 run_geneApp <- function(){
-  appDir <- system.file("shinyapps","shiny_geneApp", package = "geneApp")
+  appDir <- system.file("shinyapps", "shiny_geneApp", package = "geneApp")
   print(appDir)
   if (appDir == "") {
     stop("Could not find shiny app. Try re-installing `geneApp`.", call. = FALSE)

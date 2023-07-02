@@ -1125,3 +1125,211 @@ consq_gen <- function(cq,vt){
   }
   return(lout)
 }
+------------------------------------------------------------------------------------------------------
+
+      #RENDER FILTERS FOR GERM SIDEBAR
+      output$germ_table_filtersx <- shiny::renderUI({
+        shiny::req(germ_processed_data())
+        shiny::wellPanel(
+          id = "well_germ_table_filters",
+          toggle_panel("toggle_germ_table_filters", "well_filter_container2","Seleziona i filtri:" ),
+          shiny::tags$div(
+            # CONTAINER TOGGLER INPUT ID + CLASS
+            id = "well_filter_container2",
+            class = "collapse in",
+
+
+            purrr::map(nomi2_f(), ~ make_ui(germ_processed_data()[[.x]], .x , id, "2","GSP-")),
+            shiny::tags$div(
+              id = "germ_table_filters_controls_cont",
+              class = "filter_controls_cont",
+              shiny::actionButton(inputId = "GSP-GERM-reset_germ_table_filters", label = "Reset Filters")
+            )
+
+          )
+        )
+      })
+_____________________________________________
+______________________________________________
+            if (input$germ_table_export_modes == "All"){
+              if (!is.null(germ_maf_data())){
+                try(
+                  write_maf_file(pre_print_germ_data(),file)
+                  ,silent = T
+                )
+              }
+            }
+            else if (input$germ_table_export_modes == "page"){
+              if (!is.null(germ_maf_data())){
+                try(
+                  write_maf_file(pre_print_germ_data(),file)
+                  ,silent = T
+                )
+              }
+            }
+            else if (input$germ_table_export_modes == "filtered"){
+              if (!is.null(germ_maf_data())){
+                try(
+                  write_maf_file(pre_print_germ_data(),file)
+                  ,silent = T
+                )
+              }
+            }
+            __________________________
+  _______________________________________
+      shiny::observe({
+      shiny::req(input$germ_column_select)
+      col_chk_res <- input$germ_column_select
+
+      if (!is.null(col_chk_res) && is.data.frame(germ_processed_data())){
+        res_data <- c()
+        if (!identical(union(names(germ_processed_data()),input$germ_column_select), names(germ_processed_data()))){
+          col_chk_res <- names(germ_processed_data())
+        }
+
+        #if (length(ds2()) != length(col_chk_res) || (length(ds2()) == length(col_chk_res) && length(ds2())>1 && ds2()[[1]] != col_chk_res[[1]])){
+            col_indexes <- c()
+            final_indexes <- c()
+
+            for (n in col_chk_res){
+              col_indexes <- append(col_indexes, which(names(germ_processed_data())==n)-1)
+            }
+            if(is.null(input[["order_germ"]])){
+              final_indexes <- col_indexes
+            }
+            else{
+              for (n in col_indexes){
+                final_indexes <- append(final_indexes,which(input[["order_germ"]]==n)-1)
+              }
+            }
+            res_data <- final_indexes
+          #}
+          #else{
+            #for (n in col_chk_res){
+             # res_data <- append(res_data, (which(names(germ_processed_data()) == n))-1)
+            #}
+          #}
+        germ_proxy %>% DT::showCols(res_data,reset = T)
+      }
+    })
+_____________________________________________________________________________
+___________________________________________________________________________-
+____________________________________________________________________________
+
+#' check vector type
+#' @description
+#' this function checks if it is needed
+#' to invoke an observer for the matching input
+#' @param x the vector to check
+#' @return  TRUE if the condition checks NULL otherwise
+#' @examples check_ui(dataframecolumn)
+check_ui <- function(x) {
+  if (is.numeric(x)) {
+    rng <- range(x, na.rm = T)
+    if (!(rng[1] == rng[2])){T}
+    else {NULL}
+  }
+  else if (is.factor(x)){
+    T
+  }
+  else if ( is.array(x) || is.character(x)) {
+    levs <- kit::funique(x)
+    T
+  }
+  else if (is.logical(x)) {
+    if(all(is.na(x)) || all(is.null(x))){NULL}
+    else {T}
+  }
+  else {
+    # Not supported
+    NULL
+  }
+}
+
+
+
+
+#' make UI of germ file
+#' DEPRECATED
+#' @description
+#' this function creates the inputs for the supplied vectors
+#' @param x the vector
+#' @param var the name of the vector
+#' @param id the module's id where the inputs will be created
+#' @return the filter created according to the conditions in the function
+#' @examples make_ui2(vector,name,moduleid)
+make_ui2 <- function(y, var, id){
+  #to distinguish from the first
+  filter_name <- paste(var,"2",sep="")
+  x <- y
+  if(is.list(y)){x <- as.vector(y)}
+  if (is.numeric(x)) {
+    rng <- range(x, na.rm = T)
+    shiny::sliderInput(shiny::NS(id,filter_name), var, min = rng[1], max = rng[2], value = rng)
+  }
+  else if (is.factor(x)) {
+    levs <- levels(factor(x, exclude = NULL))
+    shinyWidgets::pickerInput(shiny::NS(id,filter_name), var, choices = levs, selected = levs, multiple = TRUE, options = shinyWidgets::pickerOptions(actionsBox= TRUE, size = 10),choicesOpt = list(content = stringr::str_trunc(c(levs), width = 40))  )
+  }
+  else if ( is.array(x) || is.character(x)) {
+
+    #levs <- levels(factor(x, exclude = NULL))
+
+    levs <- kit::funique(x)
+    #if (length(levs) < (length(x)/8)){
+      shinyWidgets::pickerInput(shiny::NS(id,filter_name), var, choices = levs, selected = levs, multiple = TRUE, options = shinyWidgets::pickerOptions(actionsBox= TRUE, size = 10),choicesOpt = list(content = stringr::str_trunc(c(levs), width = 40))  )
+    #}
+    #else {NULL}
+  }
+  else if (is.logical(x)) {
+    if(all(is.na(x)) || all(is.null(x))) {NULL}
+    else{
+      levs <- levels(factor(x, exclude = NULL))
+      shinyWidgets::pickerInput(shiny::NS(id,filter_name), var, choices = levs, selected = levs, multiple = TRUE, options = shinyWidgets::pickerOptions(actionsBox= TRUE, size = 10),choicesOpt = list(content = stringr::str_trunc(c(levs), width = 40)))
+    }
+  }
+  else {
+    # Not supported
+    NULL
+  }
+}
+
+
+Splice_Site <- c("Splice_Site","splice_site","splice_acceptor_variant","splice_polypyrimidine_tract_variant","splice_donor_variant","transcript_ablation")
+  In_Frame_Ins <- c("inframe_insertion","In_Frame_Ins","in_frame_ins")
+  Nonsense_Mutation <- c("stop_gained","Stop_gained","Nonsense_Mutation")
+  Nonstop_Mutation <- c("Nonstop_Mutation","nonstop_mutation","stop_lost")
+  Frame_Shift_Del <- c("frameshift_variant","Frame_Shift_Del","frame_shift_del")
+  IGR <- c("TF_binding_site_variant","regulatory_region_variant","regulatory_region","intergenic_region","intergenic_variant","IGR","igr")
+  Splice_Region <- c("splice_region_variant","protein_altering_variant","splice_region","Splice_Region","splice_donor_region_variant")
+  In_Frame_Del <- c("in_frame_del","In_Frame_Del","inframe_deletion")
+  tre_prime_UTR <- c("3_prime_UTR","3'UTR","3_prime_UTR_variant")
+  tre_prime_flank <- c("downstream_gene_variant","3'Flank", "3_prime_Flank_variant")
+  five_prime_UTR <- c("5_prime_UTR","5_prime_UTR_premature_start_codon_gain_variant","5'UTR","5_prime_UTR_variant")
+  five_prime_flank <- c("upstream_gene_variant","5'Flank","5_prime_Flank_variant")
+  Frame_Shift_Ins <- c("Frame_Shift_Ins","frame_shift_ins","frameshift_variant") ##ce ne sono due con frame shift variant
+  Translation_Start_Site <- c("Translation_Start_Site","translation_start_site","initiator_codon_variant","start_lost")
+  Missense_Mutation <- c("coding_sequence_variant","conservative_missense_variant","rare_amino_acid_variant","Missense_Mutation","missense_mutation","missense_variant")
+  RNA <- c("RNA","rna","mature_miRNA_variant","non_coding_exon_variant","non_coding_transcript_exon_variant","non_coding_transcript_variant","nc_transcript_variant")
+  Silent <- c("incomplete_terminal_codon_variant","stop_retained_variant","NMD_transcript_variant","Silent","silent","synonymous_variant")
+  Targeted_Region <- c("","Targeted_Region","targeted_region")
+  Intron <- c("transcript_amplification","INTRAGENIC","intragenic_variant","Intron","intron_variant","splice_donor_5th_base_variant","intron")
+  lout <- c()
+
+
+  +++++++++++++++++++++++++++++++++++++++++++++++++++
+  +++++++++++++++++++++++++++++++++++++++++++++++++++
+      germ_statistics_data <- shiny::reactive({
+      shiny::req(germ_maf_data())
+      t <- try(
+        maftools::read.maf((germ_maf_data() %>% dplyr::filter(purrr::reduce(germ_filter_result_list$l, `&`, .init = TRUE)))[input$germ_table_rows_all,]),
+        silent = T
+      )
+      if (inherits(t, "try-error")){
+        NULL
+      }
+      else{
+        t
+      }
+    })
+

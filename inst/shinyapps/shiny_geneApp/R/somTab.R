@@ -1,6 +1,6 @@
 #' Somatic page sidebar ui module
 #' @description
-#' the function for creating the sidebar elements in the somatic visualization page
+#' the function for creating the sidebar elements in the som visualization page
 #' @param id the id assigned to the module
 #' @return the instance of the sidebar
 #' @examples somTab_ui_sidebar("SOM")
@@ -10,543 +10,714 @@ somTab_ui_sidebar <- function(id){
     title = "",
     value = "som_nav",
 
-    # ------ FILE INPUT - SOMATIC -------
-    # SIDEBAR INTERNAL CONTAINER (FILE1)
+    # ------ FILE INPUT - SOM -------
+    # SIDEBAR INTERNAL CONTAINER
     shiny::tags$div(
-      id = "file1_sidebar",
+      id = "som_sidebar",
       class = "file_side",
 
       shiny::wellPanel(
-        id = "well_1",
+        id = "som_side_well",
         # DIV TOGGLER
-        toggle_panel("toggle_well_input", "well_input","Seleziona il campione:"),
+        toggle_panel("toggle_som_side_well_input", "som_side_well_input", "Select a sample:"),
 
         shiny::tags$div(
           # CONTAINER TOGGLER INPUT ID + CLASS
-          id = "well_input",
+          id = "som_side_well_input",
           class = "collapse in",
 
-          # ------ FILE INPUT - SOMATIC FROM USER FILESYSTEM -------
+          # ------ FILE INPUT - SOM FROM USER FILESYSTEM -------
           shiny::fileInput(
-            inputId = shiny::NS(id,"fromfile"),
+            inputId = shiny::NS(id, "som_file_input_client"),
             # LABEL + TOOLTIP (WORKAROUND)
-            label = htmltools::HTML('Carica un file .tsv </label><span data-toggle="tooltip" style="float:right" data-placement="right" title="" data-original-title="A tooltip"><i class="far fa-circle-question" role="presentation" aria-label="circle-question icon"></i></span>'),
+            label = htmltools::HTML(
+              'Upload a file: </label>
+              <span data-toggle = "tooltip" style = "float: right" data-placement = "right"
+              title = "" data-original-title = "From the sidebar you are able to upload genetic data in various formats or chose it from the datasets stored on the server. \n \n After the data has loaded you will be able to explore it with all the tools that geneApp has to offer. \n \n If you want more details on how to operate the app or if you are experiencing problems, check out the Help page.">
+              <i class = "far fa-circle-question" role = "presentation"
+              aria-label = "circle-question icon"></i></span>'),
             # LIST HERE THE ALLOWED FILE FORMATS
             accept = c(".tsv",".csv",".maf",".xlsx",".xls")
           ),
 
-          # ------ FILE INPUT - SOMATIC FROM SERVER FILESYSTEM -------
+          # ------ FILE INPUT - SOM FROM SERVER FILESYSTEM -------
           ##### NO BUILT IN SEARCH BAR, LOOK FOR OTHER SOLUTIONS ####
           shinyFiles::shinyFilesButton(
-            id = shiny::NS(id,"dataset_files"),
-            label = "Seleziona un campione dai datasets...",
-            title = "Pick a file:" ,
+            id = shiny::NS(id, "som_file_input_server"),
+            label = "Select a sample from the server...",
+            title = "Pick a file:",
             viewtype = "detail",
             multiple = FALSE,
-            style = "overflow: hidden; width: auto; max-width: 100%;"
+            style = "overflow: hidden; width: 100%;"
           ),
 
-          # FILE NAME SELECTED FROM SERVER (FILE1)
+          # FILE NAME SELECTED FROM SERVER
           shiny::tags$div(
-            shiny::textOutput(shiny::NS(id,"titolo12")),
-            style = "white-space: nowrap;overflow: auto;"
+            shiny::textOutput(shiny::NS(id, "som_file_title2")),
+            style = "white-space: nowrap; overflow: auto;"
           ),
+
+          # FILE WARNINGS
           shiny::tags$div(
-            id = "warning_1",
-            shiny::textOutput(shiny::NS(id,"warning1")),
+            id = "som_warning",
+            shiny::uiOutput(shiny::NS(id, "som_warning")),
 
           )
         )
-      ), # WELL_1 END (FILE1)
+      ), # WELL_1 END
 
-      # WELL_2 COL SELECTION CHECKBOX (FILE1)
-      shiny::uiOutput(shiny::NS(id,"checkbox1")),
+      # WELL_2 COL SELECTION CHECKBOX
+      shiny::uiOutput(shiny::NS(id, "som_column_select")),
 
-      # WELL_3 ROW FILTERS PANEL (FILE1)
-      shiny::uiOutput(shiny::NS(id,"filter1")),
+      # WELL_3 ROW FILTERS PANEL
+      shiny::uiOutput(shiny::NS(id, "som_table_filters")),
 
-      # WELL_4 ROW EXPORT PANEL (FILE1)
-      shiny::uiOutput(shiny::NS(id,"export1")),
+      # WELL_4 ROW EXPORT PANEL
+      shiny::uiOutput(shiny::NS(id, "som_table_export")),
+
+      # HELP PAGE LINK
+      shiny::tags$div(
+        id = "som_help_page_link",
+        class = "help_page_link",
+        "Need any", shiny::actionLink("som_helplink", shiny::tags$span(("Help"))),"?"
+      ),
 
       # DISABLE ENTER KEY PUSH (WORKAROUND)
-      enterDisable_ui("inutile"),
-      # ENABLE TOOLTIPS (WORKAROUND)
-      tooltip_inutile()
+      enterDisable_ui("useless"),
 
-    ), # CONTAINER END (FILE1)
+      # ENABLE TOOLTIPS (WORKAROUND)
+      tooltip_inutile(),
+
+      #RESET THE CLIENT INPUT WHEN A FILE IS SELECTED FROM THE SERVER
+      shiny::actionButton(inputId = shiny::NS(id, "som_reset_client_input_button"), label = "", style = "display:none;")
+
+    ), # CONTAINER END
   )
 }
 
 #' Somatic page table ui module
 #' @description
-#' the function for creating the main and table elements in the somatic visualization page
+#' the function for creating the main and table elements in the som visualization page
 #' @param id
 #' the id assigned to the element
 #' @return
-#' the instance of the main somatic page
+#' the instance of the main som page
 #' @examples somTab_ui_table("SOM")
 somTab_ui_table <- function(id){
   ns <- shiny::NS(id)
   shiny::tabPanel(
     id = "som_panel",
-    title = "pannello1",
-    value = "pannello1",
+    title = "Somatic",
+    value = "Somatic",
 
-    # TITLE MAIN SOMATIC
-    shiny::tags$h1(
-      shiny::textOutput(shiny::NS(id,"titolo11")),
-      style = "white-space: nowrap; overflow: hidden;"
-    ),
-    shiny::textOutput(shiny::NS(id,"file_error")),
+    # TITLE MAIN SOM
+    shiny::uiOutput(shiny::NS(id, "som_file_title_main")),
+
+    #FILE READ ERROR
+    shiny::textOutput(shiny::NS(id, "som_file_error")),
+
+    #MAIN PLOT CONTAINER
     shiny::fluidRow(
-      id = "plotcontainer",
-      #shiny::plotOutput(shiny::NS(id,"som_plot2"))
-      shiny::uiOutput(shiny::NS(id,"som_plot"))
+      id = "som_plot_main_container_main",
+      class = "main_plot_container",
+      shiny::uiOutput(shiny::NS(id, "som_plot_main"))
     ),
-    # TABLE MAIN SOMATIC
+
+    # TABLE MAIN SOM
     shiny::fluidRow(
-      id = "tabcontainer",
+      id = "som_tab_container_main",
+      class = "main_tab_container",
       style = "display: flex; justify-content: center;",
-      DT::DTOutput(shiny::NS(id,"som_table"))
+      DT::DTOutput(shiny::NS(id, "som_table"))
     )
   )
 }
 
 #' Somatic page server module
 #' @description
-#' The module containing the server-side of the somatic page
+#' The module containing the server-side of the som page
 #' @param id the id assigned to the module
 #' @return the server instance
 #' @examples somTab_server("SOM")
 somTab_server <- function(id){
+
   shiny::moduleServer(
+
     id,
+
     function(input, output, session) {
+
       # REACTIVE TITLES
-      titolo11 <- shiny::reactiveVal("CARICA IL FILE CON il somatico")
-      titolo12 <- shiny::reactiveVal("")
+      som_file_title1 <- shiny::reactiveVal("")
+      som_file_title_start <- shiny::reactiveVal("\n Upload a Somatic sample \n \n  or \n \n Chose it from the available ones \n ")
+      som_file_title2 <- shiny::reactiveVal("")
 
       # REACTIVE DATA VALUES
-      data1 <- shiny::reactiveVal()
-      proc_data1 <- shiny::reactiveVal()
-      maf_data1 <- shiny::reactiveVal()
-      nomi1 <- shiny::reactiveVal()
-      nomi1_f <- shiny::reactiveVal()
-      nomi_w <- shiny::reactiveVal()
-      nomi_format <- shiny::reactiveVal()
-      file_error <- shiny::reactiveVal()
 
-      # REACTIVE FILTERS
-      filter_vars1 <- shiny::reactiveValues(l = list())
+      som_initial_data <- shiny::reactiveVal()
+      som_processed_data <- shiny::reactiveVal()
+      som_maf_data <- shiny::reactiveVal()
+      som_observer_names <- shiny::reactiveVal(c())
+      som_filter_names_initial <- shiny::reactiveVal(c())
+      som_column_names <- shiny::reactiveVal()
+      som_filter_names <- shiny::reactiveVal()
+      som_missing_columns <- shiny::reactiveVal()
+      som_formatted_columns <- shiny::reactiveVal()
+      som_file_error <- shiny::reactiveVal()
+
+      # REACTIVE FILTERS RESULTS
+      som_filter_result_list <- shiny::reactiveValues(l = list())
 
       # REACTIVE OBSERVERS FOR INPUTS
-      obs1 <- shiny::reactiveVal(list())
+      som_filter_observer_list <- shiny::reactiveVal(list())
 
-      # ------ FILE INPUT 1 -------
-      shiny::observeEvent(input$fromfile,{
-        file_error("")
+      # ------ FILE INPUT CLIENT -------
+      shiny::observeEvent(input$som_file_input_client, {
+        som_file_error("") #RESET ERROR STATUS
+
         t <- try(
+          #READ THE FILE
           data.table::fread(
-            input$fromfile$datapath,
+            input$som_file_input_client$datapath,
             data.table = FALSE,
             na.strings = base::getOption("NA")
           ),
-          silent = T)
+          silent = T
+        )
 
+        #ERROR HANDLING
         if (inherits(t, "try-error")){
-          file_error("Il file non puo essere letto")
-          data1(NULL)
+          som_file_error("There was an error reading the file")
+          som_initial_data(NULL)
         }
         else{
-          titolo11(input$fromfile$name)
-          titolo12("")
-          data1(t)
+          som_file_title1(input$som_file_input_client$name)
+          som_file_title2("")
+          som_file_title_start("")
+          som_initial_data(t)
         }
-
       })
 
       #CONNECTION BETWEEN SERVER AND CLIENT TO ACCESS FILESYSTEM
-      #con fileGetter puoi mettere delle restrizioni ed implementare una sorta di ricerca files
-      #altrimenti vedi altre soluzioni
-      #fileGetter(roots, restrictions, filetypes, pattern, hidden = FALSE)
+      #fileGetter(roots, restrictions, filetypes, pattern, hidden = FALSE) FOR FILE SEARCH ?
       shinyFiles::shinyFileChoose(
         input = input,
-        id = "dataset_files",
+        id = "som_file_input_server",
         session = session,
         roots = c(wd = "C:/Users/facke/Desktop/datasets"),
-        defaultPath="/"
+        defaultPath = "/"
       )
 
-      #INPUT FROM SERVER (SINGLE FILE)
-      shiny::observeEvent(input$dataset_files, {
-        if (!is.null(input$dataset_files)){
-          inFile <- shinyFiles::parseFilePaths(roots = c(wd = "C:/Users/facke/Desktop/datasets"), input$dataset_files)
+      # ------ FILE INPUT SERVER -------
+      shiny::observeEvent(input$som_file_input_server, {
+        if (!is.null(input$som_file_input_server)){
+
+          inFile <- shinyFiles::parseFilePaths(roots = c(wd = "C:/Users/facke/Desktop/datasets"), input$som_file_input_server)
+
           if (length(inFile$datapath) != 0 ){
-            file_error("")
+            som_file_error("") #RESET ERROR STATUS
+
             t <- try(
+              #READ THE FILE
               data.table::fread(
                 as.character(inFile$datapath),
                 data.table = F,
                 na.strings = base::getOption("NA")
               ),
-            silent = T)
+              silent = T
+            )
 
+            #ERROR HANDLING
             if (inherits(t, "try-error")){
-              file_error("Il file non puo essere letto")
-              data1(NULL)
+              som_file_error("There was an error reading the file")
+              som_initial_data(NULL)
             }
             else{
-              titolo11(inFile$name)
-              titolo12(inFile$name)
-              data1(t)
+              shinyjs::click("som_reset_client_input_button")
+              som_file_title1(inFile$name)
+              som_file_title_start("")
+              som_file_title2(inFile$name)
+              som_initial_data(t)
             }
           }
         }
       })
 
-
-      #PROCESS FILE 1
-      shiny::observeEvent(data1(),{
+      # ------ FILE PROCESSING -------
+      shiny::observeEvent(som_initial_data(), {
         #initialize filter list
+        som_filter_result_list$l <- list()
 
-        filter_vars1$l <- list()
         #destroy old reactive observers
-        if (length(obs1()) > 0){
-          for (o in obs1()){
-            if (!is.null(o)){
-              o$destroy()
-              rm(o)
+        if (length(som_filter_observer_list()) > 0){
+          for (obs in som_filter_observer_list()){
+            if (!is.null(obs)){
+              obs$destroy()
+              rm(obs)
             }
           }
-          #reset observers
-          obs1(list())
+          #reset observer lists
+          som_observer_names(c())
+          som_filter_names(c())
+          som_filter_observer_list(list())
         }
 
-        #pre process data
-        d <- data1()
-        d_n <- names(data1())
-        col_yes_y <- list()
-        col_yes <- list()
-        col_no <- list()
-        d2 <- NULL
-        d3 <- NULL
-        for (n in d_n){
-          y <- check_names(n)
-          if (is.null(y)){col_no <- append(col_no,n)}
+        #processing variables
+        initial_data <- som_initial_data()
+        col_names <- names(som_initial_data())
+        col_names_found_original <- list()
+        col_names_found_maf <- list()
+        col_names_not_found <- list()
+        processing_data <- NULL
+        processing_maf_data <- NULL
+
+        #lists of accepted values
+        #maf required names by us
+        maf_col_list <- c("Gene","Hugo_Symbol","Chromosome","VAF","Variant_Classification","Variant_Type","VARIANT_CLASS","CLIN_SIG","t_depth","Reference_Allele","Tumor_Seq_Allele2","Start_Position","End_Position","Existing_Variation","HGVSp","EXON","Tumor_Sample_Barcode")
+        #starting filters
+        filter_names <- c("Chromosome","VAF","Classification","VariantType","VariantClass","Clinvar","Depth","Start","End")
+        #maf required names in general
+        maf_required_cols <- c("Hugo_Symbol","Chromosome","Variant_Classification","Variant_Type","VARIANT_CLASS","Reference_Allele","Tumor_Seq_Allele2","Start_Position","End_Position","Tumor_Sample_Barcode")
+        #general names that we agreed on
+        final_names_cols <- c("Gene","HugoSymbol","Chromosome","VAF","Classification","VariantType","VariantClass","Clinvar","Depth","Ref","Alt","Start","End","Variation","HGVSp","Exon")
+        #column names to post format in DT, (doubles)
+        cols_to_post_format <- c("VAF")
+
+        #check which columns are present and sort their names out
+        for (name in col_names){
+          maf_name <- check_names(name)
+          if (is.null(maf_name)){col_names_not_found <- append(col_names_not_found, name)}
           else {
-            if(y %in% col_yes){col_no <- append(col_no,n)}
+            if(maf_name %in% col_names_found_maf){
+              col_names_not_found <- append(col_names_not_found, name)
+            }
             else{
-              col_yes <- append(col_yes,y)
-              col_yes_y <- append(col_yes_y,n)
+              col_names_found_maf <- append(col_names_found_maf, maf_name)
+              col_names_found_original <- append(col_names_found_original, name)
             }
           }
         }
 
-        pos <- c("Gene","Hugo_Symbol","Chromosome","VAF","Variant_Classification","Variant_Type","VARIANT_CLASS","CLIN_SIG","t_depth","Reference_Allele","Tumor_Seq_Allele2","Start_Position","End_Position","Existing_Variation","HGVSp","EXON","Tumor_Sample_Barcode")
-        col_mancanti <- setdiff(pos,col_yes)
-        if (length(col_mancanti)>0){
-          for(n in col_mancanti){
+        #missing columns
+        missing_cols <- setdiff(maf_col_list, col_names_found_maf)
+
+        #try to infer the missing columns values from other columns in the table
+        #these can be expanded to accommodate different standards
+
+        #Hugo_Symbol, Reference_Allele, HGVSp, EXON, VAF, Tumor_Sample_Barcode
+        if (length(missing_cols) > 0){
+          for(n in missing_cols){
             if (n == "Hugo_Symbol"){
-              p <- which(d_n %in% c("SYMBOL","Symbol","symbol"))
-              if(length(p)>0){
-                col_yes <- append(col_yes,"Hugo_Symbol")
-                col_yes_y <- append(col_yes_y,d_n[[p]])
+              p <- which(tolower(col_names) == "symbol")
+              if(length(p) > 0){
+                col_names_found_maf <- append(col_names_found_maf, "Hugo_Symbol")
+                col_names_found_original <- append(col_names_found_original, col_names[[p]])
               }
             }
             else if (n == "Reference_Allele"){
-              p <- which(d_n %in% c("Tumor_Seq_Allele1"))
-              if(length(p)>0){
-                col_yes <- append(col_yes,"Reference_Allele")
-                col_yes_y <- append(col_yes_y,d_n[[p]])
+              p <- which(tolower(col_names) == "tumor_seq_allele1")
+              if(length(p) > 0){
+                col_names_found_maf <- append(col_names_found_maf, "Reference_Allele")
+                col_names_found_original <- append(col_names_found_original, col_names[[p]])
               }
             }
-
             else if (n == "HGVSp"){
-              p <- which(d_n %in% c("HGVSp_Short"))
-              if(length(p)>0){
-                col_yes <- append(col_yes,"HGVSp")
-                col_yes_y <- append(col_yes_y,d_n[[p]])
+              p <- which(tolower(col_names) == "hgvsp_short")
+              if(length(p) > 0){
+                col_names_found_maf <- append(col_names_found_maf, "HGVSp")
+                col_names_found_original <- append(col_names_found_original, col_names[[p]])
               }
             }
             else if (n == "EXON"){
-              p <- which(d_n %in% c("Exon_Number"))
-              if(length(p)>0){
-                col_yes <- append(col_yes,"EXON")
-                col_yes_y <- append(col_yes_y,d_n[[p]])
+              p <- which(tolower(col_names) == "exon_number")
+              if(length(p) > 0){
+                col_names_found_maf <- append(col_names_found_maf, "EXON")
+                col_names_found_original <- append(col_names_found_original, col_names[[p]])
               }
             }
             else if (n == "VAF"){
-              ##calcola il vaf
+              if ("t_depth" %in% col_names_found_maf && "t_alt_count" %in% col_names_not_found){
+                tc <- initial_data[["t_alt_count"]]
+                vaf <- c()
+                j <- which(col_names_found_maf == "t_depth")
+                col_j <- col_names_found_original[[j]]
+                dp <- initial_data[[col_j]]
+                if (is.numeric(dp) && is.numeric(tc)){
+                  for (i in 1:length(dp)){
+                    vaf[i] <- round(tc[[i]] / dp[[i]], 3)
+                  }
+                }
+                if(length(vaf) > 0){
+                  initial_data$VAF <- vaf
+                  col_names_found_maf <- append(col_names_found_maf, "VAF")
+                  col_names_found_original <- append(col_names_found_original, "VAF")
+                }
+              }
             }
             else if (n == "Tumor_Sample_Barcode"){
-              col_yes <- append(col_yes,"Tumor_Sample_Barcode")
-              col_yes_y <- append(col_yes_y,"Tumor_Sample_Barcode")
-              d$Tumor_Sample_Barcode <- substring(titolo11(),1,18)
+              col_names_found_maf <- append(col_names_found_maf, "Tumor_Sample_Barcode")
+              col_names_found_original <- append(col_names_found_original, "Tumor_Sample_Barcode")
+              initial_data$Tumor_Sample_Barcode <- substring(som_file_title1(), 1, 18)
             }
           }
         }
 
-        if(!("Variant_Type" %in% col_yes) && ("VARIANT_CLASS" %in% col_yes)){
+        #Variant_Type
+        if(!("Variant_Type" %in% col_names_found_maf) && ("VARIANT_CLASS" %in% col_names_found_maf)){
           ref <- NULL
-          if ("Reference_Allele" %in% col_yes){
-            j <- which(col_yes == "Reference_Allele")
-            ref_j <- col_yes_y[[j]]
-            ref <- d[[ref_j]]
+          if ("Reference_Allele" %in% col_names_found_maf){
+            j <- which(col_names_found_maf == "Reference_Allele")
+            ref_j <- col_names_found_original[[j]]
+            ref <- initial_data[[ref_j]]
           }
+
           alt <- NULL
-          if ("Tumor_Seq_Allele2" %in% col_yes){
-            k <- which(col_yes == "Tumor_Seq_Allele2")
-            alt_k <- col_yes_y[[k]]
-            alt <- d[[alt_k]]
+          if ("Tumor_Seq_Allele2" %in% col_names_found_maf){
+            k <- which(col_names_found_maf == "Tumor_Seq_Allele2")
+            alt_k <- col_names_found_original[[k]]
+            alt <- initial_data[[alt_k]]
           }
-          i <- which(col_yes == "VARIANT_CLASS")
-          vc_i <- col_yes_y[[i]]
-          vc <- d[[vc_i]]
-          l <- vc_gen(vc,ref,alt)
-          if (length(col_yes)>6){
-            col_yes <- append(col_yes,list(x = "Variant_Type"),5)
-            col_yes_y <- append(col_yes_y,list(x = "Variant_Type"),5)
+
+          i <- which(col_names_found_maf == "VARIANT_CLASS")
+          vc_i <- col_names_found_original[[i]]
+          vc <- initial_data[[vc_i]]
+
+          vt <- var_type_gen(vc, ref, alt)
+
+          if (length(col_names_found_maf) > 6){
+            col_names_found_maf <- append(col_names_found_maf, list(x = "Variant_Type"), 5)
+            col_names_found_original <- append(col_names_found_original, list(x = "Variant_Type"), 5)
           }
           else{
-            col_yes <- append(col_yes,"Variant_Type")
-            col_yes_y <- append(col_yes_y,"Variant_Type")
+            col_names_found_maf <- append(col_names_found_maf, "Variant_Type")
+            col_names_found_original <- append(col_names_found_original, "Variant_Type")
           }
-          d$Variant_Type <- l
+          initial_data$Variant_Type <- vt
         }
 
-        if (!("Variant_Classification" %in% col_yes) && ("Consequence" %in% col_no || "consequence" %in% col_no)){
+        #Variant_Classification
+        if (!("Variant_Classification" %in% col_names_found_maf) && ("consequence" %in% tolower(col_names_not_found))){
+
           vt <- NULL
-          if ("Variant_Type" %in% col_yes){
-            j <- which(col_yes == "Variant_Type")
-            vt_j <- col_yes_y[[j]]
-            vt <- d[[vt_j]]
+          if ("Variant_Type" %in% col_names_found_maf){
+            j <- which(col_names_found_maf == "Variant_Type")
+            vt_j <- col_names_found_original[[j]]
+            vt <- initial_data[[vt_j]]
           }
+
           cq <- list()
-          if ("Consequence" %in% col_no){
-            cq <- d[["Consequence"]]
-          }
-          else if ("consequence" %in% col_no) {
-            cq <- d[["consequence"]]
-          }
-          l <- consq_gen(cq,vt)
-          if (length(col_yes)>5){
-            col_yes <- append(col_yes,list(x = "Variant_Classification"),4)
-            col_yes_y <- append(col_yes_y,list(x = "Variant_Classification"),4)
+          k <- which(tolower(col_names) == "consequence")
+          col_k <- col_names[[k]]
+          cq <- initial_data[[col_k]]
+
+          var_class <- var_class_gen(cq, vt)
+
+          if (length(col_names_found_maf) > 5){
+            col_names_found_maf <- append(col_names_found_maf, list(x = "Variant_Classification"), 4)
+            col_names_found_original <- append(col_names_found_original, list(x = "Variant_Classification"), 4)
           }
           else{
-            col_yes <- append(col_yes,"Variant_Classification")
-            col_yes_y <- append(col_yes_y,"Variant_Classification")
+            col_names_found_maf <- append(col_names_found_maf, "Variant_Classification")
+            col_names_found_original <- append(col_names_found_original, "Variant_Classification")
           }
-          d$Variant_Classification <- l
+          initial_data$Variant_Classification <- var_class
         }
 
-        for (n in pos){
-          l <- which(col_yes == n)
+        #Initialize the new data sets starting from the maf found columns
+        for (maf_name in maf_col_list){
 
-          if(length(l)> 0){
-            nok <- check_names_ok(n)
-            cl <- col_yes_y[[l]]
-            if(is.null(d2)){
-              d2 <- data.frame(nome = d[[cl]])
-              data.table::setnames(d2,nok)
+          col_i <- which(col_names_found_maf == maf_name)
+          if(length(col_i) > 0){
+            new_name <- check_custom_names(maf_name)
+            original_col_name <- col_names_found_original[[col_i]]
+
+            if(is.null(processing_data)){
+              processing_data <- data.frame(nome = initial_data[[original_col_name]])
+              data.table::setnames(processing_data, new_name)
             }
             else{
-              d2[[nok]] <- d[[cl]]
+              processing_data[[new_name]] <- initial_data[[original_col_name]]
             }
-            if(is.null(d3)){
-              d3 <- data.frame(nome = d[[cl]])
-              data.table::setnames(d3,n)
+            if(is.null(processing_maf_data)){
+              processing_maf_data <- data.frame(nome = initial_data[[original_col_name]])
+              data.table::setnames(processing_maf_data, maf_name)
             }
             else{
-              d3[[n]] <- d[[cl]]
+              processing_maf_data[[maf_name]] <- initial_data[[original_col_name]]
             }
           }
         }
 
-        for(n in col_no){
-          if(is.null(d2)){
-            d2 <- data.frame(n = d[[n]])
-            data.table::setnames(d2,n)
+        #Then add the remaining columns
+        for(n in col_names_not_found){
+          if(is.null(processing_data)){
+            processing_data <- data.frame(n = initial_data[[n]])
+            data.table::setnames(processing_data, n)
           }
           else{
-            d2[[n]] <- d[[n]]
+            processing_data[[n]] <- initial_data[[n]]
           }
-          if(is.null(d3)){
-            d3 <- data.frame(n = d[[n]])
-            data.table::setnames(d3,n)
+          if(is.null(processing_maf_data)){
+            processing_maf_data <- data.frame(n = initial_data[[n]])
+            data.table::setnames(processing_maf_data, n)
           }
           else{
-            d3[[n]] <- d[[n]]
+            processing_maf_data[[n]] <- initial_data[[n]]
           }
         }
-        #qui puoi provare a fare il check su variant_classification
-        # if ("Variant_Classification" %in% col_yes){effettua in place il check in d2 e d3}
-        pos2 <- c("Chromosome","VAF","Classification","VariantType","VariantClass","Clinvar","Depth","Start","End")
-        pos3 <- c("Hugo_Symbol","Chromosome","Variant_Classification","Variant_Type","VARIANT_CLASS","Reference_Allele","Tumor_Seq_Allele2","Start_Position","End_Position","Tumor_Sample_Barcode")
 
-        pos_ok <- c("Gene","HugoSymbol","Chromosome","VAF","Classification","VariantType","VariantClass","Clinvar","Depth","Ref","Alt","Start","End","Variation","HGVSp","Exon")
-        form <- c("VAF","Start","End","Depth") #nomi di colonne da formattare nella table
-        if (!is.null(d2)){
-          nomi_format(unlist(intersect(form,names(d2))))
-          nomi1_f(unlist(intersect(pos2,names(d2))))
-          nomi1(unlist(intersect(pos_ok,names(d2))))
+        #Adapt the types of the data to maf standard types
+        if ("Chromosome" %in% col_names_found_maf && is.numeric(processing_maf_data[["Chromosome"]])){
+          processing_data[["Chromosome"]] <- as.character(processing_data[["Chromosome"]])
+          processing_maf_data[["Chromosome"]] <- as.character(processing_maf_data[["Chromosome"]])
+        }
+        if ("seqnames" %in% col_names_not_found && is.numeric(processing_data[["seqnames"]])){
+          processing_data[["seqnames"]] <- as.character(processing_data[["seqnames"]])
+          processing_maf_data[["seqnames"]] <- as.character(processing_maf_data[["seqnames"]])
+        }
+        #list of columns that should be doubles
+        doubles <- c("gnomAD_AF","gnomAD_SAS_AF","gnomAD_NFE_AF","gnomAD_AFR_AF","gnomAD_FIN_AF","gnomAD_AMR_AF","gnomAD_ASJ_AF","gnomAD_EAS_AF")
+        for (n in doubles){
+          if (n %in% col_names_not_found && is.character(processing_data[[n]])){
+            processing_data[[n]] <- as.double(processing_data[[n]])
+            processing_maf_data[[n]] <- as.double(processing_maf_data[[n]])
+          }
+        }
+
+        #pass the values found to the reactive values
+        if (!is.null(processing_data)){
+          som_formatted_columns(unlist(intersect(cols_to_post_format, names(processing_data))))
+          som_filter_names_initial(unlist(intersect(filter_names, names(processing_data))))
+          som_column_names(unlist(intersect(final_names_cols, names(processing_data))))
         }
         else{
-          nomi_format(c())
-          nomi1_f(c())
-          nomi1(c())
+          som_formatted_columns(c())
+          som_filter_names_initial(c())
+          som_column_names(c())
         }
 
-        c2 <- setdiff(pos_ok,names(d2))
-        if (length(c2) > 0){
-          nomi_w(paste("Le colonne mancanti sono:",paste(c2,collapse = ", "), sep=" "))
+        #missing required columns warning
+        missing_names <- setdiff(final_names_cols, names(processing_data))
+        if (length(missing_names) > 0){
+          som_missing_columns(paste("Missing columns:", paste(missing_names, collapse = ", "), sep = " "))
         }
         else {
-          nomi_w("Non ci sono colonne mancanti")
+          som_missing_columns("There are no missing columns")
         }
 
-        if (length(setdiff(pos3,names(d3)))==0){
-          #print(names(d2))
+        #if the maf data set works then send it to the reactive
+        if (length(setdiff(maf_required_cols, names(processing_maf_data))) == 0){
           t <- try(
-            maftools::read.maf(d3),
+            maftools::read.maf(processing_maf_data),
             silent = T
           )
           if (inherits(t, "try-error")){
-            maf_data1(NULL)
+            som_maf_data(NULL)
           }
           else{
-            maf_data1(d3)
+            som_maf_data(processing_maf_data)
           }
         }
-        else{maf_data1(NULL)}
-        proc_data1(d2)
+        else{som_maf_data(NULL)
+        }
+
+        #send the processed data with the good names to the reactive
+        som_processed_data(processing_data)
       })
 
-      #DYNAMICALLY CREATE OBSERVERS FOR SOMATIC FILTERS' INPUTS
-      shiny::observeEvent(proc_data1(),{
-        if(!is.null(proc_data1())){
-          ##### per non creare tutti gli observer
-          #li <- list()
-          #for(n in names(proc_data1())){
-          #if( !is.null(check_ui(proc_data1()[[n]]))){
-          # li <- append(li,n)
-          #}
-          #}
-          ##### names(proc_data1())
-          #create observers fo inputs
-          #res <- lapply(li, function (x) {
+      # ------ COLUMNS TOGGLE SELECTION -------
+      output$som_column_select <- shiny::renderUI({
+        shiny::req(som_processed_data())
 
-          li <- nomi1_f()
-          res <- lapply(li, function (x) {
-
-            shiny::observeEvent(input[[x]], {
-              #questionable if, check for redundant initialization of observers
-              if(!is.null(input[[x]]) && !is.null(proc_data1())){
-                f <- filter_var(proc_data1()[[x]], input[[x]])
-                if (all(f)){
-                  if (x %in% names(filter_vars1$l)){
-                    filter_vars1$l[[x]] <- f
-                  }
-                }
-                else if (!all(f)){
-                  filter_vars1$l[[x]] <- f
-                }
-              }
-            },ignoreInit = T ) #inner observer end
-          }) #lapply end
-          obs1(res)
-
-        }
-      }, priority =  10) #end outer observer
-
-      #FIRST CHECK BOX
-      output$checkbox1 <- shiny::renderUI({
-        shiny::req(proc_data1())
         shiny::wellPanel(
-          id = "chk1",
-          toggle_panel("toggle_chk1", "well_chk_container1","Seleziona le colonne:" ),
+          id = "som_col_chk",
+          toggle_panel("toggle_som_col_chk", "well_som_chk_container", "Show/Hide columns:" ),
+
           shiny::tags$div(
             # CONTAINER TOGGLER INPUT ID + CLASS
-            id = "well_chk_container1",
+            id = "well_som_chk_container",
             class = "collapse in",
+
+            #columns selection
             shinyWidgets::pickerInput(
-              paste("GSP-",shiny::NS(id,"checkbox1"),sep=""),
+              paste("GSP-", shiny::NS(id, "som_column_select"), sep=""),
               "",
-              choices = c(names(proc_data1())),
-              selected = nomi1(),#c("Gene","Chromosome","VAF","Consequence","Variant_Type","Clinvar","Depth","Ref","Alt","Start","End","Variation","HGVSp","Exon"),
+              choices = c(names(som_processed_data())),
+              selected = som_column_names(),
               multiple = TRUE,
               options = shinyWidgets::pickerOptions(
                 dropdownAlignRight = F,
-                actionsBox= TRUE,
+                actionsBox = TRUE,
                 size = 10,
                 liveSearch = T
               ),
-              choicesOpt = list(content = stringr::str_trunc(c(names(proc_data1())), width = 40))
+              choicesOpt = list(content = stringr::str_trunc(c(names(som_processed_data())), width = 40))
             )
+
           )
         )
       })
 
-      #RENDER FILTERS FOR SOMATIC SIDEBAR
-      output$filter1 <- shiny::renderUI({
-        shiny::req(proc_data1())
+      # ------ FILTERS TOGGLE SELECTION -------
+      output$som_table_filters <- shiny::renderUI({
+        shiny::req(som_processed_data())
+
         shiny::wellPanel(
-          id = "well_filter1",
-          toggle_panel("toggle_filter1", "well_filter_container1","Seleziona i filtri:" ),
+          id = "well_som_table_filters",
+          toggle_panel("toggle_som_table_filters", "well_som_filter_container", "Select filters:" ),
+
           shiny::tags$div(
             # CONTAINER TOGGLER INPUT ID + CLASS
-            id = "well_filter_container1",
+            id = "well_som_filter_container",
             class = "collapse in",
-            #purrr::map(names(proc_data1()), ~ make_ui(proc_data1()[[.x]], .x , id))
 
-            purrr::map(nomi1_f(), ~ make_ui(proc_data1()[[.x]], .x , id, "","GSP-")),
+            #filter select
+            shinyWidgets::pickerInput(
+              paste("GSP-", shiny::NS(id, "checkbox_filters_som"), sep=""),
+              "",
+              choices = som_filter_names_initial(),
+              selected = c(),
+              multiple = TRUE,
+              options = shinyWidgets::pickerOptions(
+                dropdownAlignRight = F,
+                actionsBox = TRUE,
+                size = 10,
+                liveSearch = T
+              )
+            ),
+
+            shiny::tags$hr(style = "margin-top: 5px; margin-bottom: 5px;"),
+
+            #filters container
             shiny::tags$div(
-              id = "filter1_controls_cont",
+              id = "som_table_filters_cont",
+              class = "table_filters_cont"
+            ),
+
+            shiny::tags$hr(style = "margin-top: 5px; margin-bottom: 10px;"),
+
+            #reset filters button
+            shiny::tags$div(
+              id = "som_table_filters_controls_cont",
               class = "filter_controls_cont",
-              shiny::actionButton(inputId = "GSP-SOM-reset_filter1", label = "Reset Filters")
+              shiny::actionButton(inputId = "GSP-SOM-reset_som_table_filters", label = "Reset Filters")
             )
 
           )
         )
       })
 
-      error_txt <- shiny::reactiveVal("")
-      output$export_error1 <- shiny::renderText({
+      # ------ FILTERS TOGGLE SELECTION CONTROLS-------
+      shiny::observeEvent(input$checkbox_filters_som, {
 
-          error_txt()
+          #determine which filters to keep or to remove
+          chk <- input$checkbox_filters_som
+          if (is.null(chk)){
+            chk <- c()
+          }
+          remove_filter <- setdiff(som_filter_names(), chk)
+          add_filter <- setdiff(chk, som_filter_names())
+          if (length(add_filter) > 0){
+            li <- c()
 
+            #add filters
+            for (n in add_filter){
+              if (!(n %in% som_observer_names())){
+                li <- append(li, n)
+              }
+              shiny::insertUI(
+                selector = "#som_table_filters_cont",
+                where = "beforeEnd",
+                ui = shiny::tags$div(id = paste("cont_", n, "1", sep = ""), make_ui(som_processed_data()[[n]], n, id, "1", "GSP-"))
+              )
+              som_filter_names(append(som_filter_names(), n))
+            }
+
+            if(length(li) > 0){
+              #generate the observers for the inputs, only the not yet generated ones
+              res <- lapply(li, function(filter_name) {
+                som_filter_name <- paste(filter_name, "1", sep = "")
+                #observer start
+                shiny::observeEvent(input[[som_filter_name]], {
+                  if(!is.null(input[[som_filter_name]]) && !is.null(som_processed_data())){
+                    filter_value <- filter_var(som_processed_data()[[filter_name]], input[[som_filter_name]])
+                    #check if you can get this to be more efficent
+                    if (all(filter_value)){
+                      if (som_filter_name %in% names(som_filter_result_list$l)){
+                        som_filter_result_list$l[[som_filter_name]] <- filter_value
+                      }
+                    }
+                    else if (!all(filter_value)){
+                      som_filter_result_list$l[[som_filter_name]] <- filter_value
+                    }
+                  }
+                },
+                ignoreInit = T ) #inner observer end
+              }) #lapply end
+              som_filter_observer_list(append(som_filter_observer_list(), res))
+              som_observer_names(append(som_observer_names(), li))
+            }
+          }
+
+          if (length(remove_filter) > 0){
+            #remove filters
+            for (n in remove_filter){
+              shiny::removeUI(
+                selector = paste("#cont_", n, "1", sep="")
+              )
+              nf <- som_filter_names()
+              nf <- nf[ !nf == n ]
+              som_filter_names(nf)
+              x <- paste(n, "1", sep="")
+              #remove the filter result
+              som_filter_result_list$l[[x]] <- NULL
+            }
+          }
+      },
+      priority = 10,
+      ignoreNULL = FALSE) #end outer observer
+
+      # ------ DATA EXPORT -------
+
+      #EXPORT ERROR HANDLING
+      file_export_error <- shiny::reactiveVal("")
+      output$export_error_som <- shiny::renderText({
+          file_export_error()
       })
 
-      output$pdf_export1 <- shiny::renderUI({
-        shiny::req(input$export1_types)
-        if (input$export1_types == "pdf"){
+      #PDF EXPORT
+      output$pdf_som_table_export <- shiny::renderUI({
+        shiny::req(input$som_table_export_types)
+        if (input$som_table_export_types == "pdf"){
           shiny::tags$div(
-            id = "pdf_export_cont1",
+            id = "pdf_export_cont_som",
             class = "pdf_export_cont",
+            #chose the templates
             shinyWidgets::pickerInput(
-              paste("GSP-",shiny::NS(id,"pdf_export_options1"),sep=""),
+              paste("GSP-", shiny::NS(id,"pdf_export_options_som"), sep=""),
               "",
-              choices = c("Template 1","Template 2","Template 3"),
+              choices = c("Template 1", "Template 2", "Template 3"),
               selected = c("Template 1"),
               multiple = F,
               options = shinyWidgets::pickerOptions(
                 dropdownAlignRight = F,
                 size = 10,
               )
-            ),
+            )
           )
         }
         else{NULL}
       })
 
-      output$every_export1 <- shiny::renderUI({
-        shiny::req(input$export1_types)
-        if (input$export1_types %in% c("tsv","csv","xlsx")){
+      #SWITCH TO TOGGLE SELECTED/ALL COLUMNS TO EXPORT
+      output$every_som_table_export <- shiny::renderUI({
+        shiny::req(input$som_table_export_types)
+        if (input$som_table_export_types %in% c("tsv", "csv", "xlsx")){
           shiny::tags$div(
-            id = "every_export_cont1",
+            id = "every_export_cont_som",
             class = "every_export_cont",
             shinyWidgets::materialSwitch(
-              inputId = "GSP-SOM-every_export_switch1",
+              inputId = "GSP-SOM-every_export_switch_som",
               label = "only selected cols",
               right = TRUE
             )
@@ -555,563 +726,606 @@ somTab_server <- function(id){
         else{NULL}
       })
 
-      output$maf_export1 <- shiny::renderUI({
-        shiny::req(input$export1_types)
-        if (input$export1_types == "maf"){
+      #MAF EXPORT
+      output$maf_som_table_export <- shiny::renderUI({
+        shiny::req(input$som_table_export_types)
+        if (input$som_table_export_types == "maf"){
           shiny::tags$div(
-            id = "maf_export_cont1",
+            id = "maf_export_cont_som",
             class = "maf_export_cont",
-            shiny::actionButton(inputId = "GSP-SOM-export_genesum1_mock",label = "Gene summary", icon = shiny::icon("download")),
-            shiny::downloadButton(outputId = "GSP-SOM-export_genesum1",style = "display:none;"),
-            shiny::actionButton(inputId = "GSP-SOM-export_samplesum1_mock",label = "Sample summary", icon = shiny::icon("download")),
-            shiny::downloadButton(outputId = "GSP-SOM-export_samplesum1",style = "display:none;"),
-            shiny::actionButton(inputId = "GSP-SOM-export_mafsummary1_mock",label = "MAF summary", icon = shiny::icon("download")),
-            shiny::downloadButton(outputId = "GSP-SOM-export_mafsummary1",style = "display:none;")
+            #BUTTONS AND MOCK BUTTONS FOR THE MAF EXPORTS
+            shiny::actionButton(inputId = "GSP-SOM-export_genesum_mock_som", label = "Gene summary", icon = shiny::icon("download")),
+            shiny::downloadButton(outputId = "GSP-SOM-export_genesum_som", style = "display:none;"),
+            shiny::actionButton(inputId = "GSP-SOM-export_samplesum_som_mock", label = "Sample summary", icon = shiny::icon("download")),
+            shiny::downloadButton(outputId = "GSP-SOM-export_samplesum_som", style = "display:none;"),
+            shiny::actionButton(inputId = "GSP-SOM-export_mafsummary_som_mock", label = "MAF summary", icon = shiny::icon("download")),
+            shiny::downloadButton(outputId = "GSP-SOM-export_mafsummary_som", style = "display:none;")
           )
         }
         else{NULL}
       })
 
-      pre_genesummary_data <- shiny::reactiveVal(NULL)
-      shiny::observeEvent(input$export_genesum1_mock, {
+      #MAF GENE SUMMARY EXPORT
+      pre_genesummary_som_data <- shiny::reactiveVal(NULL)
+
+      shiny::observeEvent(input$export_genesum_mock_som, {
         ok <- TRUE
         e <- ""
-        d <- NULL
-        error_txt(e)
-        if (is.null(maf_data1())){
-          ok<-F
-          e <- "il dataset non è compatibile con maf"
+        res_data <- NULL
+        file_export_error(e)
+        if (is.null(som_maf_data())){
+          ok <- F
+          e <- "data set is not maf compatible"
         }
         else{
-          if (input$export1_modes == "All"){
+          #DIFFERENT SETS OF RECORDS TO GENERATE THE REPORT ON
+          if (input$som_table_export_modes == "All"){
             t <- try(
-              maftools::getGeneSummary(maftools::read.maf(maf_data1()))
-              ,silent = T
+              maftools::getGeneSummary(maftools::read.maf(som_maf_data())),
+              silent = T
             )
             if (inherits(t, "try-error")){
-              e <- "Non si può generare il gene summary"
+              e <- "Can't create gene summary"
               ok <- F
             }
             else{
-              d <- t
+              res_data <- t
             }
           }
-          else if (input$export1_modes == "page"){
+          else if (input$som_table_export_modes == "page"){
             t <- try(
-              maftools::getGeneSummary(maftools::read.maf((maf_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE)))[input$som_table_rows_current,]))
-              ,silent = T
+              maftools::getGeneSummary(maftools::read.maf((som_maf_data() %>% dplyr::filter(purrr::reduce(som_filter_result_list$l, `&`, .init = TRUE)))[input$som_table_rows_current,])),
+              silent = T
             )
             if (inherits(t, "try-error")){
-              e <- "Non si può generare il gene summary"
+              e <- "Can't create gene summary"
               ok <- F
             }
             else{
-              d <- t
+              res_data <- t
             }
           }
-          else if (input$export1_modes == "filtered"){
+          else if (input$som_table_export_modes == "filtered"){
             t <- try(
-              maftools::getGeneSummary(maftools::read.maf((maf_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE)))[input$som_table_rows_all,]))
-              ,silent = T
+              maftools::getGeneSummary(maftools::read.maf((som_maf_data() %>% dplyr::filter(purrr::reduce(som_filter_result_list$l, `&`, .init = TRUE)))[input$som_table_rows_all,])),
+              silent = T
             )
             if (inherits(t, "try-error")){
-              e <- "Non si può generare il gene summary"
+              e <- "Can't create gene summary"
               ok <- F
             }
             else{
-              d <- t
+              res_data <- t
             }
           }
         }
+
+        #CHECK FOR ERRORS
         if(ok){
-          if (is.null(d)){error_txt("ERRORE")}
+          if (is.null(res_data)){file_export_error("FILE EXPORT ERROR")}
           else{
-            pre_genesummary_data(d)
-            shinyjs::click("export_genesum1")
+            pre_genesummary_som_data(res_data)
+            shinyjs::click("export_genesum_som")
           }
         }
         else {
-          error_txt(e)
+          file_export_error(e)
         }
       })
 
-      output$export_genesum1 <- shiny::downloadHandler(
+      output$export_genesum_som <- shiny::downloadHandler(
         filename = function() {
-          paste(substring(titolo11(),1,20),"_", Sys.Date(),"_GeneSummary_",input$export1_modes,".txt", sep="")
+          paste(substring(som_file_title1(), 1, 20), "_", Sys.Date(), "_GeneSummary_", input$som_table_export_modes, ".txt", sep="")
         },
         content = function(file) {
             try(
-              write_gene_summary(pre_genesummary_data(),file)
-              ,silent = T
+              write_gene_summary(pre_genesummary_som_data(), file),
+              silent = T
             )
         }
       )
-      shiny::outputOptions(output, "export_genesum1", suspendWhenHidden = FALSE)
+      shiny::outputOptions(output, "export_genesum_som", suspendWhenHidden = FALSE)
 
-      pre_samplesum_data <- shiny::reactiveVal(NULL)
-      shiny::observeEvent(input$export_samplesum1_mock, {
+      #SAMPLE SUMMARY EXPORT
+      pre_samplesum_som_data <- shiny::reactiveVal(NULL)
+
+      shiny::observeEvent(input$export_samplesum_som_mock, {
         ok <- TRUE
         e <- ""
-        d <- NULL
-        error_txt(e)
-        if (is.null(maf_data1())){
-          ok<-F
-          e <- "il dataset non è compatibile con maf"
+        res_data <- NULL
+        file_export_error(e)
+        if (is.null(som_maf_data())){
+          ok <- F
+          e <- "data set is not maf compatible"
         }
         else{
-          if (input$export1_modes == "All"){
+          #DIFFERENT SETS OF RECORDS TO GENERATE THE REPORT ON
+          if (input$som_table_export_modes == "All"){
             t <- try(
-              maftools::getSampleSummary(maftools::read.maf(maf_data1()))
-              ,silent = T
+              maftools::getSampleSummary(maftools::read.maf(som_maf_data())),
+              silent = T
             )
             if (inherits(t, "try-error")){
-              e <- "Non si può generare il sample summary"
+              e <- "Can't create sample summary"
               ok <- F
             }
             else{
-              d <- t
+              res_data <- t
             }
           }
-          else if (input$export1_modes == "page"){
+          else if (input$som_table_export_modes == "page"){
             t <- try(
-              maftools::getSampleSummary(maftools::read.maf((maf_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE)))[input$som_table_rows_current,]))
-              ,silent = T
+              maftools::getSampleSummary(maftools::read.maf((som_maf_data() %>% dplyr::filter(purrr::reduce(som_filter_result_list$l, `&`, .init = TRUE)))[input$som_table_rows_current,])),
+              silent = T
             )
             if (inherits(t, "try-error")){
-              e <- "Non si può generare il sample summary"
+              e <- "Can't create sample summary"
               ok <- F
             }
             else{
-              d <- t
+              res_data <- t
             }
           }
-          else if (input$export1_modes == "filtered"){
+          else if (input$som_table_export_modes == "filtered"){
             t <- try(
-              maftools::getSampleSummary(maftools::read.maf((maf_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE)))[input$som_table_rows_all,]))
-              ,silent = T
+              maftools::getSampleSummary(maftools::read.maf((som_maf_data() %>% dplyr::filter(purrr::reduce(som_filter_result_list$l, `&`, .init = TRUE)))[input$som_table_rows_all,])),
+              silent = T
             )
             if (inherits(t, "try-error")){
-              e <- "Non si può generare il sample summary"
+              e <- "Can't create sample summary"
               ok <- F
             }
             else{
-              d <- t
+              res_data <- t
             }
           }
         }
+
+        #CHECK FOR ERRORS
         if(ok){
-          if (is.null(d)){error_txt("ERRORE")}
+          if (is.null(res_data)){file_export_error("FILE EXPORT ERROR")}
           else{
-            pre_samplesum_data(d)
-            shinyjs::click("export_samplesum1")
+            pre_samplesum_som_data(res_data)
+            shinyjs::click("export_samplesum_som")
           }
         }
-        else {
-          error_txt(e)
+        else{
+          file_export_error(e)
         }
       })
 
-      output$export_samplesum1 <- shiny::downloadHandler(
+      output$export_samplesum_som <- shiny::downloadHandler(
         filename = function() {
-          paste(substring(titolo11(),1,20),"_", Sys.Date(),"_SampleSummary_",input$export1_modes,".txt", sep="")
+          paste(substring(som_file_title1(), 1, 20), "_", Sys.Date(), "_SampleSummary_", input$som_table_export_modes, ".txt", sep="")
         },
         content = function(file) {
-          print(pre_samplesum_data())
           try(
-            write_sample_summary(pre_samplesum_data(),file)
-            ,silent = T
+            write_sample_summary(pre_samplesum_som_data(), file),
+            silent = T
           )
         }
       )
-      shiny::outputOptions(output, "export_samplesum1", suspendWhenHidden = FALSE)
+      shiny::outputOptions(output, "export_samplesum_som", suspendWhenHidden = FALSE)
 
-      pre_mafsummary_data <- shiny::reactiveVal(NULL)
-      shiny::observeEvent(input$export_mafsummary1_mock, {
+      #MAF SUMMARY EXPORT
+      pre_mafsummary_som_data <- shiny::reactiveVal(NULL)
+
+      shiny::observeEvent(input$export_mafsummary_som_mock, {
         ok <- TRUE
         e <- ""
-        d <- NULL
-        error_txt(e)
-        if (is.null(maf_data1())){
-          ok<-F
-          e <- "il dataset non è compatibile con maf"
+        res_data <- NULL
+        file_export_error(e)
+        if (is.null(som_maf_data())){
+          ok <- F
+          e <- "data set is not maf compatible"
         }
         else{
-          if (input$export1_modes == "All"){
+          #DIFFERENT SETS OF RECORDS TO GENERATE THE REPORT ON
+          if (input$som_table_export_modes == "All"){
             t <- try(
-              maftools::read.maf(maf_data1())
-              ,silent = T
+              maftools::read.maf(som_maf_data()),
+              silent = T
             )
             if (inherits(t, "try-error")){
-              e <- "Non si può generare il maf summary"
+              e <- "Can't create maf summary"
               ok <- F
             }
             else{
-              d <- t
+              res_data <- t
             }
           }
-          else if (input$export1_modes == "page"){
+          else if (input$som_table_export_modes == "page"){
             t <- try(
-              maftools::read.maf((maf_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE)))[input$som_table_rows_current,])
-              ,silent = T
+              maftools::read.maf((som_maf_data() %>% dplyr::filter(purrr::reduce(som_filter_result_list$l, `&`, .init = TRUE)))[input$som_table_rows_current,]),
+              silent = T
             )
             if (inherits(t, "try-error")){
-              e <- "Non si può generare il maf summary"
+              e <- "Can't create maf summary"
               ok <- F
             }
             else{
-              d <- t
+              res_data <- t
             }
           }
-          else if (input$export1_modes == "filtered"){
+          else if (input$som_table_export_modes == "filtered"){
             t <- try(
-              maftools::read.maf((maf_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE)))[input$som_table_rows_all,])
-              ,silent = T
+              maftools::read.maf((som_maf_data() %>% dplyr::filter(purrr::reduce(som_filter_result_list$l, `&`, .init = TRUE)))[input$som_table_rows_all,]),
+              silent = T
             )
             if (inherits(t, "try-error")){
-              e <- "Non si può generare il maf summary"
+              e <- "Can't create maf summary"
               ok <- F
             }
             else{
-              d <- t
+              res_data <- t
             }
           }
         }
+
+        #CHECK FOR ERRORS
         if(ok){
-          if (is.null(d)){error_txt("ERRORE")}
+          if (is.null(res_data)){file_export_error("FILE EXPORT ERROR")}
           else{
-            pre_mafsummary_data(d@summary)
-            shinyjs::click("export_mafsummary1")
+            pre_mafsummary_som_data(res_data@summary)
+            shinyjs::click("export_mafsummary_som")
           }
         }
         else {
-          error_txt(e)
+          file_export_error(e)
         }
       })
 
-      output$export_mafsummary1 <- shiny::downloadHandler(
+      output$export_mafsummary_som <- shiny::downloadHandler(
         filename = function() {
-          paste(substring(titolo11(),1,20),"_", Sys.Date(),"_MafSummary_",input$export1_modes,".txt", sep="")
+          paste(substring(som_file_title1(), 1, 20), "_", Sys.Date(), "_MafSummary_", input$som_table_export_modes, ".txt", sep="")
         },
         content = function(file) {
           try(
-            write_maf_summary(pre_mafsummary_data(),file)
-            ,silent = T
+            write_maf_summary(pre_mafsummary_som_data(), file),
+            silent = T
           )
         }
       )
-      shiny::outputOptions(output, "export_mafsummary1", suspendWhenHidden = FALSE)
+      shiny::outputOptions(output, "export_mafsummary_som", suspendWhenHidden = FALSE)
 
-      #RENDER FILTERS FOR SOMATIC SIDEBAR
-      output$export1 <- shiny::renderUI({
-        shiny::req(proc_data1())
+      #FILE EXPORT MAIN CONTROLS
+      output$som_table_export <- shiny::renderUI({
+        shiny::req(som_processed_data())
         shiny::wellPanel(
-          id = "well_export1",
+          id = "well_som_table_export",
           class = "well_export",
-          toggle_panel("toggle_export1", "well_export_container1","Esporta i dati:" ),
+          toggle_panel("toggle_som_table_export", "well_export_container_som", "Export the data:" ),
           shiny::tags$div(
             # CONTAINER TOGGLER INPUT ID + CLASS
-            id = "well_export_container1",
+            id = "well_export_container_som",
             class = "collapse in",
             shiny::tags$div(
-              id = "export_cont1",
+              id = "export_cont_som",
               class = "export_cont",
+              #FILE TYPE SELECTION
               shinyWidgets::pickerInput(
-                paste("GSP-",shiny::NS(id,"export1_types"),sep=""),
+                paste("GSP-", shiny::NS(id, "som_table_export_types"), sep=""),
                 "",
-                choices = c("xlsx","pdf","csv","tsv","maf"),
+                choices = c("xlsx", "pdf", "csv", "tsv", "maf"),
                 selected = c("xlsx"),
                 multiple = F,
                 options = shinyWidgets::pickerOptions(
                   dropdownAlignRight = F,
-                  size = 10,
+                  size = 10
                 )
               ),
+              #RECORD SELECTION
               shinyWidgets::pickerInput(
-                paste("GSP-",shiny::NS(id,"export1_modes"),sep=""),
+                paste("GSP-", shiny::NS(id, "som_table_export_modes"), sep=""),
                 "",
-                choices = c("All","page","filtered"),
+                choices = c("All", "page", "filtered"),
                 selected = c("All"),
                 multiple = F,
                 options = shinyWidgets::pickerOptions(
                   dropdownAlignRight = F,
-                  size = 10,
+                  size = 10
                 )
               ),
-              shiny::actionButton(inputId = "GSP-SOM-export_button1_mock",label = "Download", icon = shiny::icon("download")),
-              shiny::downloadButton(outputId = "GSP-SOM-export_button1",style = "display:none;")
+              #EXPORT BUTTONS
+              shiny::actionButton(inputId = "GSP-SOM-export_button_som_mock", label = "Download", icon = shiny::icon("download")),
+              shiny::downloadButton(outputId = "GSP-SOM-export_button_som", style = "display:none;")
             ),
-            shiny::uiOutput("GSP-SOM-every_export1"),
-            shiny::uiOutput("GSP-SOM-pdf_export1"),
-            shiny::uiOutput("GSP-SOM-maf_export1"),
-            shiny::textOutput("GSP-SOM-export_error1")
+            shiny::tags$hr(),
+            #DIFFERENT FILE TYPES EXPORT UI
+            shiny::uiOutput("GSP-SOM-every_som_table_export"),
+            shiny::uiOutput("GSP-SOM-pdf_som_table_export"),
+            shiny::uiOutput("GSP-SOM-maf_som_table_export"),
+            #ERROR MESSAGE
+            shiny::textOutput("GSP-SOM-export_error_som")
           )
         )
       })
 
-      pre_print_data <- shiny::reactiveVal()
+      #TABLE DATA EXPORT
+      pre_print_som_data <- shiny::reactiveVal()
 
-      shiny::observeEvent(input$export_button1_mock, {
+      shiny::observeEvent(input$export_button_som_mock, {
         ok <- TRUE
         e <- ""
-        d <- NULL
-        error_txt(e)
-        if (input$export1_types == "maf"){
-          if(is.null(maf_data1())){
-            e <- "il dataset non è compatibile con maf"
+        res_data <- NULL
+        file_export_error(e)
+        #MAF EXPORT SELECTED
+        if (input$som_table_export_types == "maf"){
+          if(is.null(som_maf_data())){
+            e <- "data set is not maf compatible"
             ok <- F
           }
           else{
-            if (input$export1_modes == "All"){
+            #DIFFERENT SETS OF RECORDS TO GENERATE THE REPORT ON
+            if (input$som_table_export_modes == "All"){
               t <- try(
-                maftools::read.maf(maf_data1())
-                ,silent = T
+                maftools::read.maf(som_maf_data()),
+                silent = T
               )
               if (inherits(t, "try-error")){
-                e <- "il dataset non è compatibile con maf"
+                e <- "data set is not maf compatible"
                 ok <- F
               }
               else{
-                d <- t
+                res_data <- t
               }
             }
-            else if (input$export1_modes == "page"){
+            else if (input$som_table_export_modes == "page"){
               t <- try(
-                maftools::read.maf((maf_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE)))[input$som_table_rows_current,])
-                ,silent = T
+                maftools::read.maf((som_maf_data() %>% dplyr::filter(purrr::reduce(som_filter_result_list$l, `&`, .init = TRUE)))[input$som_table_rows_current,]),
+                silent = T
               )
               if (inherits(t, "try-error")){
-                e <- "il dataset non è compatibile con maf"
+                e <- "data set is not maf compatible"
                 ok <- F
               }
               else{
-                d <- t
+                res_data <- t
               }
             }
-            else if (input$export1_modes == "filtered"){
+            else if (input$som_table_export_modes == "filtered"){
               t <- try(
-                maftools::read.maf((maf_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE)))[input$som_table_rows_all,])
-                ,silent = T
+                maftools::read.maf((som_maf_data() %>% dplyr::filter(purrr::reduce(som_filter_result_list$l, `&`, .init = TRUE)))[input$som_table_rows_all,]),
+                silent = T
               )
               if (inherits(t, "try-error")){
-                e <- "il dataset non è compatibile con maf"
+                e <- "data set is not maf compatible"
                 ok <- F
               }
               else{
-                d <- t
+                res_data <- t
               }
             }
           }
         }
-        else if (input$export1_types == "pdf" && (input$pdf_export_options1 %in% c("Template 2","Template 3"))){
-          if(is.null(maf_data1())){
-            e <- "Questo pdf non puo essere generato"
+        #PDF EXPORT TEMPLATES 2 AND 3
+        else if (input$som_table_export_types == "pdf" && (input$pdf_export_options_som %in% c("Template 2", "Template 3"))){
+          if(is.null(som_maf_data())){
+            e <- "Can't render PDF"
             ok <- F
           }
           else {
+            #CHECK IF THE PLOTS CAN BE RENDERED
             t <- try(
-              maftools::read.maf((maf_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE)))[input$som_table_rows_all,])
-              ,silent = T
+              maftools::read.maf((som_maf_data() %>% dplyr::filter(purrr::reduce(som_filter_result_list$l, `&`, .init = TRUE)))[input$som_table_rows_all,]),
+              silent = T
             )
             if (inherits(t, "try-error")){
-              e <- "Questo pdf non puo essere generato"
+              e <- "Can't render PDF"
               ok <- F
             }
             else{
-              if (input$export1_modes == "All"){
-                d <- proc_data1()
+              #DIFFERENT SETS OF RECORDS TO GENERATE THE REPORT ON
+              if (input$som_table_export_modes == "All"){
+                res_data <- som_processed_data()
               }
-              else if (input$export1_modes == "page"){
-                d <- ((proc_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE)))[input$som_table_rows_current,])
+              else if (input$som_table_export_modes == "page"){
+                res_data <- ((som_processed_data() %>% dplyr::filter(purrr::reduce(som_filter_result_list$l, `&`, .init = TRUE)))[input$som_table_rows_current,])
               }
-              else if (input$export1_modes == "filtered"){
-                d <- ((proc_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE)))[input$som_table_rows_all,])
+              else if (input$som_table_export_modes == "filtered"){
+                res_data <- ((som_processed_data() %>% dplyr::filter(purrr::reduce(som_filter_result_list$l, `&`, .init = TRUE)))[input$som_table_rows_all,])
               }
             }
           }
         }
+        #OTHER FILES EXPORT
         else{
-          if (input$every_export_switch1 == FALSE){
-            if (input$export1_modes == "All"){
-              d <- proc_data1()
+          if (input$every_export_switch_som == FALSE){
+            #DIFFERENT SETS OF RECORDS TO GENERATE THE REPORT ON
+            if (input$som_table_export_modes == "All"){
+              res_data <- som_processed_data()
             }
-            else if (input$export1_modes == "page"){
-              d <- (proc_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE)))[input$som_table_rows_current,]
+            else if (input$som_table_export_modes == "page"){
+              res_data <- (som_processed_data() %>% dplyr::filter(purrr::reduce(som_filter_result_list$l, `&`, .init = TRUE)))[input$som_table_rows_current,]
             }
-            else if (input$export1_modes == "filtered"){
-              d <- (proc_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE)))[input$som_table_rows_all,]
+            else if (input$som_table_export_modes == "filtered"){
+              res_data <- (som_processed_data() %>% dplyr::filter(purrr::reduce(som_filter_result_list$l, `&`, .init = TRUE)))[input$som_table_rows_all,]
             }
-            if(nrow(d)==0){
-              e <- "Non ci sono record selezionati"
+            if(nrow(res_data)==0){
+              e <- "No records selected"
               ok <- F
             }
           }
           else {
-            if (input$export1_modes == "All"){
-              d <- proc_data1()[,input$checkbox1]
+            #ONLY SHOWN COLUMNS
+            if (input$som_table_export_modes == "All"){
+              res_data <- som_processed_data()[,input$som_column_select]
             }
-            else if (input$export1_modes == "page"){
-              d <- ((proc_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE)))[input$som_table_rows_current,])[,input$checkbox1]
+            else if (input$som_table_export_modes == "page"){
+              res_data <- ((som_processed_data() %>% dplyr::filter(purrr::reduce(som_filter_result_list$l, `&`, .init = TRUE)))[input$som_table_rows_current,])[,input$som_column_select]
             }
-            else if (input$export1_modes == "filtered"){
-              d <- ((proc_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE)))[input$som_table_rows_all,])[,input$checkbox1]
+            else if (input$som_table_export_modes == "filtered"){
+              res_data <- ((som_processed_data() %>% dplyr::filter(purrr::reduce(som_filter_result_list$l, `&`, .init = TRUE)))[input$som_table_rows_all,])[,input$som_column_select]
             }
-            if(nrow(d)==0){
-              e <- "Non ci sono record selezionati"
+            if(nrow(res_data)==0){
+              e <- "No records selected"
               ok <- F
             }
           }
         }
+        #CHECK FOR ERRORS
         if(ok){
-          if (is.null(d)){error_txt("ERRORE")}
+          if (is.null(res_data)){file_export_error("FILE EXPORT ERROR")}
           else{
-            pre_print_data(d)
-            shinyjs::click("export_button1")
+            pre_print_som_data(res_data)
+            shinyjs::click("export_button_som")
           }
-
         }
         else {
-          error_txt(e)
+          file_export_error(e)
         }
       })
 
-      output$export_button1 <- shiny::downloadHandler(
+      output$export_button_som <- shiny::downloadHandler(
         filename = function() {
-          paste(substring(titolo11(),1,20),"_", Sys.Date(),"_",input$export1_modes,".",input$export1_types, sep="")
+          paste(substring(som_file_title1(), 1, 20), "_", Sys.Date(), "_", input$som_table_export_modes, ".", input$som_table_export_types, sep="")
         },
         content = function(file) {
-
-          if (input$export1_types == "maf"){
-            if (input$export1_modes == "All"){
-              if (!is.null(maf_data1())){
-                try(
-                  write_maf_file(pre_print_data(),file)
-                  ,silent = T
-                )
-              }
-            }
-            else if (input$export1_modes == "page"){
-              if (!is.null(maf_data1())){
-                try(
-                  write_maf_file(pre_print_data(),file)
-                  ,silent = T
-                )
-              }
-            }
-            else if (input$export1_modes == "filtered"){
-              if (!is.null(maf_data1())){
-                try(
-                  write_maf_file(pre_print_data(),file)
-                  ,silent = T
-                )
-              }
+          if (input$som_table_export_types == "maf"){
+            if (!is.null(som_maf_data())){
+              try(
+                write_maf_file(pre_print_som_data(), file),
+                silent = T
+              )
             }
           }
           else {
-            if (input$export1_types == "csv"){
+            if (input$som_table_export_types == "csv"){
               try(
-                write.csv(pre_print_data(), file)
-                ,silent = T
+                write.csv(pre_print_som_data(), file),
+                silent = T
               )
             }
-            else if (input$export1_types == "tsv"){
+            else if (input$som_table_export_types == "tsv"){
               try(
-                write.table(pre_print_data(),file,row.names = F)
-                ,silent = T
+                write.table(pre_print_som_data(), file, row.names = F),
+                silent = T
               )
             }
-            else if (input$export1_types == "xlsx"){
+            else if (input$som_table_export_types == "xlsx"){
               try(
-                writexl::write_xlsx(pre_print_data(),file)
-                ,silent = T
+                writexl::write_xlsx(pre_print_som_data(), file),
+                silent = T
               )
             }
-            else if (input$export1_types == "pdf"){
-              # i pdf si esportano lentamente prova a trovare unmodo piu veloce
-              # o metti un cap a quello che puoi printare
-
-              if (input$pdf_export_options1 == "Template 1"){
-                n <- substring(titolo11(),1,18)
+            else if (input$som_table_export_types == "pdf"){
+              if (input$pdf_export_options_som == "Template 1"){
+                n <- substring(som_file_title1(), 1, 18)
                 out <- try(
-                  rmarkdown::render("www/templates/template1.Rmd",output_format = "pdf_document",params = list(name1 =n, table1 = pre_print_data()[,input$checkbox1]),envir = new.env(parent = globalenv()))
-                  ,silent = T
+                  rmarkdown::render("www/templates/template1.Rmd", output_format = "pdf_document", params = list(name1 = n, table1 = pre_print_som_data()[,input$som_column_select]), envir = new.env(parent = globalenv())),
+                  silent = T
                 )
                 file.rename(out, file)
               }
-              if (input$pdf_export_options1 == "Template 2"){
-                n <- substring(titolo11(),1,18)
-                if (!is.null(maf_data1())){
+              if (input$pdf_export_options_som == "Template 2"){
+                n <- substring(som_file_title1(),1,18)
+                if (!is.null(som_maf_data())){
                   out <- try(
-                    rmarkdown::render("www/templates/template2.Rmd",output_format = "pdf_document",params = list(name1 =n, table1 = pre_print_data()[,input$checkbox1], graphd = maftools::read.maf((maf_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE)))[input$som_table_rows_all,])),envir = new.env(parent = globalenv()))
-                    ,silent = T
+                    rmarkdown::render("www/templates/template2.Rmd", output_format = "pdf_document", params = list(name1 = n, table1 = pre_print_som_data()[,input$som_column_select], graphd = maftools::read.maf((som_maf_data() %>% dplyr::filter(purrr::reduce(som_filter_result_list$l, `&`, .init = TRUE)))[input$som_table_rows_all,])), envir = new.env(parent = globalenv())),
+                    silent = T
                   )
                   file.rename(out, file)
                 }
               }
-              if (input$pdf_export_options1 == "Template 3"){
-                n <- substring(titolo11(),1,18)
-                if (!is.null(maf_data1())){
+              if (input$pdf_export_options_som == "Template 3"){
+                n <- substring(som_file_title1(),1,18)
+                if (!is.null(som_maf_data())){
                   out <- try(
-                    rmarkdown::render("www/templates/template3.Rmd",output_format = "pdf_document",params = list(name1 =n, table1 = pre_print_data()[,input$checkbox1], graphd = maftools::read.maf((maf_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE)))[input$som_table_rows_all,])),envir = new.env(parent = globalenv()))
-                    ,silent = T
+                    rmarkdown::render("www/templates/template3.Rmd", output_format = "pdf_document", params = list(name1 = n, table1 = pre_print_som_data()[,input$som_column_select], graphd = maftools::read.maf((som_maf_data() %>% dplyr::filter(purrr::reduce(som_filter_result_list$l, `&`, .init = TRUE)))[input$som_table_rows_all,])), envir = new.env(parent = globalenv())),
+                    silent = T
                   )
                   file.rename(out, file)
                 }
               }
             }
           }
-
         }
       )
-      shiny::outputOptions(output, "export_button1", suspendWhenHidden = FALSE)
+      shiny::outputOptions(output, "export_button_som", suspendWhenHidden = FALSE)
 
 
       # RENDER OF TITLES
-      output$titolo11 <- shiny::renderText(titolo11())
-      output$titolo12 <- shiny::renderText(titolo12())
-      output$warning1 <- shiny::renderText(nomi_w())
-      output$file_error <- shiny::renderText(file_error())
+      output$som_file_title_main <- shiny::renderUI({
+        if (nchar(som_file_title_start()) > 0){
+          shiny::tags$div(
+            shiny::tags$h1(
+              class = "file_title_start",
+              som_file_title_start()
+            ),
+            shiny::tags$div(
+              shiny::icon('upload', style = "font-size: xxx-large;"),
+              style = "display: flex; justify-content: center;"
+            )
+          )
+        }
+        else{
+          shiny::tags$h1(
+            class = "file_title1",
+            som_file_title1()
+          )
+        }
+      })
 
-      #------ RENDER SOMATIC TABLE ------
-      maf_for_plot <- shiny::reactiveVal(NULL)
-      output$som_plot2 <- shiny::renderPlot({
-        shiny::req(maf_for_plot())
-        if (!is.null(maf_for_plot())){
+      output$som_file_title2 <- shiny::renderText(som_file_title2())
+
+      # RENDER OF ERRORS
+      output$som_warning <- shiny::renderUI({
+        shiny::req(som_missing_columns())
+        shiny::tags$div(
+          style = "text-align: center;",
+          shiny::tags$hr(style = "margin-top: 5px; margin-bottom: 5px;"),
+          som_missing_columns()
+        )
+      })
+
+      output$som_file_error <- shiny::renderText(som_file_error())
+
+      #------ PLOTTING ON SOMLINE PAGE ------
+      #PLOT SUMMARY DATA
+      maf_for_plot_som <- shiny::reactiveVal(NULL)
+
+      #SUMMARY PLOT OUTPUT
+      output$som_plot_main2 <- shiny::renderPlot({
+        shiny::req(maf_for_plot_som())
+        if (!is.null(maf_for_plot_som())){
           try(
-            maftools::plotmafSummary(maf_for_plot()),
+            maftools::plotmafSummary(maf_for_plot_som(), fs = 1.10),
             silent = T
           )
         }
       })
 
-      output$som_plot <- shiny::renderUI({
-        shiny::req(maf_data1())
-        if (!is.null(maf_data1())){
-          m <- maf_data1()%>% dplyr::filter(purrr::reduce(filter_vars1$l,`&`,.init = TRUE))
-          md <- try(maftools::read.maf(m[input$som_table_rows_all,]),silent=T)
-          if (inherits(md, "try-error")){
+      #PLOT CONTROLS AND CONTAINER RENDERING
+      output$som_plot_main <- shiny::renderUI({
+        shiny::req(som_maf_data())
+        if (!is.null(som_maf_data())){
+          #CHECK IF THE PLOT CAN BE GENERATED
+          maf_data <- som_maf_data() %>% dplyr::filter(purrr::reduce(som_filter_result_list$l, `&`, .init = TRUE))
+          t <- try(maftools::read.maf(maf_data[input$som_table_rows_all,]), silent = T)
+          if (inherits(t, "try-error")){
+            #ERROR HANDLING
             shiny::wellPanel(
-              id = "well_plot1",
-              toggle_panel("toggle_plot1", "well_plot_container1","Summary:" ),
+              id = "som_well_plot2",
+              toggle_panel("som_toggle_plot2", "som_well_plot_container2", "Summary:"),
               shiny::tags$div(
                 # CONTAINER TOGGLER INPUT ID + CLASS
-                id = "well_plot_container1",
+                id = "som_well_plot_container2",
                 class = "collapse in",
-                "Plot non disponibile"
+                "Can't generate the plot"
               )
             )
           }
           else{
-            maf_for_plot(md)
+            maf_for_plot_som(t)
             shiny::wellPanel(
-              id = "well_plot1",
-              toggle_panel("toggle_plot1", "well_plot_container1","Summary:" ),
+              id = "well_plot_som",
+              class = "well_plot",
+              toggle_panel("toggle_plot_som", "well_plot_container_som", "Summary:"),
               shiny::tags$div(
                 # CONTAINER TOGGLER INPUT ID + CLASS
-                id = "well_plot_container1",
+                id = "well_plot_container_som",
                 class = "collapse in",
-                #purrr::map(names(proc_data1()), ~ make_ui(proc_data1()[[.x]], .x , id))
-                #shiny::tags$div("Summary plot: "),
-                shiny::plotOutput("GSP-SOM-som_plot2")
+                shiny::plotOutput("GSP-SOM-som_plot_main2")
               )
             )
           }
@@ -1121,98 +1335,128 @@ somTab_server <- function(id){
         }
       })
 
+      #------ SOM TABLE ------
 
+      #JS FUNCTION TO GET COLREORDER TO WORK
+      js_reorder <- c(
+        'table.on("column-reorder", function(e, settings, details){
+        Shiny.onInputChange("GSP-SOM-order_som", table.colReorder.order());
+         });'
+      )
+
+      #TABLE RENDERING
       output$som_table <- DT::renderDT({
-        shiny::req(proc_data1())
-        if (is.data.frame(proc_data1())){
-        DT::datatable(
-          shiny::isolate(proc_data1()),
-          extensions = c('Buttons','FixedHeader','Select'),
-          rownames = FALSE,
-          filter = 'top',
-          #fillContainer = T,
-          container = htmltools::withTags(table(DT::tableHeader(names(proc_data1())),DT::tableFooter(names(proc_data1())))),
-          selection = "none",#list(mode = "multiple"),
-
-          editable = FALSE,
-          class = 'display',
-          options = list(
-            select = T,
-            order = list(0,"desc"),#asc
-            serverSide = TRUE,
-            paging = T,
-            processing = TRUE,
-            autoWidth = F,
-            fixedHeader = list(header = F, footer = F),
-            pageLength = 25,
-            pagingType = 'full_numbers',
-            #scrollY = 944,
-            scrollX = T,
-            scrollCollapse = T,
-            dom = '<"row_b" B><"row_i" fl><"row_i" pi>rt<"row_i" pi><"row_e" <"row_e_overlay" >><"row_sc_cont" <"#rowsc1.row_sc"<"row_sc_i" >>>',
-            buttons = list(list(
-              extend = 'copy',
-              exportOptions = list(columns = ":visible")
+        shiny::req(som_processed_data())
+        if (is.data.frame(som_processed_data())){
+          DT::datatable(
+            som_processed_data(),
+            extensions = c('Buttons', 'FixedHeader', 'Select', 'ColReorder'),
+            rownames = FALSE,
+            filter = 'top',
+            #CUSTOM HEADER AND FOOTER
+            container = htmltools::withTags(table(DT::tableHeader(names(som_processed_data())), DT::tableFooter(names(som_processed_data())))),
+            selection = "none",
+            callback = DT::JS(js_reorder),
+            editable = FALSE,
+            class = 'display',
+            options = list(
+              stateSave = TRUE,
+              colReorder = list(realtime = F),
+              select = T,
+              serverSide = TRUE,
+              paging = T,
+              processing = TRUE,
+              autoWidth = F,
+              fixedHeader = list(header = F, footer = F),
+              pageLength = 25,
+              pagingType = 'full_numbers',
+              scrollX = T,
+              scrollCollapse = T,
+              #TABLE CONTAINER LAYOUT
+              dom = '<"row_b" B><"row_i" fl><"row_i" pi>rt<"row_i" pi><"row_e" <"row_e_overlay" >><"row_sc_cont" <"#rowsc_som.row_sc" <"row_sc_i" >>>',
+              #COPY SELECTEDOR PAGE ECORDS TO CLIPBOARD
+              buttons = list(
+                list(
+                  extend = 'copy',
+                  exportOptions = list(columns = ":visible")
+                )
+              ),
+              lengthMenu = list(c(10, 25, 50, 100, 1000, -1), c(10, 25, 50, 100, 1000, "All"))
             )
-                           #'colvis','colvisRestore',
-                           #list(extend = "pdf", pageSize = "A3", orientation = "landscape", exportOptions = list(rows = list(page = "all"), columns = ":visible"))
-            )
-            ,lengthMenu = list(c(10,25,50,100,1000,-1),c(10,25,50,100,1000,"All"))
-          )
-        ) %>% DT::formatRound(nomi_format())
+          ) %>% DT::formatRound(som_formatted_columns())
         }
-
-        #%>% DT::formatRound(c("VAF","Start","End"))
-        #%>% DT::formatStyle(names(proc_data1()),"text-align"= "center", 'min-width' = '250px','width' = '250px','max-width' = '250px')
-
       },
+      #SERVER SIDE PROCESSING
       server = T
     )
 
-      ### SOMATIC TABLE PROXY SETUP ###
-      ds <- shiny::reactiveVal()
-      rec_val <- shiny::reactiveValues(df = NULL)
-      proxy1 <- DT::dataTableProxy('som_table')
+      ### PROXY SETUP ###
+      som_filtered_df <- shiny::reactiveValues(df = NULL)
+      som_proxy <- DT::dataTableProxy('som_table')
 
-      ### SOMATIC TABLE FILTERS PROXY ###
+      ### FILTERS PROXY ###
       shiny::observe({
-        shiny::req(proc_data1())
-        shiny::req(filter_vars1$l)
-        #print(filter_vars1$l)
-        #print(input)
-        fv1 <- filter_vars1$l
-        if (is.data.frame(proc_data1())){
-          if (length(filter_vars1$l) != 0 && !identical(length(filter_vars1$l[[1]]),nrow(proc_data1()))){fv1 <- list()}
-          rec_val$df <<- proc_data1()%>% dplyr::filter(purrr::reduce(fv1,`&`,.init = TRUE))
-          proxy1 %>% DT::replaceData(rec_val$df, resetPaging = T,rownames = FALSE)
+        shiny::req(som_processed_data())
+        shiny::req(som_filter_result_list$l)
+        gfrl <- som_filter_result_list$l
+        if (is.data.frame(som_processed_data())){
+          # THE FOLLOWING IS EXECUTED ONLY WHEN TRANSITIONING BETWEEN DATASETS TO PREVENT ERRORS
+          if (length(som_filter_result_list$l) != 0 && !identical(length(som_filter_result_list$l[[1]]), nrow(som_processed_data()))){gfrl <- list()}
+          #REPLACE THE ORIGINAL TABLE'S DATA WITH THE FILTERED ONE
+          som_filtered_df$df <<- som_processed_data() %>% dplyr::filter(purrr::reduce(gfrl, `&`, .init = TRUE))
+          som_proxy %>% DT::replaceData(som_filtered_df$df, resetPaging = T, rownames = FALSE)
         }
       })
 
-      ### SOMATIC TABLE CHECKBOX PROXY ###
+      ### REPOSITION THE SCROLLER WHEN THE ORDER OF COLUMNS CHANGES ###
+      shiny::observeEvent(input[["order_som"]], {
+        if (!is.null(input[["order_som"]])){
+          shinyjs::runjs('
+
+            var y = document.querySelector("#rowsc_som");
+            y.scrollLeft = 0;
+
+          ')
+        }
+      })
+
+      ### COLUMNS SELECTION PROXY ###
       shiny::observe({
-        #shiny::req(rec_val$df)
-        shiny::req(input$checkbox1)
-        chk1 <- input$checkbox1
-        if (!is.null(chk1) && is.data.frame(proc_data1())){
-
-          if (!identical(union(names(proc_data1()),input$checkbox1), names(proc_data1()))){
-            chk1 <- names(proc_data1())
+        shiny::req(input$som_column_select)
+        col_chk_res <- input$som_column_select
+        if (!is.null(col_chk_res) && is.data.frame(som_processed_data())){
+          # THE FOLLOWING IS EXECUTED ONLY WHEN TRANSITIONING BETWEEN DATASETS TO PREVENT ERRORS
+          if (!identical(union(names(som_processed_data()), input$som_column_select), names(som_processed_data()))){col_chk_res <- names(som_processed_data())}
+          #HIDE AND SHOW THE SELECTED COLUMNS AND ADDRESS THE CHANGING OF THE INDEXES WHEN REORDERING THE COLUMNS
+          col_indexes <- c()
+          final_indexes <- c()
+          for (n in col_chk_res){
+            col_indexes <- append(col_indexes, which(names(som_processed_data()) == n) - 1)
           }
-
-          if (length(ds()) != length(chk1) || (length(ds()) == length(chk1) && length(ds())>1 && ds()[[1]] != chk1[[1]])){#{
-            d <- c()
-            for (n in chk1){
-              d <- append(d, (which(names(proc_data1()) == n))-1)
+          if(is.null(input[["order_som"]])){
+            final_indexes <- col_indexes
+          }
+          else{
+            for (n in col_indexes){
+              final_indexes <- append(final_indexes, which(input[["order_som"]] == n) - 1)
             }
-            ds(d)
           }
-          if(!is.null(ds())){
-            proxy1 %>% DT::showCols(ds(),reset = T)}
-          else {
-            proxy1 %>% DT::showCols(names(proc_data1()),reset = T)}
-        }
-      })
-      #BUTTON TO DISABLE ENTER KEY (OVERVIEW TAB)
-      enterDisable_server("inutile")
+          som_proxy %>% DT::showCols(final_indexes, reset = T)
+      }
     })
+
+    ### DATA FOR STATISTICS ###
+    som_statistics_data <- shiny::reactive({
+      shiny::req(som_maf_data())
+      (som_maf_data() %>% dplyr::filter(purrr::reduce(som_filter_result_list$l, `&`, .init = TRUE)))[input$som_table_rows_all,]
+    })
+
+    # RETURN VALUE FOR STATISTICS
+    return(som_statistics_data)
+
+    #BUTTON TO DISABLE ENTER KEY (OVERVIEW TAB)
+    enterDisable_server("useless")
+
+    #--- END OF SERVER MODULE ---
+  })
 }

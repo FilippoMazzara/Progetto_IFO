@@ -5,7 +5,6 @@
 #' module's id
 #' @examples
 #' homePanel_ui("modulename")
-#'
 homePanel_ui <- function(id) {
 
   ns <- shiny::NS(id)
@@ -37,7 +36,7 @@ homePanel_ui <- function(id) {
       class="home_wellpanel",
       shiny::tags$br(),
       shiny::wellPanel(
-        style = "margin-bottom:0;width:100%",
+        style = "margin-bottom: 0; width: 100%",
         shiny::includeHTML(rmarkdown::render('www/homepage_insert1.Rmd'))
       ),
       shiny::tags$br()
@@ -46,7 +45,7 @@ homePanel_ui <- function(id) {
     shiny::tags$br(),
 
     #LINK TO SECOND PAGE
-    shiny::actionLink("linkapp",shiny::tags$span(("> > > VAI ALL'APP < < <"))),
+    shiny::actionLink("linkapp", shiny::tags$span(("> > > VAI ALL'APP < < <"))),
 
     shiny::tags$br(),
     shiny::tags$br(),
@@ -56,7 +55,7 @@ homePanel_ui <- function(id) {
       class="home_wellpanel",
       shiny::tags$br(),
       shiny::wellPanel(
-        style = "margin-bottom:0;width:100%;",
+        style = "margin-bottom: 0; width: 100%;",
         shiny::includeHTML(rmarkdown::render('www/homepage_insert2.Rmd'))
       ),
       shiny::tags$br()
@@ -75,7 +74,6 @@ homePanel_ui <- function(id) {
 #' module's id
 #' @examples
 #' homePanel_server("modulename")
-#'
 homePanel_server <- function(id) {
   shiny::moduleServer(
     id,

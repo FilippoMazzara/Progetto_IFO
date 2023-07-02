@@ -12,33 +12,37 @@ params:
 ---
 # ``r params$name1``
 
-```{r, message = FALSE, results='asis', echo=FALSE, warning=FALSE}
+```{r, message = FALSE, results = 'asis', echo = FALSE, warning = FALSE}
 library("knitr")
 library("kableExtra")
+## --- SOLUTION WITH SPLIT SCALED DOWN TABLES, 100% WIDTH --- 
+
 nr <- nrow(params$table1)
+
+#how many records to put in each table
+
+#minimum records
 stepn <- 40
+
+#average records
 r <- nr - stepn %% 55
+
 v <- c()
 if( nr > stepn ){
+  #split the original table in smaller tables
   v <- seq(from = stepn, to = nr, by = 55)
-  #if (r > 0){v <- append(v,nr)}
-  ldf <- split(params$table1,cumsum(1:nr %in% (v+1)))
+  ldf <- split(params$table1, cumsum(1:nr %in% (v + 1)))
   
+  #render the tables
   for (i in 1:length(ldf)){
-   print(kableExtra::kbl(ldf[[i]],format="latex",digits = 2,row.names = F, booktabs = T) %>%
-  kableExtra::kable_styling(latex_options=c("scale_down","hold_position")))
-    #if(i > 1){cat("\n")}
+   print(kableExtra::kbl(ldf[[i]], format = "latex", digits = 2, row.names = F, booktabs = T) %>%
+  kableExtra::kable_styling(latex_options = c("scale_down", "hold_position")))
   }
 
 }
 if ( nr <= stepn ){
-    kableExtra::kbl(params$table1,format="latex",digits = 2,row.names = F, booktabs = T) %>%
-  kableExtra::kable_styling(latex_options=c("scale_down","hold_position") )
+    kableExtra::kbl(params$table1, format = "latex", digits = 2,row.names = F, booktabs = T) %>%
+  kableExtra::kable_styling(latex_options = c("scale_down", "hold_position") )
 }
-
-
-
-
-
 
 ```

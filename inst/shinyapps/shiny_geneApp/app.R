@@ -4,6 +4,7 @@ ui <- shiny::fluidPage(
 
   # ------ Styling -------
 
+  #ENABLE SHINYJS
   shinyjs::useShinyjs(),
 
   shiny::includeCSS("www/style.css"),
@@ -13,10 +14,10 @@ ui <- shiny::fluidPage(
   # ------ hidden header -------
 
   shiny::tags$div(
-    style = "display: none",
+    style = "display: none;",
     shiny::titlePanel(
       title = "",
-      windowTitle = "geneApp"
+      windowTitle = "geneApp" #CAMBIA QUANDO HAI UN ALTRO NOME
     )
   ),
 
@@ -51,13 +52,12 @@ ui <- shiny::fluidPage(
     # ------ OVERVIEW PAGE MODULE UI -------
 
     shiny::tabPanel(
-      title = "GERSOM",
-      value = "gersom",
-      id = "gersom",
+      title = "Overview",
+      value = "overview",
+      id = "overview_page",
       class = "topchoice",
 
       # ------ OVERVIEW NAVBAR + CONT -------
-      # IT'S POSSIBLE TO SWITCH OUT THE NAVBAR IN FAVOR OF A SINGLE TAB
 
       shiny::tags$div(
         id = "nav_cont_2",
@@ -65,11 +65,9 @@ ui <- shiny::fluidPage(
 
           # ------ OVERVIEW NAVBAR OPTIONS -------
 
-          windowTitle = "GERSOM",
+          windowTitle = "Overview",
           position = "static-top",
-          #collapsible = TRUE,
           id = "topnavbar2",
-
 
           # ------ OVERVIEW NAVBAR TITLE/LOGO -------
 
@@ -87,17 +85,15 @@ ui <- shiny::fluidPage(
 
           # ------ MULTIPLE FILES UI -------
 
-          multiPanel_ui("MULTI"),
-
-          # second and third set of nav tabs
-          #PER ORA NON FANNO NULLA
-
-          #shiny::navbarMenu(title = "tab1", menuName = "tab1", "panel 1.1", shiny::tabPanel("1.1"), "panel 1.2", shiny::tabPanel("1.2")),
-          #shiny::navbarMenu(title = "tab2", menuName = "tab2", shiny::tabPanel("2.1"), shiny::tabPanel("2.2")),
+          multiTab_page_ui("MULTI"),
 
         )
       ) #END FLUID ROW AND NAV PAGE AND CONTAINER
     ),
+
+    # ------ HELP PAGE MODULE UI -------
+
+    help_page_ui("help_page"),
 
     # ------ ABOUT MODULE UI -------
 
@@ -124,9 +120,10 @@ ui <- shiny::fluidPage(
 #' @return the running gene app
 server <- function(input, output, session){
 
-  #data.table::setDTthreads(4)
+  #NUMBER OF DT THREADS (DEFAULT SINGLE THREADED)
+  data.table::setDTthreads(4)
 
-  # INCREASE HTTP REQUEST SIZE TO 30mb
+  # INCREASE HTTP REQUEST SIZE TO 120mb
   options(shiny.maxRequestSize = 120 * 1024^2)
 
   # ------ HOME SERVER MODULE -------
@@ -134,7 +131,20 @@ server <- function(input, output, session){
 
   ### HOMEPAGE LINK ###
   shiny::observeEvent(input$linkapp,{
-    shiny::updateNavbarPage(session, "topnavbar", "gersom")
+    shiny::updateNavbarPage(session, "topnavbar", "overview")
+  })
+
+  ### HELP LINKS ###
+  shiny::observeEvent(input$som_helplink,{
+    shiny::updateNavbarPage(session, "topnavbar", "help_page")
+  })
+
+  shiny::observeEvent(input$germ_helplink,{
+    shiny::updateNavbarPage(session, "topnavbar", "help_page")
+  })
+
+  shiny::observeEvent(input$multi_helplink,{
+    shiny::updateNavbarPage(session, "topnavbar", "help_page")
   })
 
   # ------ SOMATIC AND GERM SERVER MODULE -------
@@ -143,64 +153,64 @@ server <- function(input, output, session){
 
   # ------ MULTIPLE FILES SERVER MODULE -------
 
-  multiPanel_server("MULTI")
+  multiTab_page_server("MULTI")
 
   ### SOM TABLE STICKY SCROLLER###
-  shinyjs::onevent( event = "scroll", id = "rowsc1", {
+  shinyjs::onevent( event = "scroll", id = "rowsc_som", {
     shinyjs::runjs("
 
       var x = document.querySelector('#GSP-SOM-som_table > div > div > div.dataTables_scrollBody');
-      var y = document.querySelector('#rowsc1');
+      var y = document.querySelector('#rowsc_som');
       x.scrollLeft = y.scrollLeft;
 
     ")
   })
 
   ### GERM TABLE STICKY SCROLLER###
-  shinyjs::onevent( event = "scroll", id = "rowsc2", {
+  shinyjs::onevent( event = "scroll", id = "rowsc_germ", {
     shinyjs::runjs("
 
       var x = document.querySelector('#GSP-GERM-germ_table > div > div > div.dataTables_scrollBody');
-      var y = document.querySelector('#rowsc2');
+      var y = document.querySelector('#rowsc_germ');
       x.scrollLeft = y.scrollLeft;
 
     ")
   })
 
   ### MULTI TABLE STICKY SCROLLER###
-  shinyjs::onevent( event = "scroll", id = "rowsc3", {
+  shinyjs::onevent( event = "scroll", id = "rowsc_multi", {
     shinyjs::runjs("
 
       var x = document.querySelector('#MULTI-multi_table > div > div > div.dataTables_scrollBody');
-      var y = document.querySelector('#rowsc3');
+      var y = document.querySelector('#rowsc_multi');
       x.scrollLeft = y.scrollLeft;
 
     ")
   })
 
-  #Questa parte di codice js viene eseguita sin da subito
-  #ogni 0.5s attende il rendering della pagina GERSOM
-  #poi se nota un cambiamento nella pagina, crea l'observer opportuno
-  #a sua volta quell'observer ridimensionerà lo scroller se la tabella cambia di width
+  #This is immediately executed
+  #every 0.5s checks if the page has rendered
+  #then create the appropriate observer
+  #that will resize the scroller of the table if there is a width variation in the table
   shinyjs::runjs('
 
     function addObserverIfDesiredNodeAvailable() {
 
       if(document.getElementById("colcol") == null) {
-        window.setTimeout(addObserverIfDesiredNodeAvailable,500);
+        window.setTimeout(addObserverIfDesiredNodeAvailable, 500);
         return;
       }
 
       else{
 
-        const config = {childList: true, subtree: true };
+        const config = {childList: true, subtree: true};
         var x = 0;
         var y = 0;
         var z = 0;
 
         const callback1 = (mutationList, observer) => {
             var x1 = document.querySelector("#GSP-SOM-som_table > div > div > div.dataTables_scrollBody > table");
-            var y1 = document.querySelector("#rowsc1 > div");
+            var y1 = document.querySelector("#rowsc_som > div");
             if(y1 !== null && x1 !== null){
               y1.style.width = x1.offsetWidth - 1 + "px";
             }
@@ -208,7 +218,7 @@ server <- function(input, output, session){
 
         const callback2 = (mutationList, observer) => {
             var x2 = document.querySelector("#GSP-GERM-germ_table > div > div > div.dataTables_scrollBody > table");
-            var y2 = document.querySelector("#rowsc2 > div");
+            var y2 = document.querySelector("#rowsc_germ > div");
             if(y2 !== null && x2 !== null){
               y2.style.width = x2.offsetWidth - 1 + "px";
             }
@@ -216,7 +226,7 @@ server <- function(input, output, session){
 
         const callback5 = (mutationList, observer) => {
             var x5 = document.querySelector("#MULTI-multi_table > div > div > div.dataTables_scrollBody > table");
-            var y5 = document.querySelector("#rowsc3 > div");
+            var y5 = document.querySelector("#rowsc_multi > div");
             if(y5 !== null && x5 !== null){
               y5.style.width = x5.offsetWidth - 1 + "px";
             }
@@ -226,10 +236,9 @@ server <- function(input, output, session){
           if (document.querySelector("#GSP-SOM-som_table > div > div > div.dataTables_scrollBody > table") !== null && x == 0) {
             const observer1 = new MutationObserver(callback1);
             x = 1;
-            observer1.observe(document.getElementById("tabcontainer"), config);
+            observer1.observe(document.getElementById("som_tab_container_main"), config);
           }
           if (x == 1){
-
             observer.disconnect();
           }
         };
@@ -238,7 +247,7 @@ server <- function(input, output, session){
           if (document.querySelector("#GSP-GERM-germ_table > div > div > div.dataTables_scrollBody > table") !== null && y == 0) {
             y = 1;
             const observer2 = new MutationObserver(callback2);
-            observer2.observe(document.getElementById("tabcontainer2"), config);
+            observer2.observe(document.getElementById("germ_tab_container_main"), config);
           }
           if (y == 1){
             observer.disconnect();
@@ -249,7 +258,7 @@ server <- function(input, output, session){
           if (document.querySelector("#MULTI-multi_table > div > div > div.dataTables_scrollBody > table") !== null && z == 0) {
             z = 1;
             const observer5 = new MutationObserver(callback5);
-            observer5.observe(document.getElementById("tabcontainer3"), config);
+            observer5.observe(document.getElementById("multi_tab_container_main"), config);
           }
           if (z == 1){
             observer.disconnect();
@@ -258,13 +267,13 @@ server <- function(input, output, session){
 
 
         const observer3 = new MutationObserver(callback3);
-        observer3.observe(document.getElementById("tabcontainer"), config);
+        observer3.observe(document.getElementById("som_tab_container_main"), config);
 
         const observer4 = new MutationObserver(callback4);
-        observer4.observe(document.getElementById("tabcontainer2"), config);
+        observer4.observe(document.getElementById("germ_tab_container_main"), config);
 
         const observer6 = new MutationObserver(callback5);
-        observer6.observe(document.getElementById("tabcontainer3"), config);
+        observer6.observe(document.getElementById("multi_tab_container_main"), config);
 
       }
     }
@@ -272,12 +281,12 @@ server <- function(input, output, session){
 
   ')
 
-  ##syncronize the scroll position of the two scrollers##
+  ##synchronize the scroll position of the two scrollers for all the tables##
   shinyjs::runjs('
 
-    $("#GSP-SOM-som_table").on("mouseup",function() {
+    $("#GSP-SOM-som_table").on("mouseup", function() {
       var x = document.querySelector("#GSP-SOM-som_table > div > div > div.dataTables_scrollBody");
-      var y = document.querySelector("#rowsc1");
+      var y = document.querySelector("#rowsc_som");
       y.scrollLeft = x.scrollLeft;
     });
 
@@ -285,9 +294,9 @@ server <- function(input, output, session){
 
   shinyjs::runjs('
 
-    $("#GSP-GERM-som_table").on("mouseup",function() {
-      var x = document.querySelector("#GSP-GERM-som_table > div > div > div.dataTables_scrollBody");
-      var y = document.querySelector("#rowsc2");
+    $("#GSP-GERM-germ_table").on("mouseup", function() {
+      var x = document.querySelector("#GSP-GERM-germ_table > div > div > div.dataTables_scrollBody");
+      var y = document.querySelector("#rowsc_germ");
       y.scrollLeft = x.scrollLeft;
     });
 
@@ -295,28 +304,29 @@ server <- function(input, output, session){
 
   shinyjs::runjs('
 
-    $("#MULTI-multi_table").on("mouseup",function() {
+    $("#MULTI-multi_table").on("mouseup", function() {
       var x = document.querySelector("#MULTI-multi_table > div > div > div.dataTables_scrollBody");
-      var y = document.querySelector("#rowsc3");
+      var y = document.querySelector("#rowsc_multi");
       y.scrollLeft = x.scrollLeft;
     });
 
   ')
-##SISTEMA QUESTO CODICE E COPIALO IN GERM E ASSICURATI CHE FUNZIONI
+
   ### OVERVIEW SIDEBAR TOGGLE ###
   shinyjs::onclick( id = "toggleSidebar", {
     shinyjs::runjs('
 
       var x = document.querySelector("#nav_cont_2 > nav > div > div");
-      var h1 = document.querySelector("#GSP-SOM-som_table > div > div.dataTables_scroll > div.dataTables_scrollHead > div.dataTables_scrollHeadInner > table");
       var b1 = document.querySelector("#GSP-SOM-som_table > div > div.dataTables_scroll > div.dataTables_scrollBody");
+      var h1 = document.querySelector("#GSP-SOM-som_table > div > div.dataTables_scroll > div.dataTables_scrollHead > div.dataTables_scrollHeadInner > table");
       var b2 = document.querySelector("#GSP-GERM-germ_table > div > div.dataTables_scroll > div.dataTables_scrollBody");
       var h2 = document.querySelector("#GSP-GERM-germ_table > div > div.dataTables_scroll > div.dataTables_scrollHead > div.dataTables_scrollHeadInner > table");
       var b3 = document.querySelector("#MULTI-multi_table > div > div.dataTables_scroll > div.dataTables_scrollBody");
       var h3 = document.querySelector("#MULTI-multi_table > div > div.dataTables_scroll > div.dataTables_scrollHead > div.dataTables_scrollHeadInner > table");
-      plot1 = document.querySelector("#GSP-SOM-som_plot2 > img ");
-      plot2 = document.querySelector("#GSP-GERM-germ_plot2 > img ");
-      plot3 = document.querySelector("#MULTI-multi_plot2 > img ");
+      plot1 = document.querySelector("#GSP-SOM-som_plot_main2 > img ");
+      plot2 = document.querySelector("#GSP-GERM-germ_plot_main2 > img ");
+      plot3 = document.querySelector("#MULTI-multi_plot_main2 > img ");
+
       if (x.style.width == "93px") {
         x.style.width = "25%";
         x.style.minWidth = "inherit";
@@ -338,12 +348,11 @@ server <- function(input, output, session){
         if(h3 !== null){
           b3.style.maxWidth = "inherit";
         }
-
       }
       else {
-
         x.style.setProperty("min-width", "auto", "important");
         x.style.width = "93px";
+
         if (plot1 != null){
             plot1.style.width = "100%"
         }
@@ -389,19 +398,34 @@ server <- function(input, output, session){
     )
   })
 
-  shinyjs::onclick("GSP-SOM-reset_filter1",{
-    shinyjs::reset("well_filter_container1")
+  #RESET THE CLIENT INPUT WHEN A FILE IS SELECTED FROM THE SERVER
+  shinyjs::onclick("GSP-SOM-som_reset_client_input_button", {
+    shinyjs::reset("som_side_well_input")
   })
 
-  shinyjs::onclick("GSP-GERM-reset_filter2",{
-    shinyjs::reset("filter2_cont")
-  })#well_filter_container2
-
-  shinyjs::onclick("MULTI-reset_filter3",{
-    shinyjs::reset("well_filter_container3")
+  shinyjs::onclick("GSP-GERM-germ_reset_client_input_button", {
+    shinyjs::reset("germ_side_well_input")
   })
 
+  shinyjs::onclick("MULTI-multi_reset_client_input_button", {
+    shinyjs::reset("multi_side_well_input")
+  })
 
+  # Reset filter values buttons
+  shinyjs::onclick("GSP-SOM-reset_som_table_filters", {
+    shinyjs::reset("som_table_filters_cont")
+  })
+
+  shinyjs::onclick("GSP-GERM-reset_germ_table_filters", {
+    shinyjs::reset("germ_table_filters_cont")
+  })
+
+  shinyjs::onclick("MULTI-reset_multi_table_filters", {
+    shinyjs::reset("multi_table_filters_cont")
+  })
+
+  # ------ HELP SERVER MODULE -------
+  help_page_server("help_page")
 
   # ------ ABOUT SERVER MODULE -------
   about_server("about")
