@@ -310,7 +310,8 @@ toggle_panel <- function(id, target, text) {
       class = "toggle_well_link",
       `data-toggle` = "collapse",
       `data-target` = paste("#", target, sep = ""),
-      shiny::tags$span(class = "toggle_panel_line")
+      shiny::icon("chevron-down", lib = "font-awesome")
+      #shiny::tags$span(class = "toggle_panel_line")
     )
   )
 }

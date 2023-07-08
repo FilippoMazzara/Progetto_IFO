@@ -12,6 +12,10 @@ h2 {
   margin-top:10px;
 }
 
+button > p {
+  margin: 2px 0 2px !important;
+}
+
 /* Body */
 
 #mainpage {
@@ -63,6 +67,10 @@ h2 {
   text-align: left;
   margin-left: 0;
 
+}
+
+.tooltip.left > .tooltip-inner {
+  margin-top: 20px;
 }
 
 .tooltip.right .tooltip-arrow {
@@ -185,11 +193,14 @@ div.navbar-header > span.navbar-brand {
 /* toggle filter panel in the sidebar */
 
 .toggle_well_link {
+  /*text-decoration: none;*/
   display: flex;
   cursor: pointer;
   align-items: center;
-  margin-top: 4px;
-  margin-bottom: 4px;
+}
+
+.toggle_well_link > i {
+  color: #585858;
 }
 
 .toggle_panel_text {
@@ -359,7 +370,7 @@ div.navbar-header > span.navbar-brand {
   padding-top: 0;
   padding-right: 0;
   padding-bottom: 0;
-  padding-left: 22px;
+  padding-left: 55px;
 }
 
 .toggleLine {
@@ -371,12 +382,17 @@ div.navbar-header > span.navbar-brand {
 }
 
 .toggleSidebar {
+  text-decoration: none !important;
   display: flex;
   flex-wrap: wrap;
   align-content: center;
   cursor: pointer;
   height: 50px;
   width: 60px;
+}
+
+.toggleSidebar > i {
+  font-size: xx-large;
 }
 
 /* TABLE VIEW SECTION */
@@ -658,6 +674,7 @@ td[data-type = "integer"] > div > input {
 input[disabled] {
   color: transparent;
   font-size: 0;
+  /*min-height: 37.5px;*/
 }
 
 td[data-type = "number"] > div {
@@ -1096,6 +1113,186 @@ tfoot > tr {
   text-align: center;
 }
 
+#comparison_title {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+}
+
+#well_plot_container_comparison_1.collapse{
+    display: none;
+}
+
+#well_plot_container_comparison_1.collapse.in{
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#multi_stats_title {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+}
+
+#well_plot_container_multi_1.collapse{
+    display: none;
+}
+
+#well_plot_container_multi_1.collapse.in{
+  display: flex;
+  flex-wrap: wrap;
+}
+/*
+.navbar:not(.fixed-bottom):not(.navbar-fixed-bottom):not(.navbar-fixed-bottom)+div>.tab-content>.tab-pane {
+    --bslib-navbar-margin: 0 !important;
+    margin-top: var(--bslib-navbar-margin);
+}
+*/
+
+.panel-heading {
+  font-size: xxx-large;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  text-align: center;
+  min-width: 100px;
+}
+
+.panel{
+  display: flex;
+  flex-direction: row-reverse;
+  margin-top: 20px;
+}
+
+.panel-info{
+  border: 2px solid #bce8f1;
+}
+
+.panel-primary{
+  border: 2px solid #337ab7;
+}
+
+
+.panel-heading > p{
+  margin: 0;
+}
+
+.panel-body > p {
+  margin: 0;
+}
+
+.panel-info > .panel-body {
+  color: #31708f;
+}
+
+.panel-primary > .panel-body {
+  color: #337ab7;
+}
+
+
+.panel-body{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-weight: 500;
+  max-width: 250px;
+  font-size: x-large;
+  text-align: center;
+}
+
+.chart_controls_cont {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.chart_controls_cont > div {
+  max-width: 400px;
+}
+
+.chart_controls_cont > div > div{
+  margin-top: -15px;
+}
+
+#GSP-comp_charts{
+  width: 100%;
+}
+
+#GSP-SOM-somatic_charts{
+  width: 100%;
+}
+
+#GSP-GERM-germline_charts{
+  width: 100%;
+}
+
+#MULTI-multi_main_charts{
+  width: 100%;
+}
+
+#MULTI-multi_charts{
+  width: 100%;
+}
+
+.charts_container{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  align-content: center;
+  flex-wrap: wrap;
+}
+
+.well_plot{
+  margin-right: 10px;
+}
+
+#GSP-SOM-som_plot_clusters{
+  margin-top: 20px;
+}
+
+#GSP-GERM-germ_plot_clusters{
+  margin-top: 20px;
+}
+
+#MULTI-multi_plot_clusters{
+  margin-top: 20px;
+}
+
+#multi_main_charts_container > .panel-primary {
+  border: 2px solid #2C5F2D !important;
+}
+/*forestgreen*/
+
+#multi_main_charts_container > .panel-primary > .panel-heading {
+  background-color: #2C5F2D;
+  border-color: #2C5F2D;
+}
+
+#multi_main_charts_container > .panel-primary > .panel-body {
+  color: #2C5F2D;
+}
+
+#multi_main_charts_container > .panel-info {
+  border: 2px solid #97BC62 !important;
+}
+
+#multi_main_charts_container > .panel-info > .panel-heading {
+  background-color: #97BC62;
+  border-color: #97BC62;
+  color: #2C5F2D;
+}
+
+#multi_main_charts_container > .panel-info > .panel-body {
+  color: #2C5F2D;
+}
+
+#well_plot_container_multi_1 > div.chart_controls_cont > div {
+  max-width: 700px !important;
+}
+
 /* SCREEN OPTIONS*/
 
 @media screen and (max-width: 900px) {
@@ -1113,13 +1310,21 @@ tfoot > tr {
     max-width: 95vw !important;
   }
 
+  div.file_side> div.well> div> div > span {
+    float: initial !important;
+    margin-left: 5px;
+    margin-bottom: 5px;
+  }
+
   .tooltip {
-    left: 65vw !important;
-    transform: rotate(180deg);
+    z-index: 2000;
   }
 
   .tooltip-inner {
-    transform: rotate(180deg);
+    max-width: 200px !important;
+    z-index: 2000;
+    overflow: hidden;
+    margin-top: 20px;
   }
 
   .navbar-collapse {
@@ -1129,6 +1334,7 @@ tfoot > tr {
   }
 
   #sidebar {
+    overflow: hidden;
     padding-right: 5px;
     padding-left: 5px;
     max-width: 100vw !important;
@@ -1138,6 +1344,7 @@ tfoot > tr {
   }
 
   #sidebar_multi {
+    overflow: hidden;
     padding-right: 5px;
     padding-left: 5px;
     max-width: 100vw !important;
@@ -1211,4 +1418,12 @@ tfoot > tr {
     margin: 2px 0 0;
     width: inherit;
   }
+
+  div.file_side> div.well> div> div {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
 }

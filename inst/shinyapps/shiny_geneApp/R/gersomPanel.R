@@ -73,13 +73,21 @@ gersomPanel_ui <- function(id){
                 id = "comparison_visual_panel",
                 title = "Statistics",
                 value = "Statistics",
-                shiny::tags$div(
-                  id = "value_boxes_comparison",
-                  #info boxes
-                  shinydashboard::valueBoxOutput(shiny::NS(id, "totmut")),
-                  shinydashboard::valueBoxOutput(shiny::NS(id, "sommut")),
-                  shinydashboard::valueBoxOutput(shiny::NS(id, "germmut"))
-                )
+                shiny::fluidRow(
+                  id = "comparison_title",
+                  shiny::tags$h1("Statistics and Charts"),
+                  htmltools::HTML(
+
+                    '<span data-toggle = "tooltip" style = "float: left; margin-left: 15px; margin-top: 15px;" data-placement = "left"
+                      title = "" data-original-title = " When you select a dataset all the stats will be shown on this page. \n \n If too much information is displayed you can minimize some of the visualization panels. \n \n If some charts do not show up there is probably a problem with your dataset, check the help section for more information or on the error messages displayed on screen.">
+                      <i class = "far fa-circle-question" role = "presentation"
+                      aria-label = "circle-question icon"></i></span>'
+
+                  )
+                ),
+
+                shiny::uiOutput(shiny::NS(id, "comparison_stats"))
+
               )
             )
           )
@@ -107,6 +115,22 @@ gersomPanel_server <- function(id){
 
       # ------ COMPARISON TAB - SERVER GERM -------
       germ_statistics_data <- germTab_server("GERM")
+
+      shiny::observeEvent(input[["GERM-germ_file_input_client"]], {
+        shiny::updateTabsetPanel(session, "main_overview_files", "Germline")
+      })
+
+      shiny::observeEvent(input[["GERM-germ_file_input_server"]], {
+        shiny::updateTabsetPanel(session, "main_overview_files", "Germline")
+      })
+
+      shiny::observeEvent(input[["SOM-som_file_input_client"]], {
+        shiny::updateTabsetPanel(session, "main_overview_files", "Somatic")
+      })
+
+      shiny::observeEvent(input[["SOM-som_file_input_server"]], {
+        shiny::updateTabsetPanel(session, "main_overview_files", "Somatic")
+      })
 
       #JS ON SOMATIC SIDEBAR BUTTON PUSH
       shiny::observeEvent(input$sidebar_somatic, {
@@ -155,25 +179,185 @@ gersomPanel_server <- function(id){
 
 
       #---- STATISTICS TAB SERVER ----#
-      output$totmut <- shinydashboard::renderValueBox({
-        shinydashboard::valueBox(
-          paste0(25, "%"), "Progress", icon = shiny::icon("list"),
-          color = "light-blue"
-        )
+      maf_for_plot_comparison <- shiny::reactiveVal(NULL)
+
+
+      #SUMMARY PLOT OUTPUT
+      output$combined_maf_plot <- shiny::renderPlot({
+        shiny::req(maf_for_plot_comparison())
+        if (!is.null(maf_for_plot_comparison())){
+          try(
+            maftools::plotmafSummary(maf_for_plot_comparison(), addStat = "median", fs = 1.10),
+            silent = T
+          )
+        }
       })
 
-      output$sommut <- shinydashboard::renderValueBox({
-        shinydashboard::valueBox(
-          paste0(25, "%"), "Progress", icon = shiny::icon("list"),
-          color = "light-blue"
-        )
+      output$comp_charts <- shiny::renderUI({
+        shiny::req(input$comparison_well_selection)
+        if (!is.null(input$comparison_well_selection)){
+          if (input$comparison_well_selection == "comp_overview_chart"){
+
+            som_excl <- dplyr::anti_join(som_statistics_data(), germ_statistics_data(), by = c("Chromosome", "Tumor_Seq_Allele2", "Start_Position"))
+            germ_excl <- dplyr::anti_join(germ_statistics_data(), som_statistics_data(), by = c("Chromosome", "Tumor_Seq_Allele2", "Start_Position"))
+            common_rows <- dplyr::semi_join(som_statistics_data(), germ_statistics_data(), by = c("Chromosome", "Tumor_Seq_Allele2", "Start_Position"))
+
+            shiny::tags$div(
+              id = "comp_charts_container",
+              class = "charts_container",
+              shiny::tags$div(
+                id = "som_tot_mut",
+                class = "panel panel-primary",
+                shiny::tags$div(
+                  class = "panel-heading",
+                  shiny::tags$p(nrow(som_statistics_data())),
+                  shiny::icon("list", class = "fa-regular", lib = "font-awesome")
+                ),
+                shiny::tags$div(
+                  class = "panel-body",
+                  shiny::tags$p(shiny::tags$b("Somatic"), " Sample"),
+                  shiny::tags$p("Total Mutations")
+                )
+              ),
+
+              shiny::tags$div(
+                id = "germ_tot_mut",
+                class = "panel panel-primary",
+                shiny::tags$div(
+                  class = "panel-heading",
+                  shiny::tags$p(nrow(germ_statistics_data())),
+                  shiny::icon("list", class = "fa-regular", lib = "font-awesome")
+                ),
+                shiny::tags$div(
+                  class = "panel-body",
+                  shiny::tags$p(shiny::tags$b("Germline"), " Sample"),
+                  shiny::tags$p("Total Mutations")
+                )
+              ),
+
+              shiny::tags$div(
+                id = "som_excl_mut",
+                class = "panel panel-info",
+                shiny::tags$div(
+                  class = "panel-heading",
+                  shiny::tags$p(nrow(som_excl)),
+                  shiny::icon("chart-simple", verify_fa = FALSE, lib = "font-awesome")
+                ),
+                shiny::tags$div(
+                  class = "panel-body",
+                  shiny::tags$p(shiny::tags$b("Somatic"), " Sample"),
+                  shiny::tags$p("Exclusive Mutations")
+                )
+              ),
+
+              shiny::tags$div(
+                id = "germ_excl_mut",
+                class = "panel panel-info",
+                shiny::tags$div(
+                  class = "panel-heading",
+                  shiny::tags$p(nrow(germ_excl)),
+                  shiny::icon("chart-simple", lib = "font-awesome")
+                ),
+                shiny::tags$div(
+                  class = "panel-body",
+                  shiny::tags$p(shiny::tags$b("Germline"), " Sample"),
+                  shiny::tags$p("Exclusive Mutations")
+                )
+              ),
+
+              shiny::tags$div(
+                id = "germ_som_common_mut",
+                class = "panel panel-info",
+                shiny::tags$div(
+                  class = "panel-heading",
+                  shiny::tags$p(nrow(common_rows)),
+                  shiny::icon("pie-chart", lib = "font-awesome")
+                ),
+                shiny::tags$div(
+                  class = "panel-body",
+                  shiny::tags$p(" Samples "),
+                  shiny::tags$p(shiny::tags$b("Shared"), " Mutations")
+                )
+              ),
+            )
+          }
+          else if (input$comparison_well_selection == "comp_maf_chart"){
+            if (!is.null(maf_for_plot_comparison())){
+              shiny::plotOutput("GSP-combined_maf_plot")
+            }
+            else{
+              "Can't generate the plot"
+            }
+          }
+        }
       })
 
-      output$germmut <- shinydashboard::renderValueBox({
-        shinydashboard::valueBox(
-          paste0(25, "%"), "Progress", icon = shiny::icon("list"),
-          color = "light-blue"
-        )
+      output$comparison_stats <- shiny::renderUI({
+        shiny::req(som_statistics_data())
+        shiny::req(germ_statistics_data())
+        if (!is.null(som_statistics_data()) && !is.null(germ_statistics_data())){
+          t_som <- try(maftools::read.maf(som_statistics_data()), silent = T)
+          t_germ <- try(maftools::read.maf(germ_statistics_data()), silent = T)
+          if (inherits(t_som, "try-error") || inherits(t_germ, "try-error")){
+            #ERROR HANDLING
+            shiny::wellPanel(
+              id = "well_plot_comparison_1",
+              class = "well_plot",
+              toggle_panel("toggle_plot_comparison_1", "well_plot_container_comparison_1", "Summary:"),
+              shiny::tags$div(
+                # CONTAINER TOGGLER INPUT ID + CLASS
+                id = "well_plot_container_comparison_1",
+                class = "collapse in",
+                shiny::tags$span(
+                  "Can't generate the plot"
+                )
+              )
+            )
+          }
+          else if (!inherits(t_som, "try-error") && !inherits(t_germ, "try-error")){
+            datasets <- list()
+            datasets <- append(datasets, t_som)
+            datasets <- append(datasets, t_germ)
+            t <- try(
+              maftools:::merge_mafs(datasets)
+            )
+            if (!inherits(t, "try-error")){
+              maf_for_plot_comparison(t)
+            }
+            else{
+              maf_for_plot_comparison(NULL)
+            }
+
+            shiny::wellPanel(
+              id = "well_plot_comparison_1",
+              class = "well_plot",
+              toggle_panel("toggle_plot_comparison_1", "well_plot_container_comparison_1", "Summary:"),
+              shiny::tags$div(
+                # CONTAINER TOGGLER INPUT ID + CLASS
+                id = "well_plot_container_comparison_1",
+                class = "collapse in",
+                shiny::tags$div(
+                  class = "chart_controls_cont",
+                  shinyWidgets::radioGroupButtons(
+                    inputId = "GSP-comparison_well_selection",
+                    label = "",
+                    choices = c(`<p>Overview<i class='fa fa-pie-chart' style = "margin-left: 6px;"></i></p>` = "comp_overview_chart",
+                                `<p>Maf Summary<i class='fa fa-bar-chart' style = "margin-left: 6px;"></i></p>` = "comp_maf_chart"),
+                    justified = TRUE
+                  ),
+                ),
+
+                shiny::tags$hr(style = "margin-top: 5px; margin-bottom: 5px;"),
+
+                shiny::uiOutput("GSP-comp_charts")
+
+              )
+            )
+          }
+        }
+        else{
+          NULL
+        }
       })
 
     } #SERVER FUNCTION END

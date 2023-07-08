@@ -1,4 +1,4 @@
-ui <- shiny::fluidPage(
+ui <- shiny::fluidPage( #bslib::page_fluid(
 
   id = "mainpage",
 
@@ -74,9 +74,7 @@ ui <- shiny::fluidPage(
           title = shiny::tags$a(
               id = "toggleSidebar",
               class = "toggleSidebar",
-              shiny::tags$span(class = "toggleLine"),
-              shiny::tags$span(class = "toggleLine"),
-              shiny::tags$span(class = "toggleLine")
+              shiny::icon("bars", lib = "font-awesome")
           ),
 
           # ------ SOMATIC AND GERM UI -------

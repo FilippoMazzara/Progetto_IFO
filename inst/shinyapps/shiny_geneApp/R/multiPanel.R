@@ -49,7 +49,7 @@ multiTab_page_ui <- function(id){
                     # LABEL + TOOLTIP (WORKAROUND)
                     label = htmltools::HTML(
                       'Upload a file: </label>
-                      <span data-toggle = "tooltip" style = "float: right" data-placement = "right"
+                      <span data-toggle = "tooltip" style = "float: right;" data-placement = "right"
                       title = "" data-original-title = " From the sidebar you are able to upload genetic data in various formats or chose it from the datasets stored on the server. \n \n After the data has loaded you will be able to explore it with all the tools that geneApp has to offer. \n \n If you want more details on how to operate the app or if you are experiencing problems, check out the Help page.">
                       <i class = "far fa-circle-question" role = "presentation"
                       aria-label = "circle-question icon"></i></span>'
@@ -69,14 +69,6 @@ multiTab_page_ui <- function(id){
                     multiple = TRUE,
                     style = "overflow: hidden; width: 100%;"
                   ),
-
-                  shiny::textOutput(shiny::NS(id, "multi_file_error_total")),
-
-                  # FILE WARNINGS
-                  shiny::tags$div(
-                    id = "multi_warning",
-                    shiny::uiOutput(shiny::NS(id, "multi_warning")),
-                  )
                 )
               ), # WELL_1 END
 
@@ -97,7 +89,7 @@ multiTab_page_ui <- function(id){
               ),
 
               #RESET THE CLIENT INPUT WHEN A FILE IS SELECTED FROM THE SERVER
-              shiny::actionButton(inputId = shiny::NS(id, "multi_reset_client_input_button"), label = "", style = "display:none;")
+              shiny::actionButton(inputId = shiny::NS(id, "multi_reset_client_input_button"), label = "", style = "display: none;")
             )
           )
         ), # SIDEBAR CONTAINER END
@@ -110,7 +102,7 @@ multiTab_page_ui <- function(id){
             width = 9,
 
             shiny::tabsetPanel(
-              id = "main_multi_files",
+              id = shiny::NS(id, "main_multi_files"),
               shiny::tabPanel(
                 id = "multi_main_panel",
                 title = "Combine Samples",
@@ -124,9 +116,9 @@ multiTab_page_ui <- function(id){
 
                 #MAIN PLOT CONTAINER
                 shiny::fluidRow(
-                  id = "multi_plot_main_container_main",
+                  id = "multi_plot_main_container",
                   class = "main_plot_container",
-                  shiny::uiOutput(shiny::NS(id, "multi_plot_main"))
+                  shiny::uiOutput(shiny::NS(id, "multi_main_stats"))
                 ),
 
                 # TABLE MAIN MULTI
@@ -141,7 +133,20 @@ multiTab_page_ui <- function(id){
               shiny::tabPanel(
                 id = "multi_statistics_panel",
                 title = "Statistics",
-                value = "multi_statistics"
+                value = "multi_statistics",
+                shiny::fluidRow(
+                  id = "multi_stats_title",
+                  shiny::tags$h1("Statistics and Charts"),
+                  htmltools::HTML(
+
+                    '<span data-toggle = "tooltip" style = "float: left; margin-left: 15px; margin-top: 15px;" data-placement = "left"
+                    title = "" data-original-title = " When you select a dataset all the stats will be shown on this page. \n \n If too much information is displayed you can minimize some of the visualization panels. \n \n If some charts do not show up there is probably a problem with your dataset, check the help section for more information or on the error messages displayed on screen.">
+                    <i class = "far fa-circle-question" role = "presentation"
+                    aria-label = "circle-question icon"></i></span>'
+
+                  )
+                ),
+                shiny::uiOutput(shiny::NS(id, "multi_stats"))
               )
             )
           )
@@ -168,7 +173,7 @@ multiTab_page_server <- function(id) {
 
       # REACTIVE TITLES
       multi_file_title1 <- shiny::reactiveVal("")
-      multi_file_title_start <- shiny::reactiveVal("\n Upload a multiple samples \n \n  or \n \n Chose them from the available ones \n ")
+      multi_file_title_start <- shiny::reactiveVal("\n Upload multiple samples \n \n  or \n \n Chose them from the available ones \n ")
       multi_titles <- shiny::reactiveVal()
       missing_multi_titles <- shiny::reactiveVal()
 
@@ -184,6 +189,8 @@ multiTab_page_server <- function(id) {
       multi_missing_columns <- shiny::reactiveVal()
       multi_formatted_columns <- shiny::reactiveVal()
       multi_file_error <- shiny::reactiveVal()
+      initial_rows <- shiny::reactiveVal()
+      n_datasets <- shiny::reactiveVal()
 
       # REACTIVE FILTERS RESULTS
       multi_filter_result_list <- shiny::reactiveValues(l = list())
@@ -241,6 +248,7 @@ multiTab_page_server <- function(id) {
 
       # ------ FILE INPUT SERVER -------
       shiny::observeEvent(input$multi_file_input_server, {
+
         if (!is.null(input$multi_file_input_server)){
           inFile <- shinyFiles::parseFilePaths(roots = c(wd = "C:/Users/facke/Desktop/datasets"), input$multi_file_input_server)
           if (length(inFile$datapath) != 0 ){
@@ -280,6 +288,14 @@ multiTab_page_server <- function(id) {
             }
           }
         }
+      })
+
+      shiny::observeEvent(input$multi_file_input_client, {
+        shiny::updateTabsetPanel(session, "main_multi_files", "multi_main")
+      })
+
+      shiny::observeEvent(input$multi_file_input_server, {
+        shiny::updateTabsetPanel(session, "main_multi_files", "multi_main")
       })
 
       # ------ FILE PROCESSING -------
@@ -577,7 +593,7 @@ multiTab_page_server <- function(id) {
           message <- ""
           for (c in names(missing_each)){
             if (length(missing_each[[c]]) > 0){
-              message <- paste(message, "File ", c, " missing columns: ", paste(missing_each[[c]], "\n", collapse = ", "), "\n", sep = "")
+              message <- paste(message, "File ", c, " missing columns: ", paste(missing_each[[c]], "", collapse = ", "), "\n", "\n", sep = "")
             }
             else{
               message <- paste(message, "File ", c, " has no missing columns ", "\n", "\n",sep = "")
@@ -613,6 +629,10 @@ multiTab_page_server <- function(id) {
         }
         else{multi_maf_data(NULL)
         }
+
+        n_datasets(length(datasets_maf))
+
+        initial_rows(nrow(total_data))
 
         #send the processed data with the good names to the reactive
         multi_processed_data(total_data)
@@ -1362,19 +1382,18 @@ multiTab_page_server <- function(id) {
       output$multi_warning <- shiny::renderUI({
         shiny::req(multi_missing_columns())
         shiny::tags$div(
-          shiny::tags$hr(style = "margin-top: 5px; margin-bottom: 5px;"),
-          shiny::tags$div(
+          shiny::tags$p(
             style = "text-align: center; word-break: break-word; white-space: break-spaces;",
             multi_missing_columns()
           )
         )
       })
 
-      output$multi_file_error_total <- shiny::renderText(
-        {shiny::req(missing_multi_titles())
+      output$multi_file_error_total <- shiny::renderText({
+        shiny::req(missing_multi_titles())
           if(!is.null(missing_multi_titles()) && length(missing_multi_titles())>0)
           {c(
-            "Files non letti:",
+            "Files not read:",
             paste(as.character(missing_multi_titles()), sep = ", \n "))}
           else{NULL}
         },
@@ -1383,12 +1402,161 @@ multiTab_page_server <- function(id) {
 
       output$multi_file_error <- shiny::renderText(multi_file_error())
 
-      #------ PLOTTING ON MULTILINE PAGE ------
+      #------ PLOTTING ON MULTI MAIN PAGE ------
       #PLOT SUMMARY DATA
-      maf_for_plot_multi <- shiny::reactiveVal(NULL)
+      maf_for_plot_multi_main <- shiny::reactiveVal(NULL)
+      maf_for_plot_multi_main_df <- shiny::reactiveVal(NULL)
 
       #SUMMARY PLOT OUTPUT
-      output$multi_plot_main2 <- shiny::renderPlot({
+      output$multi_main_charts <- shiny::renderUI({
+        shiny::req(input$multi_main_well_selection)
+        if (!is.null(input$multi_main_well_selection)){
+          if (input$multi_main_well_selection == "multi_main_overview_chart"){
+
+            shiny::tags$div(
+              id = "multi_main_charts_container",
+              class = "charts_container",
+
+              shiny::tags$div(
+                id = "multi_main_initial_rows",
+                class = "panel panel-primary",
+                shiny::tags$div(
+                  class = "panel-heading",
+                  shiny::tags$p(initial_rows()),
+                  shiny::icon("list", class = "fa-regular", lib = "font-awesome")
+                ),
+                shiny::tags$div(
+                  class = "panel-body",
+                  shiny::tags$p(shiny::tags$b("Initial")),
+                  shiny::tags$p("Mutations")
+                )
+              ),
+
+              shiny::tags$div(
+                id = "multi_main_nfiles",
+                class = "panel panel-primary",
+                shiny::tags$div(
+                  class = "panel-heading",
+                  shiny::tags$p(n_datasets()),
+                  shiny::icon("duplicate", lib = "glyphicon")
+                ),
+                shiny::tags$div(
+                  class = "panel-body",
+                  shiny::tags$p("Total"),
+                  shiny::tags$p(shiny::tags$b("Samples"))
+                )
+              ),
+
+              shiny::tags$div(
+                id = "multi_main_filtered_rows",
+                class = "panel panel-info",
+                shiny::tags$div(
+                  class = "panel-heading",
+                  shiny::tags$p(nrow(maf_for_plot_multi_main_df())),
+                  shiny::icon("pie-chart", class = "fa-regular", lib = "font-awesome")
+                ),
+                shiny::tags$div(
+                  class = "panel-body",
+                  shiny::tags$p(shiny::tags$b("Filtered")),
+                  shiny::tags$p("Mutations")
+                )
+              )
+
+            )
+          }
+          else if (input$multi_main_well_selection == "multi_main_file_chart"){
+            if (!is.null(missing_multi_titles()) && length(missing_multi_titles())>0){
+
+              shiny::textOutput("MULTI-multi_file_error_total")
+
+            }
+            else{
+              "No info to display"
+            }
+            # FILE WARNINGS
+            shiny::tags$div(
+              id = "multi_warning",
+              shiny::uiOutput("MULTI-multi_warning")
+            )
+          }
+        }
+      })
+
+      output$multi_main_stats <- shiny::renderUI({
+        shiny::req(multi_maf_data())
+        if (!is.null(multi_maf_data())){
+          maf_data <- multi_maf_data() %>% dplyr::filter(purrr::reduce(multi_filter_result_list$l, `&`, .init = TRUE))
+          maf_data <- maf_data[input$multi_table_rows_all,]
+          t_multi_main <- try(maftools::read.maf(maf_data), silent = T)
+          if (inherits(t_multi_main, "try-error")){
+            maf_for_plot_multi_main(NULL)
+            #ERROR HANDLING
+            shiny::wellPanel(
+              id = "well_plot_multi_main_1",
+              class = "well_plot",
+              toggle_panel("toggle_plot_multi_main_1", "well_plot_container_multi_main_1", "Combined Charts:"),
+              shiny::tags$div(
+                # CONTAINER TOGGLER INPUT ID + CLASS
+                id = "well_plot_container_multi_main_1",
+                class = "collapse in",
+                shiny::tags$span(
+                  "Can't generate the plot"
+                )
+              )
+            )
+          }
+          else {
+            maf_for_plot_multi_main(t_multi_main)
+            maf_for_plot_multi_main_df(maf_data)
+            shiny::wellPanel(
+              id = "well_plot_multi_main_1",
+              class = "well_plot",
+              toggle_panel("toggle_plot_multi_main_1", "well_plot_container_multi_main_1", "Combined Charts:"),
+              shiny::tags$div(
+                # CONTAINER TOGGLER INPUT ID + CLASS
+                id = "well_plot_container_multi_main_1",
+                class = "collapse in",
+                shiny::tags$div(
+                  class = "chart_controls_cont",
+                  shinyWidgets::radioGroupButtons(
+                    inputId = "MULTI-multi_main_well_selection",
+                    label = "",
+                    choices = c(`<p>Overview<i class='fa fa-pie-chart' style = "margin-left: 6px;"></i></p>` = "multi_main_overview_chart", `<p>File Info<i class='fa fa-info-circle' style = "margin-left: 6px;"></i></p>` = "multi_main_file_chart"),
+                    justified = TRUE
+                  ),
+                ),
+
+                shiny::tags$hr(style = "margin-top: 5px; margin-bottom: 5px;"),
+
+                shiny::uiOutput("MULTI-multi_main_charts")
+
+              )
+            )
+          }
+        }
+        else{
+          NULL
+        }
+      })
+
+
+      #------ PLOTTING ON MULTI STATS PAGE ------
+      #PLOT SUMMARY DATA
+      maf_for_plot_multi <- shiny::reactiveVal(NULL)
+      maf_for_plot_multi_df <- shiny::reactiveVal(NULL)
+
+      #SUMMARY PLOT OUTPUT
+      output$multi_plot_oncoplot <- shiny::renderPlot({
+        shiny::req(maf_for_plot_multi())
+        if (!is.null(maf_for_plot_multi())){
+          try(
+            maftools::oncoplot(maf_for_plot_multi()),
+            silent = T
+          )
+        }
+      })
+
+      output$multi_plot_maf <- shiny::renderPlot({
         shiny::req(maf_for_plot_multi())
         if (!is.null(maf_for_plot_multi())){
           try(
@@ -1398,37 +1566,151 @@ multiTab_page_server <- function(id) {
         }
       })
 
-      #PLOT CONTROLS AND CONTAINER RENDERING
-      output$multi_plot_main <- shiny::renderUI({
+      output$multi_plot_clusters <- shiny::renderPlot({
+        shiny::req(maf_for_plot_multi())
+        if (!is.null(maf_for_plot_multi())){
+          try(
+            maftools::plotClusters(maftools::inferHeterogeneity(maf_for_plot_multi(), vafCol = "VAF")),
+            silent = T
+          )
+        }
+      })
+
+      output$multi_plot_vaf <- shiny::renderPlot({
+        shiny::req(maf_for_plot_multi())
+        if (!is.null(maf_for_plot_multi())){
+          try(
+            maftools::plotVaf(maf_for_plot_multi(), vafCol = "VAF", top = 10),
+            silent = T
+          )
+        }
+      })
+
+      output$multi_plot_tcga <- shiny::renderPlot({
+        shiny::req(maf_for_plot_multi())
+        if (!is.null(maf_for_plot_multi())){
+          try(
+            maftools::tcgaCompare(maf_for_plot_multi(), capture_size = 50),
+            silent = T
+          )
+        }
+      })
+
+      output$multi_plot_interaction <- shiny::renderPlot({
+        shiny::req(maf_for_plot_multi())
+        if (!is.null(maf_for_plot_multi())){
+          t <- try(
+            maftools::somaticInteractions(maf_for_plot_multi()),
+            silent = T
+          )
+        }
+      })
+
+      output$multi_charts <- shiny::renderUI({
+        shiny::req(input$multi_well_selection)
+        if (!is.null(input$multi_well_selection)){
+          if (input$multi_well_selection == "multi_oncoplot_chart"){
+            if (!is.null(maf_for_plot_multi())){
+              shiny::plotOutput("MULTI-multi_plot_oncoplot")
+            }
+            else{
+              "Can't generate the plot"
+            }
+          }
+          else if (input$multi_well_selection == "multi_vaf_chart"){
+            if (!is.null(maf_for_plot_multi()) && "VAF" %in% names(maf_for_plot_multi_df())){
+              shiny::tags$div(
+                id = "multi_vafs_container",
+                class = "charts_container",
+                shiny::plotOutput("MULTI-multi_plot_vaf"),
+                shiny::plotOutput("MULTI-multi_plot_clusters")
+              )
+            }
+            else{
+              "Can't generate the plot"
+            }
+          }
+          else if (input$multi_well_selection == "multi_mafsummary_chart"){
+            if (!is.null(maf_for_plot_multi())){
+              shiny::plotOutput("MULTI-multi_plot_maf")
+            }
+            else{
+              "Can't generate the plot"
+            }
+          }
+          else if (input$multi_well_selection == "multi_tcga_chart"){
+            if (!is.null(maf_for_plot_multi())){
+              shiny::plotOutput("MULTI-multi_plot_tcga")
+            }
+            else{
+              "Can't generate the plot"
+            }
+          }
+          else if (input$multi_well_selection == "multi_inter_chart"){
+            if (!is.null(maf_for_plot_multi())){
+              shiny::plotOutput("MULTI-multi_plot_interaction")
+            }
+            else{
+              "Can't generate the plot"
+            }
+          }
+        }
+      })
+
+      output$multi_stats <- shiny::renderUI({
         shiny::req(multi_maf_data())
         if (!is.null(multi_maf_data())){
-          #CHECK IF THE PLOT CAN BE GENERATED
           maf_data <- multi_maf_data() %>% dplyr::filter(purrr::reduce(multi_filter_result_list$l, `&`, .init = TRUE))
-          t <- try(maftools::read.maf(maf_data[input$multi_table_rows_all,]), silent = T)
-          if (inherits(t, "try-error")){
+          maf_data <- maf_data[input$multi_table_rows_all,]
+          t_multi <- try(maftools::read.maf(maf_data), silent = T)
+          if (inherits(t_multi, "try-error")){
+            maf_for_plot_multi(NULL)
             #ERROR HANDLING
             shiny::wellPanel(
-              id = "multi_well_plot2",
-              toggle_panel("multi_toggle_plot2", "multi_well_plot_container2", "Summary:"),
+              id = "well_plot_multi_1",
+              class = "well_plot",
+              toggle_panel("toggle_plot_multi_1", "well_plot_container_multi_1", "Combined Charts:"),
               shiny::tags$div(
                 # CONTAINER TOGGLER INPUT ID + CLASS
-                id = "multi_well_plot_container2",
+                id = "well_plot_container_multi_1",
                 class = "collapse in",
-                "Can't generate the plot"
+                shiny::tags$span(
+                  "Can't generate the plot"
+                )
               )
             )
           }
-          else{
-            maf_for_plot_multi(t)
+          else {
+            maf_for_plot_multi(t_multi)
+            maf_for_plot_multi_df(maf_data)
             shiny::wellPanel(
-              id = "well_plot_multi",
+              id = "well_plot_multi_1",
               class = "well_plot",
-              toggle_panel("toggle_plot_multi", "well_plot_container_multi", "Summary:"),
+              toggle_panel("toggle_plot_multi_1", "well_plot_container_multi_1", "Combined Charts:"),
               shiny::tags$div(
                 # CONTAINER TOGGLER INPUT ID + CLASS
-                id = "well_plot_container_multi",
+                id = "well_plot_container_multi_1",
                 class = "collapse in",
-                shiny::plotOutput("MULTI-multi_plot_main2")
+                shiny::tags$div(
+                  class = "chart_controls_cont",
+                  shinyWidgets::radioGroupButtons(
+                    inputId = "MULTI-multi_well_selection",
+                    label = "",
+                    choices = c(
+                      `<p>Oncoplot<i class='fa fa-table' style = "margin-left: 6px;"></i></p>` = "multi_oncoplot_chart",
+                      `<p>Vaf<i class='fa fa-line-chart' style = "margin-left: 6px;"></i></p>` = "multi_vaf_chart",
+                      `<p>Maf Summary<i class='fa fa-bar-chart' style = "margin-left: 6px;"></i></p>` = "multi_mafsummary_chart",
+                      `<p>TGCA<i class='fa fa-area-chart' style = "margin-left: 6px;"></i></p>` = "multi_tcga_chart",
+                      `<p>Interaction<i class='fa fa-th' style = "margin-left: 6px;"></i></p>` = "multi_inter_chart"
+                    ),
+                    justified = TRUE
+                  ),
+                ),
+
+                shiny::tags$hr(style = "margin-top: 5px; margin-bottom: 5px;"),
+
+                shiny::uiOutput("MULTI-multi_charts")
+
               )
             )
           }
@@ -1437,6 +1719,7 @@ multiTab_page_server <- function(id) {
           NULL
         }
       })
+
 
       #------ MULTI TABLE ------
 

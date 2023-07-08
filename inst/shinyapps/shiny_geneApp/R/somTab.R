@@ -118,9 +118,9 @@ somTab_ui_table <- function(id){
 
     #MAIN PLOT CONTAINER
     shiny::fluidRow(
-      id = "som_plot_main_container_main",
+      id = "som_plot_main_container",
       class = "main_plot_container",
-      shiny::uiOutput(shiny::NS(id, "som_plot_main"))
+      shiny::uiOutput(shiny::NS(id, "somatic_stats")),
     ),
 
     # TABLE MAIN SOM
@@ -164,6 +164,7 @@ somTab_server <- function(id){
       som_missing_columns <- shiny::reactiveVal()
       som_formatted_columns <- shiny::reactiveVal()
       som_file_error <- shiny::reactiveVal()
+      initial_rows <- shiny::reactiveVal()
 
       # REACTIVE FILTERS RESULTS
       som_filter_result_list <- shiny::reactiveValues(l = list())
@@ -520,6 +521,8 @@ somTab_server <- function(id){
         }
         else{som_maf_data(NULL)
         }
+
+        initial_rows(nrow(processing_data))
 
         #send the processed data with the good names to the reactive
         som_processed_data(processing_data)
@@ -1281,11 +1284,13 @@ somTab_server <- function(id){
       output$som_file_error <- shiny::renderText(som_file_error())
 
       #------ PLOTTING ON SOMLINE PAGE ------
+
       #PLOT SUMMARY DATA
       maf_for_plot_som <- shiny::reactiveVal(NULL)
+      maf_for_plot_som_df <- shiny::reactiveVal(NULL)
 
       #SUMMARY PLOT OUTPUT
-      output$som_plot_main2 <- shiny::renderPlot({
+      output$som_plot_maf <- shiny::renderPlot({
         shiny::req(maf_for_plot_som())
         if (!is.null(maf_for_plot_som())){
           try(
@@ -1295,37 +1300,139 @@ somTab_server <- function(id){
         }
       })
 
-      #PLOT CONTROLS AND CONTAINER RENDERING
-      output$som_plot_main <- shiny::renderUI({
-        shiny::req(som_maf_data())
-        if (!is.null(som_maf_data())){
-          #CHECK IF THE PLOT CAN BE GENERATED
-          maf_data <- som_maf_data() %>% dplyr::filter(purrr::reduce(som_filter_result_list$l, `&`, .init = TRUE))
-          t <- try(maftools::read.maf(maf_data[input$som_table_rows_all,]), silent = T)
-          if (inherits(t, "try-error")){
-            #ERROR HANDLING
-            shiny::wellPanel(
-              id = "som_well_plot2",
-              toggle_panel("som_toggle_plot2", "som_well_plot_container2", "Summary:"),
+      output$som_plot_clusters <- shiny::renderPlot({
+        shiny::req(maf_for_plot_som())
+        if (!is.null(maf_for_plot_som())){
+          try(
+            maftools::plotClusters(maftools::inferHeterogeneity(maf_for_plot_som(), vafCol = "VAF")),
+            silent = T
+          )
+        }
+      })
+
+      output$som_plot_vaf <- shiny::renderPlot({
+        shiny::req(maf_for_plot_som())
+        if (!is.null(maf_for_plot_som())){
+          try(
+            maftools::plotVaf(maf_for_plot_som(), vafCol = "VAF", top = 10),
+            silent = T
+          )
+        }
+      })
+
+      output$somatic_charts <- shiny::renderUI({
+        shiny::req(input$somatic_well_selection)
+        if (!is.null(input$somatic_well_selection)){
+          if (input$somatic_well_selection == "som_overview_chart"){
+
+            shiny::tags$div(
+              id = "somatic_charts_container",
+              class = "charts_container",
+
               shiny::tags$div(
-                # CONTAINER TOGGLER INPUT ID + CLASS
-                id = "som_well_plot_container2",
-                class = "collapse in",
-                "Can't generate the plot"
+                id = "som_initial_rows",
+                class = "panel panel-primary",
+                shiny::tags$div(
+                  class = "panel-heading",
+                  shiny::tags$p(initial_rows()),
+                  shiny::icon("list", class = "fa-regular", lib = "font-awesome")
+                ),
+                shiny::tags$div(
+                  class = "panel-body",
+                  shiny::tags$p(shiny::tags$b("Initial")),
+                  shiny::tags$p("Mutations")
+                )
+              ),
+
+              shiny::tags$div(
+                id = "som_filtered_rows",
+                class = "panel panel-info",
+                shiny::tags$div(
+                  class = "panel-heading",
+                  shiny::tags$p(nrow(maf_for_plot_som_df())),
+                  shiny::icon("pie-chart", class = "fa-regular", lib = "font-awesome")
+                ),
+                shiny::tags$div(
+                  class = "panel-body",
+                  shiny::tags$p(shiny::tags$b("Filtered")),
+                  shiny::tags$p("Mutations")
+                )
               )
             )
           }
-          else{
-            maf_for_plot_som(t)
+          else if (input$somatic_well_selection == "som_vaf_chart"){
+            if (!is.null(maf_for_plot_som()) && "VAF" %in% names(maf_for_plot_som_df())){
+              shiny::tags$div(
+                id = "somatic_vafs_container",
+                class = "charts_container",
+                shiny::plotOutput("GSP-SOM-som_plot_vaf"),
+                shiny::plotOutput("GSP-SOM-som_plot_clusters")
+              )
+            }
+            else{
+              "Can't generate the plot"
+            }
+          }
+          else if (input$somatic_well_selection == "som_mafsummary_chart"){
+            if (!is.null(maf_for_plot_som())){
+              shiny::plotOutput("GSP-SOM-som_plot_maf")
+            }
+            else{
+              "Can't generate the plot"
+            }
+          }
+        }
+      })
+
+      output$somatic_stats <- shiny::renderUI({
+        shiny::req(som_maf_data())
+        if (!is.null(som_maf_data())){
+          maf_data <- som_maf_data() %>% dplyr::filter(purrr::reduce(som_filter_result_list$l, `&`, .init = TRUE))
+          maf_data <- maf_data[input$som_table_rows_all,]
+          t_som <- try(maftools::read.maf(maf_data), silent = T)
+          if (inherits(t_som, "try-error")){
+            maf_for_plot_som(NULL)
+            #ERROR HANDLING
             shiny::wellPanel(
-              id = "well_plot_som",
+              id = "well_plot_somatic_1",
               class = "well_plot",
-              toggle_panel("toggle_plot_som", "well_plot_container_som", "Summary:"),
+              toggle_panel("toggle_plot_somatic_1", "well_plot_container_somatic_1", "Somatic Charts:"),
               shiny::tags$div(
                 # CONTAINER TOGGLER INPUT ID + CLASS
-                id = "well_plot_container_som",
+                id = "well_plot_container_somatic_1",
                 class = "collapse in",
-                shiny::plotOutput("GSP-SOM-som_plot_main2")
+                shiny::tags$span(
+                  "Can't generate the plot"
+                )
+              )
+            )
+          }
+          else {
+            maf_for_plot_som(t_som)
+            maf_for_plot_som_df(maf_data)
+            shiny::wellPanel(
+              id = "well_plot_somatic_1",
+              class = "well_plot",
+              toggle_panel("toggle_plot_somatic_1", "well_plot_container_somatic_1", "Somatic Charts:"),
+              shiny::tags$div(
+                # CONTAINER TOGGLER INPUT ID + CLASS
+                id = "well_plot_container_somatic_1",
+                class = "collapse in",
+                shiny::tags$div(
+                  class = "chart_controls_cont",
+                  shinyWidgets::radioGroupButtons(
+                    inputId = "GSP-SOM-somatic_well_selection",
+                    label = "",
+                    choices = c(`<p>Overview<i class='fa fa-pie-chart' style = "margin-left: 6px;"></i></p>` = "som_overview_chart", `<p>Vaf<i class='fa fa-line-chart' style = "margin-left: 6px;"></i></p>` = "som_vaf_chart",
+                                `<p>Maf Summary<i class='fa fa-bar-chart' style = "margin-left: 6px;"></i></p>` = "som_mafsummary_chart"),
+                    justified = TRUE
+                  ),
+                ),
+
+                shiny::tags$hr(style = "margin-top: 5px; margin-bottom: 5px;"),
+
+                shiny::uiOutput("GSP-SOM-somatic_charts")
+
               )
             )
           }
