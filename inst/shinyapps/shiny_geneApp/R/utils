@@ -1634,3 +1634,21 @@ Splice_Site <- c("Splice_Site","splice_site","splice_acceptor_variant","splice_p
 #germ_filtered_rows > .panel-body {
   color: #97BC62;
 }
+--.-.-.-.-.-.--.-..-
+-,-,,-,--,-,--,--,,,-
+comp_message("")
+          shiny::wellPanel(
+            id = "well_plot_comparison_1",
+            class = "well_plot",
+            toggle_panel("toggle_plot_comparison_1", "well_plot_container_comparison_1", "Summary:"),
+            shiny::tags$div(
+              # CONTAINER TOGGLER INPUT ID + CLASS
+              id = "well_plot_container_comparison_1",
+              class = "collapse in",
+              shiny::tags$span(
+                style = "text-align: center; color: red; font-size: initial;",
+                shiny::icon("exclamation-triangle", lib = "font-awesome"),
+                "Can't generate the plot"
+              )
+            )
+          )

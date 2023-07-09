@@ -86,7 +86,9 @@ gersomPanel_ui <- function(id){
                   )
                 ),
 
-                shiny::uiOutput(shiny::NS(id, "comparison_stats"))
+                shiny::uiOutput(shiny::NS(id, "comparison_stats")),
+
+                shiny::uiOutput(shiny::NS(id, "comparison_message"))
 
               )
             )
@@ -180,7 +182,7 @@ gersomPanel_server <- function(id){
 
       #---- STATISTICS TAB SERVER ----#
       maf_for_plot_comparison <- shiny::reactiveVal(NULL)
-
+      comp_message <- shiny::reactiveVal("\n Here will be displayed the samples stats once available")
 
       #SUMMARY PLOT OUTPUT
       output$combined_maf_plot <- shiny::renderPlot({
@@ -191,114 +193,127 @@ gersomPanel_server <- function(id){
             silent = T
           )
         }
-      })
+      }, res = 100)
 
       output$comp_charts <- shiny::renderUI({
         shiny::req(input$comparison_well_selection)
         if (!is.null(input$comparison_well_selection)){
           if (input$comparison_well_selection == "comp_overview_chart"){
-
-            som_excl <- dplyr::anti_join(som_statistics_data(), germ_statistics_data(), by = c("Chromosome", "Tumor_Seq_Allele2", "Start_Position"))
-            germ_excl <- dplyr::anti_join(germ_statistics_data(), som_statistics_data(), by = c("Chromosome", "Tumor_Seq_Allele2", "Start_Position"))
-            common_rows <- dplyr::semi_join(som_statistics_data(), germ_statistics_data(), by = c("Chromosome", "Tumor_Seq_Allele2", "Start_Position"))
-
-            shiny::tags$div(
-              id = "comp_charts_container",
-              class = "charts_container",
-              shiny::tags$div(
-                id = "som_tot_mut",
-                class = "panel panel-primary",
-                shiny::tags$div(
-                  class = "panel-heading",
-                  shiny::tags$p(nrow(som_statistics_data())),
-                  shiny::icon("list", class = "fa-regular", lib = "font-awesome")
-                ),
-                shiny::tags$div(
-                  class = "panel-body",
-                  shiny::tags$p(shiny::tags$b("Somatic"), " Sample"),
-                  shiny::tags$p("Total Mutations")
-                )
-              ),
+            if (!is.null(som_statistics_data()) && !is.null(germ_statistics_data())){
+              som_excl <- try(dplyr::anti_join(som_statistics_data(), germ_statistics_data(), by = c("Chromosome", "Tumor_Seq_Allele2", "Start_Position")), silent =  T)
+              germ_excl <- try(dplyr::anti_join(germ_statistics_data(), som_statistics_data(), by = c("Chromosome", "Tumor_Seq_Allele2", "Start_Position")), silent =  T)
+              common_rows <- try(dplyr::semi_join(som_statistics_data(), germ_statistics_data(), by = c("Chromosome", "Tumor_Seq_Allele2", "Start_Position")), silent =  T)
 
               shiny::tags$div(
-                id = "germ_tot_mut",
-                class = "panel panel-primary",
+                id = "comp_charts_container",
+                class = "charts_container",
                 shiny::tags$div(
-                  class = "panel-heading",
-                  shiny::tags$p(nrow(germ_statistics_data())),
-                  shiny::icon("list", class = "fa-regular", lib = "font-awesome")
+                  id = "som_tot_mut",
+                  class = "panel panel-primary",
+                  shiny::tags$div(
+                    class = "panel-heading",
+                    shiny::tags$p(nrow(som_statistics_data())),
+                    shiny::icon("list", class = "fa-regular", lib = "font-awesome")
+                  ),
+                  shiny::tags$div(
+                    class = "panel-body",
+                    shiny::tags$p(shiny::tags$b("Somatic"), " Sample"),
+                    shiny::tags$p("Total Mutations")
+                  )
                 ),
-                shiny::tags$div(
-                  class = "panel-body",
-                  shiny::tags$p(shiny::tags$b("Germline"), " Sample"),
-                  shiny::tags$p("Total Mutations")
-                )
-              ),
 
-              shiny::tags$div(
-                id = "som_excl_mut",
-                class = "panel panel-info",
                 shiny::tags$div(
-                  class = "panel-heading",
-                  shiny::tags$p(nrow(som_excl)),
-                  shiny::icon("chart-simple", verify_fa = FALSE, lib = "font-awesome")
+                  id = "germ_tot_mut",
+                  class = "panel panel-primary",
+                  shiny::tags$div(
+                    class = "panel-heading",
+                    shiny::tags$p(nrow(germ_statistics_data())),
+                    shiny::icon("list", class = "fa-regular", lib = "font-awesome")
+                  ),
+                  shiny::tags$div(
+                    class = "panel-body",
+                    shiny::tags$p(shiny::tags$b("Germline"), " Sample"),
+                    shiny::tags$p("Total Mutations")
+                  )
                 ),
-                shiny::tags$div(
-                  class = "panel-body",
-                  shiny::tags$p(shiny::tags$b("Somatic"), " Sample"),
-                  shiny::tags$p("Exclusive Mutations")
-                )
-              ),
 
-              shiny::tags$div(
-                id = "germ_excl_mut",
-                class = "panel panel-info",
                 shiny::tags$div(
-                  class = "panel-heading",
-                  shiny::tags$p(nrow(germ_excl)),
-                  shiny::icon("chart-simple", lib = "font-awesome")
+                  id = "som_excl_mut",
+                  class = "panel panel-info",
+                  shiny::tags$div(
+                    class = "panel-heading",
+                    shiny::tags$p(nrow(som_excl)),
+                    shiny::icon("chart-simple", verify_fa = FALSE, lib = "font-awesome")
+                  ),
+                  shiny::tags$div(
+                    class = "panel-body",
+                    shiny::tags$p(shiny::tags$b("Somatic"), " Sample"),
+                    shiny::tags$p("Exclusive Mutations")
+                  )
                 ),
-                shiny::tags$div(
-                  class = "panel-body",
-                  shiny::tags$p(shiny::tags$b("Germline"), " Sample"),
-                  shiny::tags$p("Exclusive Mutations")
-                )
-              ),
 
-              shiny::tags$div(
-                id = "germ_som_common_mut",
-                class = "panel panel-info",
                 shiny::tags$div(
-                  class = "panel-heading",
-                  shiny::tags$p(nrow(common_rows)),
-                  shiny::icon("pie-chart", lib = "font-awesome")
+                  id = "germ_excl_mut",
+                  class = "panel panel-info",
+                  shiny::tags$div(
+                    class = "panel-heading",
+                    shiny::tags$p(nrow(germ_excl)),
+                    shiny::icon("chart-simple", lib = "font-awesome")
+                  ),
+                  shiny::tags$div(
+                    class = "panel-body",
+                    shiny::tags$p(shiny::tags$b("Germline"), " Sample"),
+                    shiny::tags$p("Exclusive Mutations")
+                  )
                 ),
+
                 shiny::tags$div(
-                  class = "panel-body",
-                  shiny::tags$p(" Samples "),
-                  shiny::tags$p(shiny::tags$b("Shared"), " Mutations")
-                )
-              ),
-            )
+                  id = "germ_som_common_mut",
+                  class = "panel panel-info",
+                  shiny::tags$div(
+                    class = "panel-heading",
+                    shiny::tags$p(nrow(common_rows)),
+                    shiny::icon("pie-chart", lib = "font-awesome")
+                  ),
+                  shiny::tags$div(
+                    class = "panel-body",
+                    shiny::tags$p(" Samples "),
+                    shiny::tags$p(shiny::tags$b("Shared"), " Mutations")
+                  )
+                ),
+              )
+            }
+            else{
+              shiny::tags$span(
+                style = "text-align: center; color: red; font-size: initial;",
+                shiny::icon("exclamation-triangle", lib = "font-awesome"),
+                "Can't generate the plot"
+              )
+            }
           }
           else if (input$comparison_well_selection == "comp_maf_chart"){
             if (!is.null(maf_for_plot_comparison())){
               shiny::plotOutput("GSP-combined_maf_plot")
             }
             else{
-              "Can't generate the plot"
+              shiny::tags$span(
+                style = "text-align: center; color: red; font-size: initial;",
+                shiny::icon("exclamation-triangle", lib = "font-awesome"),
+                "Can't generate the plot"
+              )
             }
           }
         }
       })
 
       output$comparison_stats <- shiny::renderUI({
-        shiny::req(som_statistics_data())
-        shiny::req(germ_statistics_data())
+        #shiny::req(som_statistics_data())
+        #shiny::req(germ_statistics_data())
         if (!is.null(som_statistics_data()) && !is.null(germ_statistics_data())){
+          comp_message("")
           t_som <- try(maftools::read.maf(som_statistics_data()), silent = T)
           t_germ <- try(maftools::read.maf(germ_statistics_data()), silent = T)
-          if (inherits(t_som, "try-error") || inherits(t_germ, "try-error")){
+          if (inherits(t_som, "try-error") && inherits(t_germ, "try-error")){
             #ERROR HANDLING
             shiny::wellPanel(
               id = "well_plot_comparison_1",
@@ -309,12 +324,14 @@ gersomPanel_server <- function(id){
                 id = "well_plot_container_comparison_1",
                 class = "collapse in",
                 shiny::tags$span(
-                  "Can't generate the plot"
+                  style = "text-align: center; color: red; font-size: initial;",
+                  shiny::icon("exclamation-triangle", lib = "font-awesome"),
+                  "Can't generate the plots"
                 )
               )
             )
           }
-          else if (!inherits(t_som, "try-error") && !inherits(t_germ, "try-error")){
+          else if (!inherits(t_som, "try-error") || !inherits(t_germ, "try-error")){
             datasets <- list()
             datasets <- append(datasets, t_som)
             datasets <- append(datasets, t_germ)
@@ -356,7 +373,31 @@ gersomPanel_server <- function(id){
           }
         }
         else{
+          comp_message("\n Here will be displayed the samples stats once available")
           NULL
+        }
+      })
+
+      output$comparison_message <- shiny::renderUI({
+        if (nchar(comp_message()) > 0){
+          shiny::tags$div(
+            shiny::tags$h3(
+              class = "file_title_start_comp",
+              comp_message(),
+              shiny::tags$div(
+                style = "display: flex; justify-content: center; align-items: center;",
+                shiny::icon('line-chart', style = "font-size: xx-large; margin-right: 10px; margin-left: 10px;"),
+                shiny::icon('bar-chart', style = "font-size: xx-large; margin-right: 10px; margin-left: 10px;"),
+                shiny::icon('area-chart', style = "font-size: xx-large; margin-right: 10px; margin-left: 10px;")
+              )
+            )
+          )
+        }
+        else{
+          shiny::tags$h1(
+            class = "file_title1",
+            comp_message()
+          )
         }
       })
 

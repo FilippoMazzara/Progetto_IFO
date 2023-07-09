@@ -393,6 +393,13 @@ div.navbar-header > span.navbar-brand {
 
 .toggleSidebar > i {
   font-size: xx-large;
+  color: grey;
+  transition-property: transform;
+  transition-duration: 0.45s;
+}
+
+.sidebarRotate {
+  transform:rotate(-90deg);
 }
 
 /* TABLE VIEW SECTION */
@@ -565,6 +572,18 @@ div.file_side> div.well> div> div {
   padding-left: 0;
   flex: 1;
   height: 100%;
+}
+
+#MULTI-multi_file_input_client_progress > .progress-bar {
+  background-color: #2C5F2D;
+}
+
+#MULTI-main_multi_files > li > a {
+  color: green;
+}
+
+#MULTI-main_multi_files > li.active > a {
+  color: #555;
 }
 
 #colcol_multi > div {
@@ -1144,6 +1163,41 @@ tfoot > tr {
   display: flex;
   flex-wrap: wrap;
 }
+
+#well_plot_container_germline_1.collapse.in {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#well_plot_container_somatic_1.collapse.in {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#well_plot_container_germline_1.collapse.in > span{
+  margin-top: 10px;
+}
+
+#well_plot_container_somatic_1.collapse.in > span{
+  margin-top: 10px;
+}
+
+#well_plot_container_multi_1.collapse.in > span{
+  margin-top: 10px;
+}
+
+#well_plot_container_comparison_1.collapse.in > span{
+  margin-top: 10px;
+}
+
+#well_plot_container_multi_main_1.collapse.in > span {
+  margin-top: 10px;
+}
+
+#well_plot_container_multi_main_1.collapse.in{
+  display: flex;
+  flex-wrap: wrap;
+}
 /*
 .navbar:not(.fixed-bottom):not(.navbar-fixed-bottom):not(.navbar-fixed-bottom)+div>.tab-content>.tab-pane {
     --bslib-navbar-margin: 0 !important;
@@ -1218,26 +1272,38 @@ tfoot > tr {
 }
 
 #GSP-comp_charts{
+  display: flex;
+  justify-content: center;
   width: 100%;
 }
 
 #GSP-SOM-somatic_charts{
+  display: flex;
+  justify-content: center;
   width: 100%;
 }
 
 #GSP-GERM-germline_charts{
+  display: flex;
+  justify-content: center;
   width: 100%;
 }
 
 #MULTI-multi_main_charts{
+  display: flex;
+  justify-content: center;
   width: 100%;
+  margin-top: -10px;
 }
 
 #MULTI-multi_charts{
+  display: flex;
+  justify-content: center;
   width: 100%;
 }
 
 .charts_container{
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -1291,6 +1357,48 @@ tfoot > tr {
 
 #well_plot_container_multi_1 > div.chart_controls_cont > div {
   max-width: 700px !important;
+}
+
+.file_title_start_comp {
+  min-width: 100px !important;
+  white-space: break-spaces;
+  text-align: center;
+  overflow: hidden;
+}
+
+#well_multi_filter_container .irs-bar {
+  border-top: 1px solid #2C5F2D;
+  border-bottom: 1px solid #2C5F2D;
+  background: #2C5F2D;
+}
+
+#well_multi_filter_container .irs-from {
+  background-color: #2C5F2D;
+}
+
+#well_multi_filter_container .irs-to {
+  background-color: #2C5F2D;
+}
+
+#every_export_cont_multi .label-default{
+  background-color: #2C5F2D;
+}
+
+#every_export_cont_germ .label-default{
+  background-color: #337ab7;
+}
+
+#every_export_cont_som .label-default{
+  background-color: #337ab7;
+}
+
+#well_export_container_multi .dropdown-menu>.active>a {
+  background-color: #2C5F2D;
+}
+
+#MULTI-multi_table  tr.selected > td {
+  background-color: white !important;
+  box-shadow: inset 0 0 0 9999px rgb(44 95 45 / 90%) !important;
 }
 
 /* SCREEN OPTIONS*/

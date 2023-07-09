@@ -314,6 +314,7 @@ server <- function(input, output, session){
   shinyjs::onclick( id = "toggleSidebar", {
     shinyjs::runjs('
 
+      var icon = document.querySelector("#toggleSidebar > i");
       var x = document.querySelector("#nav_cont_2 > nav > div > div");
       var b1 = document.querySelector("#GSP-SOM-som_table > div > div.dataTables_scroll > div.dataTables_scrollBody");
       var h1 = document.querySelector("#GSP-SOM-som_table > div > div.dataTables_scroll > div.dataTables_scrollHead > div.dataTables_scrollHeadInner > table");
@@ -321,11 +322,12 @@ server <- function(input, output, session){
       var h2 = document.querySelector("#GSP-GERM-germ_table > div > div.dataTables_scroll > div.dataTables_scrollHead > div.dataTables_scrollHeadInner > table");
       var b3 = document.querySelector("#MULTI-multi_table > div > div.dataTables_scroll > div.dataTables_scrollBody");
       var h3 = document.querySelector("#MULTI-multi_table > div > div.dataTables_scroll > div.dataTables_scrollHead > div.dataTables_scrollHeadInner > table");
-      plot1 = document.querySelector("#GSP-SOM-som_plot_main2 > img ");
-      plot2 = document.querySelector("#GSP-GERM-germ_plot_main2 > img ");
-      plot3 = document.querySelector("#MULTI-multi_plot_main2 > img ");
+      plot1 = document.querySelector("#GSP-SOM-som_plot_main2 > img");
+      plot2 = document.querySelector("#GSP-GERM-germ_plot_main2 > img");
+      plot3 = document.querySelector("#MULTI-multi_plot_main2 > img");
 
       if (x.style.width == "93px") {
+        icon.classList.toggle("sidebarRotate");
         x.style.width = "25%";
         x.style.minWidth = "inherit";
         if(plot1 !== null){
@@ -348,6 +350,7 @@ server <- function(input, output, session){
         }
       }
       else {
+        icon.classList.toggle("sidebarRotate");
         x.style.setProperty("min-width", "auto", "important");
         x.style.width = "93px";
 

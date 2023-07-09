@@ -61,7 +61,12 @@ somTab_ui_sidebar <- function(id){
           shiny::tags$div(
             id = "som_warning",
             shiny::uiOutput(shiny::NS(id, "som_warning")),
+          ),
 
+          # FILE ERRORS
+          shiny::tags$div(
+            id = "som_error",
+            shiny::uiOutput(shiny::NS(id, "som_error")),
           )
         )
       ), # WELL_1 END
@@ -112,9 +117,6 @@ somTab_ui_table <- function(id){
 
     # TITLE MAIN SOM
     shiny::uiOutput(shiny::NS(id, "som_file_title_main")),
-
-    #FILE READ ERROR
-    shiny::textOutput(shiny::NS(id, "som_file_error")),
 
     #MAIN PLOT CONTAINER
     shiny::fluidRow(
@@ -174,7 +176,7 @@ somTab_server <- function(id){
 
       # ------ FILE INPUT CLIENT -------
       shiny::observeEvent(input$som_file_input_client, {
-        som_file_error("") #RESET ERROR STATUS
+        som_file_error(NULL) #RESET ERROR STATUS
 
         t <- try(
           #READ THE FILE
@@ -185,9 +187,8 @@ somTab_server <- function(id){
           ),
           silent = T
         )
-
         #ERROR HANDLING
-        if (inherits(t, "try-error")){
+        if (inherits(t, "try-error") || is.null(t) || nrow(t) == 0){
           som_file_error("There was an error reading the file")
           som_initial_data(NULL)
         }
@@ -216,7 +217,7 @@ somTab_server <- function(id){
           inFile <- shinyFiles::parseFilePaths(roots = c(wd = "C:/Users/facke/Desktop/datasets"), input$som_file_input_server)
 
           if (length(inFile$datapath) != 0 ){
-            som_file_error("") #RESET ERROR STATUS
+            som_file_error(NULL) #RESET ERROR STATUS
 
             t <- try(
               #READ THE FILE
@@ -229,7 +230,7 @@ somTab_server <- function(id){
             )
 
             #ERROR HANDLING
-            if (inherits(t, "try-error")){
+            if (inherits(t, "try-error") || is.null(t) || nrow(t) == 0){
               som_file_error("There was an error reading the file")
               som_initial_data(NULL)
             }
@@ -684,8 +685,14 @@ somTab_server <- function(id){
 
       #EXPORT ERROR HANDLING
       file_export_error <- shiny::reactiveVal("")
-      output$export_error_som <- shiny::renderText({
-          file_export_error()
+      output$export_error_som <- shiny::renderUI({
+        if(nchar(file_export_error()) > 0){
+          shiny::tags$span(
+            style = "text-align: center; color: red; font-size: initial;",
+            shiny::icon("exclamation-triangle", lib = "font-awesome"),
+            file_export_error()
+          )
+        }
       })
 
       #PDF EXPORT
@@ -1033,13 +1040,13 @@ somTab_server <- function(id){
               shiny::actionButton(inputId = "GSP-SOM-export_button_som_mock", label = "Download", icon = shiny::icon("download")),
               shiny::downloadButton(outputId = "GSP-SOM-export_button_som", style = "display:none;")
             ),
-            shiny::tags$hr(),
+            shiny::tags$hr(style = "margin-top: 5px; margin-bottom: 5px;"),
             #DIFFERENT FILE TYPES EXPORT UI
             shiny::uiOutput("GSP-SOM-every_som_table_export"),
             shiny::uiOutput("GSP-SOM-pdf_som_table_export"),
             shiny::uiOutput("GSP-SOM-maf_som_table_export"),
             #ERROR MESSAGE
-            shiny::textOutput("GSP-SOM-export_error_som")
+            shiny::uiOutput("GSP-SOM-export_error_som")
           )
         )
       })
@@ -1274,14 +1281,34 @@ somTab_server <- function(id){
       # RENDER OF ERRORS
       output$som_warning <- shiny::renderUI({
         shiny::req(som_missing_columns())
-        shiny::tags$div(
-          style = "text-align: center;",
-          shiny::tags$hr(style = "margin-top: 5px; margin-bottom: 5px;"),
-          som_missing_columns()
-        )
+        if(som_missing_columns() == "There are no missing columns"){
+          shiny::tags$div(
+            style = "text-align: center;",
+            shiny::tags$hr(style = "margin-top: 5px; margin-bottom: 5px;"),
+            som_missing_columns()
+          )
+        }
+        else{
+          shiny::tags$div(
+            style = "text-align: center; color: #f39c11; font-size: initial;",
+            shiny::tags$hr(style = "margin-top: 5px; margin-bottom: 5px;"),
+            shiny::icon("exclamation-triangle", lib = "font-awesome"),
+            som_missing_columns()
+          )
+        }
       })
 
-      output$som_file_error <- shiny::renderText(som_file_error())
+      output$som_error <- shiny::renderUI({
+        shiny::req(som_file_error())
+        if(!is.null(som_file_error())){
+          shiny::tags$div(
+            style = "text-align: center; color: red; font-size: initial;",
+            shiny::tags$hr(style = "margin-top: 5px; margin-bottom: 5px;"),
+            shiny::icon("exclamation-triangle", lib = "font-awesome"),
+            som_file_error()
+          )
+        }
+      })
 
       #------ PLOTTING ON SOMLINE PAGE ------
 
@@ -1370,7 +1397,11 @@ somTab_server <- function(id){
               )
             }
             else{
-              "Can't generate the plot"
+              shiny::tags$span(
+                style = "text-align: center; color: red; font-size: initial;",
+                shiny::icon("exclamation-triangle", lib = "font-awesome"),
+                "Can't generate the plot"
+              )
             }
           }
           else if (input$somatic_well_selection == "som_mafsummary_chart"){
@@ -1378,7 +1409,11 @@ somTab_server <- function(id){
               shiny::plotOutput("GSP-SOM-som_plot_maf")
             }
             else{
-              "Can't generate the plot"
+              shiny::tags$span(
+                style = "text-align: center; color: red; font-size: initial;",
+                shiny::icon("exclamation-triangle", lib = "font-awesome"),
+                "Can't generate the plot"
+              )
             }
           }
         }
@@ -1390,52 +1425,34 @@ somTab_server <- function(id){
           maf_data <- som_maf_data() %>% dplyr::filter(purrr::reduce(som_filter_result_list$l, `&`, .init = TRUE))
           maf_data <- maf_data[input$som_table_rows_all,]
           t_som <- try(maftools::read.maf(maf_data), silent = T)
-          if (inherits(t_som, "try-error")){
-            maf_for_plot_som(NULL)
-            #ERROR HANDLING
-            shiny::wellPanel(
-              id = "well_plot_somatic_1",
-              class = "well_plot",
-              toggle_panel("toggle_plot_somatic_1", "well_plot_container_somatic_1", "Somatic Charts:"),
+          if (inherits(t_som, "try-error")){maf_for_plot_som(NULL)}
+          else{maf_for_plot_som(t_som)}
+          maf_for_plot_som_df(maf_data)
+          shiny::wellPanel(
+            id = "well_plot_somatic_1",
+            class = "well_plot",
+            toggle_panel("toggle_plot_somatic_1", "well_plot_container_somatic_1", "Somatic Charts:"),
+            shiny::tags$div(
+              # CONTAINER TOGGLER INPUT ID + CLASS
+              id = "well_plot_container_somatic_1",
+              class = "collapse in",
               shiny::tags$div(
-                # CONTAINER TOGGLER INPUT ID + CLASS
-                id = "well_plot_container_somatic_1",
-                class = "collapse in",
-                shiny::tags$span(
-                  "Can't generate the plot"
-                )
-              )
-            )
-          }
-          else {
-            maf_for_plot_som(t_som)
-            maf_for_plot_som_df(maf_data)
-            shiny::wellPanel(
-              id = "well_plot_somatic_1",
-              class = "well_plot",
-              toggle_panel("toggle_plot_somatic_1", "well_plot_container_somatic_1", "Somatic Charts:"),
-              shiny::tags$div(
-                # CONTAINER TOGGLER INPUT ID + CLASS
-                id = "well_plot_container_somatic_1",
-                class = "collapse in",
-                shiny::tags$div(
-                  class = "chart_controls_cont",
-                  shinyWidgets::radioGroupButtons(
-                    inputId = "GSP-SOM-somatic_well_selection",
-                    label = "",
-                    choices = c(`<p>Overview<i class='fa fa-pie-chart' style = "margin-left: 6px;"></i></p>` = "som_overview_chart", `<p>Vaf<i class='fa fa-line-chart' style = "margin-left: 6px;"></i></p>` = "som_vaf_chart",
-                                `<p>Maf Summary<i class='fa fa-bar-chart' style = "margin-left: 6px;"></i></p>` = "som_mafsummary_chart"),
-                    justified = TRUE
-                  ),
+                class = "chart_controls_cont",
+                shinyWidgets::radioGroupButtons(
+                  inputId = "GSP-SOM-somatic_well_selection",
+                  label = "",
+                  choices = c(`<p>Overview<i class='fa fa-pie-chart' style = "margin-left: 6px;"></i></p>` = "som_overview_chart", `<p>Vaf<i class='fa fa-line-chart' style = "margin-left: 6px;"></i></p>` = "som_vaf_chart",
+                              `<p>Maf Summary<i class='fa fa-bar-chart' style = "margin-left: 6px;"></i></p>` = "som_mafsummary_chart"),
+                  justified = TRUE
                 ),
+              ),
 
-                shiny::tags$hr(style = "margin-top: 5px; margin-bottom: 5px;"),
+              shiny::tags$hr(style = "margin-top: 5px; margin-bottom: 5px;"),
 
-                shiny::uiOutput("GSP-SOM-somatic_charts")
+              shiny::uiOutput("GSP-SOM-somatic_charts")
 
-              )
             )
-          }
+          )
         }
         else{
           NULL
@@ -1554,8 +1571,12 @@ somTab_server <- function(id){
 
     ### DATA FOR STATISTICS ###
     som_statistics_data <- shiny::reactive({
-      shiny::req(som_maf_data())
-      (som_maf_data() %>% dplyr::filter(purrr::reduce(som_filter_result_list$l, `&`, .init = TRUE)))[input$som_table_rows_all,]
+      if(is.null(som_maf_data())){
+        NULL
+      }
+      else{
+        (som_maf_data() %>% dplyr::filter(purrr::reduce(som_filter_result_list$l, `&`, .init = TRUE)))[input$som_table_rows_all,]
+      }
     })
 
     # RETURN VALUE FOR STATISTICS

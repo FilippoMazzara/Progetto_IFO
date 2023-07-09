@@ -61,7 +61,12 @@ germTab_ui_sidebar <- function(id){
           shiny::tags$div(
             id = "germ_warning",
             shiny::uiOutput(shiny::NS(id, "germ_warning")),
+          ),
 
+          # FILE ERRORS
+          shiny::tags$div(
+            id = "germ_error",
+            shiny::uiOutput(shiny::NS(id, "germ_error")),
           )
         )
       ), # WELL_1 END
@@ -106,9 +111,6 @@ germTab_ui_table <- function(id){
 
     # TITLE MAIN GERM
     shiny::uiOutput(shiny::NS(id, "germ_file_title_main")),
-
-    #FILE READ ERROR
-    shiny::textOutput(shiny::NS(id, "germ_file_error")),
 
     #MAIN PLOT CONTAINER
     shiny::fluidRow(
@@ -168,7 +170,7 @@ germTab_server <- function(id){
 
       # ------ FILE INPUT CLIENT -------
       shiny::observeEvent(input$germ_file_input_client, {
-        germ_file_error("") #RESET ERROR STATUS
+        germ_file_error(NULL) #RESET ERROR STATUS
 
         t <- try(
           #READ THE FILE
@@ -179,9 +181,8 @@ germTab_server <- function(id){
           ),
           silent = T
         )
-
         #ERROR HANDLING
-        if (inherits(t, "try-error")){
+        if (inherits(t, "try-error") || is.null(t) || nrow(t) == 0){
           germ_file_error("There was an error reading the file")
           germ_initial_data(NULL)
         }
@@ -210,7 +211,7 @@ germTab_server <- function(id){
           inFile <- shinyFiles::parseFilePaths(roots = c(wd = "C:/Users/facke/Desktop/datasets"), input$germ_file_input_server)
 
           if (length(inFile$datapath) != 0 ){
-            germ_file_error("") #RESET ERROR STATUS
+            germ_file_error(NULL) #RESET ERROR STATUS
 
             t <- try(
               #READ THE FILE
@@ -223,7 +224,7 @@ germTab_server <- function(id){
             )
 
             #ERROR HANDLING
-            if (inherits(t, "try-error")){
+            if (inherits(t, "try-error") || is.null(t) || nrow(t) == 0){
               germ_file_error("There was an error reading the file")
               germ_initial_data(NULL)
             }
@@ -513,9 +514,9 @@ germTab_server <- function(id){
             germ_maf_data(processing_maf_data)
           }
         }
-        else{germ_maf_data(NULL)
+        else{
+          germ_maf_data(NULL)
         }
-
         initial_rows(nrow(processing_data))
 
         #send the processed data with the good names to the reactive
@@ -678,8 +679,14 @@ germTab_server <- function(id){
 
       #EXPORT ERROR HANDLING
       file_export_error <- shiny::reactiveVal("")
-      output$export_error_germ <- shiny::renderText({
-          file_export_error()
+      output$export_error_germ <- shiny::renderUI({
+        if(nchar(file_export_error()) > 0){
+          shiny::tags$span(
+            style = "text-align: center; color: red; font-size: initial;",
+            shiny::icon("exclamation-triangle", lib = "font-awesome"),
+            file_export_error()
+          )
+        }
       })
 
       #PDF EXPORT
@@ -1027,13 +1034,13 @@ germTab_server <- function(id){
               shiny::actionButton(inputId = "GSP-GERM-export_button_germ_mock", label = "Download", icon = shiny::icon("download")),
               shiny::downloadButton(outputId = "GSP-GERM-export_button_germ", style = "display:none;")
             ),
-            shiny::tags$hr(),
+            shiny::tags$hr(style = "margin-top: 5px; margin-bottom: 5px;"),
             #DIFFERENT FILE TYPES EXPORT UI
             shiny::uiOutput("GSP-GERM-every_germ_table_export"),
             shiny::uiOutput("GSP-GERM-pdf_germ_table_export"),
             shiny::uiOutput("GSP-GERM-maf_germ_table_export"),
             #ERROR MESSAGE
-            shiny::textOutput("GSP-GERM-export_error_germ")
+            shiny::uiOutput("GSP-GERM-export_error_germ")
           )
         )
       })
@@ -1268,14 +1275,34 @@ germTab_server <- function(id){
       # RENDER OF ERRORS
       output$germ_warning <- shiny::renderUI({
         shiny::req(germ_missing_columns())
-        shiny::tags$div(
-          style = "text-align: center;",
-          shiny::tags$hr(style = "margin-top: 5px; margin-bottom: 5px;"),
-          germ_missing_columns()
-        )
+        if(germ_missing_columns() == "There are no missing columns"){
+          shiny::tags$div(
+            style = "text-align: center;",
+            shiny::tags$hr(style = "margin-top: 5px; margin-bottom: 5px;"),
+            germ_missing_columns()
+          )
+        }
+        else{
+          shiny::tags$div(
+            style = "text-align: center; color: #f39c11; font-size: initial;",
+            shiny::tags$hr(style = "margin-top: 5px; margin-bottom: 5px;"),
+            shiny::icon("exclamation-triangle", lib = "font-awesome"),
+            germ_missing_columns()
+          )
+        }
       })
 
-      output$germ_file_error <- shiny::renderText(germ_file_error())
+      output$germ_error <- shiny::renderUI({
+        shiny::req(germ_file_error())
+        if(!is.null(germ_file_error())){
+          shiny::tags$div(
+            style = "text-align: center; color: red; font-size: initial;",
+            shiny::tags$hr(style = "margin-top: 5px; margin-bottom: 5px;"),
+            shiny::icon("exclamation-triangle", lib = "font-awesome"),
+            germ_file_error()
+          )
+        }
+      })
 
       #------ PLOTTING ON GERMLINE PAGE ------
       #PLOT SUMMARY DATA
@@ -1291,7 +1318,7 @@ germTab_server <- function(id){
             silent = T
           )
         }
-      })
+      }, res = 100)
 
       output$germ_plot_clusters <- shiny::renderPlot({
         shiny::req(maf_for_plot_germ())
@@ -1301,7 +1328,7 @@ germTab_server <- function(id){
             silent = T
           )
         }
-      })
+      }, res = 100)
 
       output$germ_plot_vaf <- shiny::renderPlot({
         shiny::req(maf_for_plot_germ())
@@ -1311,7 +1338,7 @@ germTab_server <- function(id){
             silent = T
           )
         }
-      })
+      }, res = 100)
 
       output$germline_charts <- shiny::renderUI({
         shiny::req(input$germline_well_selection)
@@ -1363,7 +1390,11 @@ germTab_server <- function(id){
               )
             }
             else{
-              "Can't generate the plot"
+              shiny::tags$span(
+                style = "text-align: center; color: red; font-size: initial;",
+                shiny::icon("exclamation-triangle", lib = "font-awesome"),
+                "Can't generate the plot"
+              )
             }
           }
           else if (input$germline_well_selection == "germ_mafsummary_chart"){
@@ -1371,7 +1402,11 @@ germTab_server <- function(id){
               shiny::plotOutput("GSP-GERM-germ_plot_maf")
             }
             else{
-              "Can't generate the plot"
+              shiny::tags$span(
+                style = "text-align: center; color: red; font-size: initial;",
+                shiny::icon("exclamation-triangle", lib = "font-awesome"),
+                "Can't generate the plot"
+              )
             }
           }
         }
@@ -1383,52 +1418,34 @@ germTab_server <- function(id){
           maf_data <- germ_maf_data() %>% dplyr::filter(purrr::reduce(germ_filter_result_list$l, `&`, .init = TRUE))
           maf_data <- maf_data[input$germ_table_rows_all,]
           t_germ <- try(maftools::read.maf(maf_data), silent = T)
-          if (inherits(t_germ, "try-error")){
-            maf_for_plot_germ(NULL)
-            #ERROR HANDLING
-            shiny::wellPanel(
-              id = "well_plot_germline_1",
-              class = "well_plot",
-              toggle_panel("toggle_plot_germline_1", "well_plot_container_germline_1", "Germline Charts:"),
+          if (inherits(t_germ, "try-error")){maf_for_plot_germ(NULL)}
+          else{maf_for_plot_germ(t_germ)}
+          maf_for_plot_germ_df(maf_data)
+          shiny::wellPanel(
+            id = "well_plot_germline_1",
+            class = "well_plot",
+            toggle_panel("toggle_plot_germline_1", "well_plot_container_germline_1", "Germline Charts:"),
+            shiny::tags$div(
+              # CONTAINER TOGGLER INPUT ID + CLASS
+              id = "well_plot_container_germline_1",
+              class = "collapse in",
               shiny::tags$div(
-                # CONTAINER TOGGLER INPUT ID + CLASS
-                id = "well_plot_container_germline_1",
-                class = "collapse in",
-                shiny::tags$span(
-                  "Can't generate the plot"
-                )
-              )
-            )
-          }
-          else {
-            maf_for_plot_germ(t_germ)
-            maf_for_plot_germ_df(maf_data)
-            shiny::wellPanel(
-              id = "well_plot_germline_1",
-              class = "well_plot",
-              toggle_panel("toggle_plot_germline_1", "well_plot_container_germline_1", "Germline Charts:"),
-              shiny::tags$div(
-                # CONTAINER TOGGLER INPUT ID + CLASS
-                id = "well_plot_container_germline_1",
-                class = "collapse in",
-                shiny::tags$div(
-                  class = "chart_controls_cont",
-                  shinyWidgets::radioGroupButtons(
-                    inputId = "GSP-GERM-germline_well_selection",
-                    label = "",
-                    choices = c(`<p>Overview<i class='fa fa-pie-chart' style = "margin-left: 6px;"></i></p>` = "germ_overview_chart", `<p>Vaf<i class='fa fa-line-chart' style = "margin-left: 6px;"></i></p>` = "germ_vaf_chart",
-                                `<p>Maf Summary<i class='fa fa-bar-chart' style = "margin-left: 6px;"></i></p>` = "germ_mafsummary_chart"),
-                    justified = TRUE
-                  ),
+                class = "chart_controls_cont",
+                shinyWidgets::radioGroupButtons(
+                  inputId = "GSP-GERM-germline_well_selection",
+                  label = "",
+                  choices = c(`<p>Overview<i class='fa fa-pie-chart' style = "margin-left: 6px;"></i></p>` = "germ_overview_chart", `<p>Vaf<i class='fa fa-line-chart' style = "margin-left: 6px;"></i></p>` = "germ_vaf_chart",
+                              `<p>Maf Summary<i class='fa fa-bar-chart' style = "margin-left: 6px;"></i></p>` = "germ_mafsummary_chart"),
+                  justified = TRUE
                 ),
+              ),
 
-                shiny::tags$hr(style = "margin-top: 5px; margin-bottom: 5px;"),
+              shiny::tags$hr(style = "margin-top: 5px; margin-bottom: 5px;"),
 
-                shiny::uiOutput("GSP-GERM-germline_charts")
+              shiny::uiOutput("GSP-GERM-germline_charts")
 
-              )
             )
-          }
+          )
         }
         else{
           NULL
@@ -1547,8 +1564,13 @@ germTab_server <- function(id){
 
     ### DATA FOR STATISTICS ###
     germ_statistics_data <- shiny::reactive({
-      shiny::req(germ_maf_data())
-      (germ_maf_data() %>% dplyr::filter(purrr::reduce(germ_filter_result_list$l, `&`, .init = TRUE)))[input$germ_table_rows_all,]
+      #shiny::req(germ_maf_data())
+      if(is.null(germ_maf_data())){
+        NULL
+      }
+      else{
+        (germ_maf_data() %>% dplyr::filter(purrr::reduce(germ_filter_result_list$l, `&`, .init = TRUE)))[input$germ_table_rows_all,]
+      }
     })
 
     # RETURN VALUE FOR STATISTICS
