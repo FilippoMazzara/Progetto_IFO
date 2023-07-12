@@ -508,6 +508,7 @@ germTab_server <- function(id){
             silent = T
           )
           if (inherits(t, "try-error")){
+            germ_missing_columns("Can't generate maf associated data")
             germ_maf_data(NULL)
           }
           else{
@@ -515,6 +516,7 @@ germTab_server <- function(id){
           }
         }
         else{
+          germ_missing_columns("Can't generate maf associated data")
           germ_maf_data(NULL)
         }
         initial_rows(nrow(processing_data))

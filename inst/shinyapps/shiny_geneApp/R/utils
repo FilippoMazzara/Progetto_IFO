@@ -1652,3 +1652,16 @@ comp_message("")
               )
             )
           )
+
+
+
+
+
+                  if (inherits(t2, "try-error") || is.null(t2) || nrow(t2) == 0){
+          total_maf <- NULL
+          multi_file_error("The files are not compatible with each other, \n they must have some common columns")
+        }
+        else{
+          multi_file_error(NULL)
+          total_maf <- t2
+        }

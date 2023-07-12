@@ -206,7 +206,7 @@ multiTab_page_server <- function(id) {
 
       # ------ FILE INPUT CLIENT -------
       shiny::observeEvent(input$multi_file_input_client, {
-        multi_file_error("") #RESET ERROR STATUS
+        #multi_file_error("") #RESET ERROR STATUS
         missing_multi_titles(list())
 
         read_files <- list()
@@ -260,7 +260,7 @@ multiTab_page_server <- function(id) {
         if (!is.null(input$multi_file_input_server)){
           inFile <- shinyFiles::parseFilePaths(roots = c(wd = "C:/Users/facke/Desktop/datasets"), input$multi_file_input_server)
           if (length(inFile$datapath) != 0 ){
-            multi_file_error("") #RESET ERROR STATUS
+            #multi_file_error("") #RESET ERROR STATUS
             missing_multi_titles(list())
             read_files <- list()
             read_files_names <- list()
@@ -334,7 +334,7 @@ multiTab_page_server <- function(id) {
         #maf required names in general
         maf_required_cols <- c("Hugo_Symbol","Chromosome","Variant_Classification","Variant_Type","VARIANT_CLASS","Reference_Allele","Tumor_Seq_Allele2","Start_Position","End_Position","Tumor_Sample_Barcode")
         #general names that we agreed on
-        final_names_cols <- c("SampleBarcode","Gene","HugoSymbol","Chromosome","VAF","Classification","VariantType","VariantClass","Clinvar","Depth","Ref","Alt","Start","End","Variation","HGVSp","Exon")
+        final_names_cols <- c("Gene","HugoSymbol","Chromosome","VAF","Classification","VariantType","VariantClass","Clinvar","Depth","Ref","Alt","Start","End","Variation","HGVSp","Exon")
         #column names to post format in DT, (doubles)
         cols_to_post_format <- c("VAF")
 
@@ -433,7 +433,7 @@ multiTab_page_server <- function(id) {
               else if (n == "Tumor_Sample_Barcode"){
                 col_names_found_maf <- append(col_names_found_maf, "Tumor_Sample_Barcode")
                 col_names_found_original <- append(col_names_found_original, "Tumor_Sample_Barcode")
-                initial_data$Tumor_Sample_Barcode <- substring(multi_titles()[[nfile]], 1, 18)
+                initial_data$Tumor_Sample_Barcode <- paste(substring(multi_titles()[[nfile]], 1, 18), "_", nfile, sep = "")
               }
             }
           }
@@ -563,7 +563,7 @@ multiTab_page_server <- function(id) {
           missing_cols_each <- setdiff(final_names_cols, names(processing_data))
           datasets <- append(datasets, list(processing_data))
           datasets_maf <- append(datasets_maf, list(processing_maf_data))
-          missing_each[[substring(multi_titles()[[nfile]], 1, 18)]] <- missing_cols_each
+          missing_each[[multi_titles()[[nfile]]]] <- missing_cols_each
           nfile <- nfile + 1
 
         } #END FOR
@@ -571,17 +571,94 @@ multiTab_page_server <- function(id) {
         #merge the datasets
         total_maf <- NULL
         total_data <- NULL
-        t1 <- try(
-          dplyr::bind_rows(datasets, .id = "NFILE")
-        )
-        t2 <- try(
-          dplyr::bind_rows(datasets_maf, .id = "NFILE")
-        )
-        if (!inherits(t1, "try-error")){
-          total_data <- t1
+        temp_d_maf <- NULL
+        temp_d_cols_maf <- c()
+        k <- 0
+        if(length(datasets_maf) > 0){
+          temp_d_maf <- datasets_maf[[1]]
+          k <- 1
         }
-        if (!inherits(t2, "try-error")){
-          total_maf <- t2
+        while(k < length(datasets_maf)){
+          k <- k + 1
+          nextup_maf <- datasets_maf[[k]]
+          t2 <- try(
+            dplyr::bind_rows(temp_d_maf, nextup_maf, .id = "NFILE"),
+            silent = T
+          )
+          if (inherits(t2, "try-error")){
+            common_maf <- intersect(names(temp_d_maf), names(nextup_maf))
+            for (n in common_maf){
+              if(n %in% temp_d_cols_maf){
+                nextup_maf[[n]] <- as.character(nextup_maf[[n]])
+              }
+              else{
+                if ((typeof(temp_d_maf[[n]]) != typeof(nextup_maf[[n]])) && !(is.numeric(temp_d_maf[[n]]) && is.numeric(nextup_maf[[n]])) && !(is.logical(temp_d_maf[[n]]) && (length(temp_d_maf[[n]]) == 0) || all(is.na(temp_d_maf[[n]]))) && !(is.logical(nextup_maf[[n]]) && (length(nextup_maf[[n]]) == 0 || all(is.na(nextup_maf[[n]]))))){
+                  temp_d_maf[[n]] <- as.character(temp_d_maf[[n]])
+                  nextup_maf[[n]] <- as.character(nextup_maf[[n]])
+                  temp_d_cols_maf <- append(temp_d_cols_maf, n)
+                }
+              }
+            }
+            tn2 <- try(
+              dplyr::bind_rows(temp_d_maf, nextup_maf, .id = "NFILE"),
+              silent = T
+            )
+            if (inherits(tn2, "try-error")){
+              total_maf <- NULL
+              k <- length(datasets_maf)
+            }
+            else{
+              temp_d_maf <- tn2
+            }
+          }
+          else{
+            temp_d_maf <- t2
+          }
+        }
+
+        temp_d_cols <- c()
+        datasets_ok <- list()
+        if (length(temp_d_cols_maf) > 0){
+          for(c in temp_d_cols_maf){
+            name <- check_custom_names(c)
+            if (is.null(name)){
+              temp_d_cols <- append(temp_d_cols, c)
+            }
+            else{
+              temp_d_cols <- append(temp_d_cols, name)
+            }
+          }
+
+          for(ds in datasets){
+            coerced_ds <- ds
+            for(col in temp_d_cols){
+              if (col %in% names(coerced_ds)){
+                coerced_ds[[col]] <- as.character(coerced_ds[[col]])
+              }
+            }
+            datasets_ok <- append(datasets_ok, list(coerced_ds))
+          }
+        }
+        else{
+          datasets_ok <- datasets
+        }
+
+        t_tot <- try(
+          dplyr::bind_rows(datasets_ok, .id = "NFILE"),
+          silent = T
+        )
+        if (inherits(t_tot, "try-error") || is.null(t_tot) || nrow(t_tot) == 0){
+          total_data <- NULL
+        }
+        else{
+          total_data <- t_tot
+        }
+
+
+        total_maf <- temp_d_maf
+
+        if (length(datasets_ok) > 0 && (is.null(total_data) || is.null(total_maf))){
+          multi_file_error("The files are not compatible with each other")
         }
 
         #pass the values found to the reactive values
@@ -589,6 +666,7 @@ multiTab_page_server <- function(id) {
           multi_formatted_columns(unlist(intersect(cols_to_post_format, names(total_data))))
           multi_filter_names_initial(unlist(intersect(filter_names, names(total_data))))
           multi_column_names(unlist(intersect(final_names_cols, names(total_data))))
+          print(multi_column_names())
         }
         else{
           multi_formatted_columns(c())
@@ -602,14 +680,27 @@ multiTab_page_server <- function(id) {
           message <- ""
           for (c in names(missing_each)){
             if (length(missing_each[[c]]) > 0){
-              message <- paste("File ", c, " missing columns: ", paste(missing_each[[c]], "", collapse = ", "), "\n", "\n", sep = "")
+              if(length(missing_each[[c]]) == length(final_names_cols)){
+                message <- paste("File ", c, "\n is missing all maf required columns" , "\n", "\n", sep = "")
+                multi_file_error("There was an error reading the files, \n check file info for more information")
+              }
+              else{
+                message <- paste("File ", c, "\n missing columns: ", paste(missing_each[[c]], "", collapse = ", "), "\n", "\n", sep = "")
+              }
             }
             else{
-              message <- paste("File ", c, " has no missing columns ", "\n", "\n",sep = "")
+              message <- paste("File ", c, "\n has no missing columns ", "\n", "\n",sep = "")
             }
             l <- multi_missing_columns()
             l <- append(l, message)
             multi_missing_columns(l)
+          }
+          if (length(temp_d_cols) > 0){
+            message <- paste("The following columns had their types coerced to character in order to merge them, probably your samples are not compatible with each other:", paste(temp_d_cols, collapse = ", "), sep = " ")
+            l <- multi_missing_columns()
+            l <- append(l, message)
+            multi_missing_columns(l)
+            multi_file_error("There was an error reading the files, \n check file info for more information")
           }
           if (length(missing_names) == 0){
             l <- multi_missing_columns()
@@ -628,19 +719,22 @@ multiTab_page_server <- function(id) {
         }
 
         #if the maf data set works then send it to the reactive
-        if (length(setdiff(maf_required_cols, names(total_maf))) == 0){
+        if (!is.null(total_maf) && length(setdiff(maf_required_cols, names(total_maf))) == 0){
           t <- try(
             maftools::read.maf(total_maf),
             silent = T
           )
           if (inherits(t, "try-error")){
+            multi_file_error("Can't generate maf associated data")
             multi_maf_data(NULL)
           }
           else{
             multi_maf_data(total_maf)
           }
         }
-        else{multi_maf_data(NULL)
+        else{
+          multi_file_error("Can't generate maf associated data")
+          multi_maf_data(NULL)
         }
 
         n_datasets(length(datasets_maf))
@@ -1401,6 +1495,7 @@ multiTab_page_server <- function(id) {
       # RENDER OF ERRORS
       output$multi_file_error_total <- shiny::renderUI({
         shiny::req(missing_multi_titles())
+        multi_file_error("There was an error reading the files, \n check file info for more information")
         lapply(missing_multi_titles(), function(mes){
           shiny::tags$div(
             style = "text-align: center; color: red; font-size: initial; margin-bottom: 5px;",
@@ -1415,7 +1510,16 @@ multiTab_page_server <- function(id) {
         lapply(multi_missing_columns(), function(mes){
           if(substr(mes, nchar(mes) - 25 + 1, nchar(mes) - 3) == "has no missing columns"){
             shiny::tags$div(
-              style = "text-align: center; font-size: initial; margin-bottom: 5px;",
+              style = "text-align: center; font-size: initial; margin-bottom: 10px; color: green;",
+              shiny::icon("check-circle", lib = "font-awesome"),
+              mes
+            )
+          }
+          else if (substr(mes, nchar(mes) - 37 + 1, nchar(mes) - 2) == "is missing all maf required columns") {
+
+            shiny::tags$div(
+              style = "text-align: center; color: red; font-size: initial; margin-bottom: 10px;",
+              shiny::icon("exclamation-triangle", lib = "font-awesome"),
               mes
             )
           }
@@ -1428,7 +1532,7 @@ multiTab_page_server <- function(id) {
           }
           else{
             shiny::tags$div(
-              style = "text-align: center; color: #f39c11; font-size: initial; margin-bottom: 5px;",
+              style = "text-align: center; color: #f39c11; font-size: initial; margin-bottom: 10px;",
               shiny::icon("exclamation-triangle", lib = "font-awesome"),
               mes
             )

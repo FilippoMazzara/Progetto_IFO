@@ -514,13 +514,17 @@ somTab_server <- function(id){
             silent = T
           )
           if (inherits(t, "try-error")){
+            som_missing_columns("Can't generate maf associated data")
             som_maf_data(NULL)
           }
           else{
+
             som_maf_data(processing_maf_data)
           }
         }
-        else{som_maf_data(NULL)
+        else{
+          som_missing_columns("Can't generate maf associated data")
+          som_maf_data(NULL)
         }
 
         initial_rows(nrow(processing_data))
