@@ -1,0 +1,53 @@
+---
+title: "Introduction to GeneApp"
+description: >
+  Learn how to get started with the basics of GeneApp.
+output: html_fragment
+vignette: >
+  %\VignetteIndexEntry{Introduction to GeneApp}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# GeneApp: Interactively Explore Genetic Data <img src = "img/logo1.jpg" align = "right" style = "width: 115px; height: 110px;"/>
+**Version 0.9**
+
+---
+
+The ultimate goal of the project is to provide an intuitive interface, with a comprehensive set of tools, 
+that will help researchers to import, explore and visualize large cancer genomics studies. \
+
+```{r, eval = FALSE}
+# Run once to start the app
+geneApp::run_geneApp()
+```
+
+
+
+## Metadata
+
+
+
+### Language
+
+
+## Home page
+
+
+
+## Reference
+
+
+
+## Articles
+
+
+
+## News
+
+## Publishing
+
+
+
+## Promoting
+

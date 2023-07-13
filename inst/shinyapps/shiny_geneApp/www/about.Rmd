@@ -5,18 +5,23 @@ output:
   html_fragment
 fontsize: 8pt
 ---
-# ABOUT
+# ABOUT the project
 
 ---
 
-## REGOLAMENTO
+## development
 
-  - descrizione
   
 ---
 
-## CONTATTI
+## Rules
 
-  - links
   
 ---
+
+## Contact information
+
+
+---
+
+## License

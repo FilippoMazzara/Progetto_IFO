@@ -1,6 +1,8 @@
 
 # GeneApp: Interactively Explore Genetic Data <img src = "inst/shinyapps/shiny_geneApp/www/img/logo1.jpg" align = "right" style = "width: 115px; height: 110px;"/>
 
+**Version 0.9**
+
 ## Overview
 
 You are visiting the Github repository of the GeneApp package.  
@@ -20,9 +22,7 @@ restrictions on the formatting of the files and data sets that the app
 can handle, all the details are listed in the [Advanced
 Usage](#advanced-usage) section.  
 
-Please use the issue tracker on GitHub to suggest enhancements or report
-problems: <https://github.com/FilippoMazzara/Progetto_IFO/issues>. For
-other questions and comments please contact the author Filippo Mazzara.
+## Key Features
 
 GeneApp has two main purposes:  
 - Provide a fast way to researchers to explore and confront somatic and
@@ -31,10 +31,35 @@ germline data with different metrics.
 meaningful analyses and summaries of large  
 cancer genetic studies.  
 
-GeneApp is interactive. Results update immediately when inputs are
-changed. GeneApp is a tool made with the aim of making life easier to
-genetics researchers, so I am hopeful that it will be particularly
-helpful in assisting in the genetic research effort.  
+#### Supply samples
+
+Submit data from your local machine or select it from the samples stored
+remotely on the app’s server.
+
+#### Convert your data
+
+GeneApp can be used to view different kinds of data, it can act as a
+simple file reader for generic relational data but if it’s supplied with
+specific genetic data, it will recognize it and process it according to
+the maf format, even if the starting data was using another genetic
+standard.
+
+#### Explore Interactively
+
+GeneApp is interactive. Results and plots update immediately when inputs
+are changed. This allow for fast exploration and visualization to better
+understand the data you are working with.
+
+#### Share your discoveries
+
+Generate a wide array of file outputs and reports to better reflect the
+results of your analysis and to share more meaningful data.
+
+#### Context
+
+GeneApp is a tool made with the aim of making life easier to genetics
+researchers, so I am hopeful that it will be particularly helpful in
+assisting in the genetic research effort.  
 
 If you are interested to see what GeneApp has to offer, click
 here.(link)  
@@ -44,12 +69,12 @@ here.(link)
 If you are in to test GeneApp from within R, run the following in your R
 session to install the GeneApp package current development version from
 Github. (not in a docker container)  
-GeneApp works on Windows, Mac, or Linux. It can run without an Internet
-connection and no data will leave your computer. You can also run the
-app as a web application on a server.
 
-- Required: [R](https://cran.r-project.org/) version 4.0.0 or later
-- Required: [Rstudio](https://posit.co/download/rstudio-server/)
+GeneApp works on Windows, Mac, or Linux. It can run locally, even
+without an Internet connection or you can also run the app as a web
+application on a server.
+
+- Required: [R](https://cran.r-project.org/) version 4.2.0 or later
 
 <!-- -->
 
@@ -58,7 +83,7 @@ app as a web application on a server.
       install.packages("devtools")
     }
 
-    install.packages(c("data.table", "dplyr", "DT", "kableExtra", "kit", "knitr", "maftools", "magrittr", 
+    install.packages(c("data.table", "dplyr", "DT", "kableExtra", "mclust", "kit", "knitr", "maftools", "magrittr", 
     "purrr", "shiny", "shinydashboard", "shinyFiles", "shinyjs", "shinyWidgets", "stringr", "writexl"))
 
     devtools::install_github("FilippoMazzara/Progetto_IFO")
@@ -173,12 +198,13 @@ yet addressed.
 ## Advanced Usage
 
 For security and performance reasons the user uploaded files will only
-be processed but not saved on the server that’s running the app. The
-supported formats are the same on both the client and server sides, they
-are: .csv .tsv .xls .xlsx .maf
+be processed but not saved on the server that’s running the app. File
+uploads are limited to a total of 120Mb. The supported formats are the
+same on both the client and server sides, they are: .csv .tsv .xls .xlsx
+.maf
 
 When a file that is not already in maf standard is chosen the app will
-try to turn it the closest it can to maf standard in order to interpret
+try to turn it the closest it can to maf standard in order to understand
 the data more easily. If the transformation is not possible then the app
 will still show the file but display a warning and many of the
 funcionalities will not be available. If the file is not readable at all
@@ -221,7 +247,7 @@ standard column names through these case insensitive pairing lists:
 
 If these don’t work a second round of conversion starts where other
 pairings are applied in order to address different possible standards
-and the missing columns that can be deducted from the other data are
+and the missing columns that can be inferred from the other data are
 computed like so:
 
       ```
@@ -231,7 +257,7 @@ computed like so:
       EXON <- c("exon_number")
       ```
 
-If not present the following will be tried to be inferred using values
+If not present the following will be tried to be computed using values
 from other columns, if they exist:  
 - Tumor_Sample_Barcode is inferred from the file or the data set names  
 - Vaf is calculated dividing t_depth for t_alt_count   - Variant_Type is
@@ -242,11 +268,18 @@ Variant_Type
 the maf standard and values formatting errors are tried to be fixed as
 well, this is most significant when merging multiple data sets  
 
+Check out the help page in the app if you want to know even more about
+the inner workings of the package.
+
 ## Reporting issues
 
 Please use the GitHub issue tracker at
 <a href="https://github.com/FilippoMazzara/Progetto_IFO/issues" target="_blank">github.com/FilippoMazzara/Progetto_IFO/issues</a>
-if you have any problems using Radiant.
+if you are experiencing issues using GeneApp or if you want to
+contribute to the project. Also feel free to share the specifics of
+other genetic standards if you want the app to be able to handle them in
+the future. For other questions and comments please contact the author
+Filippo Mazzara.
 
 ## Development
 
@@ -273,6 +306,11 @@ knowledge:
 - [R Markdown: The Definitive
   Guide](https://bookdown.org/yihui/rmarkdown/)  
 
+Other key R packages that were used for this project are DT,
+data.tables, shinyWidgets, shinyFiles, knitr, maftools for all the
+genetic analysis needs and the tidyverse packages for the handling of
+the data.
+
 ## Further Information
 
 This app was developed by Filippo Mazzara an informatics student from
@@ -293,6 +331,42 @@ references of the package documentation, available at
 - Istituti Fisioterapici Ospitalieri: [IFO](https://www.ifo.it/)
 - Linkedin: [Matteo
   Pallocca](https://it.linkedin.com/in/matteo-pallocca-b38742142)
-- un mio contatto che non ho
+- EMail: <mazzara.1742740@studenti.uniroma1.it>
+
+## License
+
+GeneApp is licensed under AGPL3 (see
+<https://tldrlegal.com/license/gnu-affero-general-public-license-v3-(agpl-3.0>)
+and <https://www.r-project.org/Licenses/AGPL-3>). The AGPLv3 license
+requires, attribution, including copyright and license information in
+copies of the software, stating changes if the code is modified, and
+disclosure of all source code.
+
+This program is free software: you can redistribute it and/or modify it
+under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or (at
+your option) any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
+General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+The documentation, the help files and images for the `GeneApp` package
+are licensed under the creative commons
+Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND
+4.0)
+<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">BY-NC-ND</a>.
+
+If you are interested in using the package please feel free to email me
+at <mazzara.1742740@studenti.uniroma1.it>
+
+© Filippo Mazzara (2023)
+<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a>
+
+Copyright 2023 Filippo Mazzara. All rights reserved.
 
 Enjoy!

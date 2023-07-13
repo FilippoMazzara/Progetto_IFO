@@ -19,7 +19,7 @@ about_ui <- function(id) {
 
     # CONTENTS OF ABOUT PAGE
     shiny::fluidRow(
-      style = "margin-right: 4em; margin-left: 4em; display: flex; justify-content: center;",
+      style = "margin-right: 4em; margin-left: 4em; display: flex; justify-content: center; flex-direction: column;",
       shiny::tags$br(),
       shiny::includeHTML(rmarkdown::render('www/about.Rmd')),
       shiny::tags$br()
