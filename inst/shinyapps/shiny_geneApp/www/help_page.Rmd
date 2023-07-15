@@ -22,15 +22,6 @@ that will help researchers to import, explore and visualize large cancer genomic
 geneApp::run_geneApp()
 ```
 
-
-
-## Metadata
-
-
-
-### Language
-
-
 ## Home page
 
 
@@ -39,15 +30,6 @@ geneApp::run_geneApp()
 
 
 
-## Articles
-
-
-
-## News
-
 ## Publishing
 
-
-
-## Promoting
 

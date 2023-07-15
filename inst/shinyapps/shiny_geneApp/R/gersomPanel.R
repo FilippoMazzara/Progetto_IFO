@@ -79,7 +79,7 @@ gersomPanel_ui <- function(id){
                   htmltools::HTML(
 
                     '<span data-toggle = "tooltip" style = "float: left; margin-left: 15px; margin-top: 15px;" data-placement = "left"
-                      title = "" data-original-title = " When you select a dataset all the stats will be shown on this page. \n \n If too much information is displayed you can minimize some of the visualization panels. \n \n If some charts do not show up there is probably a problem with your dataset, check the help section for more information or on the error messages displayed on screen.">
+                      title = "" data-original-title = " When you select a dataset all the stats will be shown on this page. \n \n If too much information is displayed you can minimize some of the visualization panels. \n \n If some charts do not show up there is probably a problem with your dataset, check the help section for more information or the error messages displayed on screen.">
                       <i class = "far fa-circle-question" role = "presentation"
                       aria-label = "circle-question icon"></i></span>'
 
@@ -183,11 +183,13 @@ gersomPanel_server <- function(id){
       #---- STATISTICS TAB SERVER ----#
       maf_for_plot_comparison <- shiny::reactiveVal(NULL)
       comp_message <- shiny::reactiveVal("\n Here will be displayed the samples stats once available")
+      last_graph_opt <- shiny::reactiveVal("comp_overview_chart")
 
       #SUMMARY PLOT OUTPUT
       output$combined_maf_plot <- shiny::renderPlot({
         shiny::req(maf_for_plot_comparison())
-        if (!is.null(maf_for_plot_comparison())){
+        if (!is.null(maf_for_plot_comparison()) && input$comparison_well_selection == "comp_maf_chart"){
+          last_graph_opt("comp_maf_chart")
           try(
             maftools::plotmafSummary(maf_for_plot_comparison(), addStat = "median", fs = 1.10),
             silent = T
@@ -199,6 +201,7 @@ gersomPanel_server <- function(id){
         shiny::req(input$comparison_well_selection)
         if (!is.null(input$comparison_well_selection)){
           if (input$comparison_well_selection == "comp_overview_chart"){
+            last_graph_opt("comp_overview_chart")
             if (!is.null(som_statistics_data()) && !is.null(germ_statistics_data())){
               som_excl <- try(dplyr::anti_join(som_statistics_data(), germ_statistics_data(), by = c("Chromosome", "Tumor_Seq_Allele2", "Start_Position")), silent =  T)
               germ_excl <- try(dplyr::anti_join(germ_statistics_data(), som_statistics_data(), by = c("Chromosome", "Tumor_Seq_Allele2", "Start_Position")), silent =  T)
@@ -218,7 +221,7 @@ gersomPanel_server <- function(id){
                   shiny::tags$div(
                     class = "panel-body",
                     shiny::tags$p(shiny::tags$b("Somatic"), " Sample"),
-                    shiny::tags$p("Total Mutations")
+                    shiny::tags$p("Filtered Mutations")
                   )
                 ),
 
@@ -233,7 +236,7 @@ gersomPanel_server <- function(id){
                   shiny::tags$div(
                     class = "panel-body",
                     shiny::tags$p(shiny::tags$b("Germline"), " Sample"),
-                    shiny::tags$p("Total Mutations")
+                    shiny::tags$p("Filtered Variants")
                   )
                 ),
 
@@ -263,7 +266,7 @@ gersomPanel_server <- function(id){
                   shiny::tags$div(
                     class = "panel-body",
                     shiny::tags$p(shiny::tags$b("Germline"), " Sample"),
-                    shiny::tags$p("Exclusive Mutations")
+                    shiny::tags$p("Exclusive Variants")
                   )
                 ),
 
@@ -358,8 +361,9 @@ gersomPanel_server <- function(id){
                   shinyWidgets::radioGroupButtons(
                     inputId = "GSP-comparison_well_selection",
                     label = "",
+                    selected = last_graph_opt(),
                     choices = c(`<p>Overview<i class='fa fa-pie-chart' style = "margin-left: 6px;"></i></p>` = "comp_overview_chart",
-                                `<p>Maf Summary<i class='fa fa-bar-chart' style = "margin-left: 6px;"></i></p>` = "comp_maf_chart"),
+                                `<p>MAF Summary<i class='fa fa-bar-chart' style = "margin-left: 6px;"></i></p>` = "comp_maf_chart"),
                     justified = TRUE
                   ),
                 ),

@@ -1,15 +1,15 @@
 
-#' Write a maf file
+#' Write a MAF file
 #' @description
-#' function that returns a maf file
-#' @param maf the maf data
+#' function that returns a MAF file
+#' @param maf the MAF data
 #' @param basename the name of the file
-#' @return the maf file
+#' @return the MAF file
 write_maf_file <- function(maf, basename = NULL){
   if(is.null(basename)){
     stop('Please provide a basename for output file.')
   }
-  #write main maf file
+  #write main MAF file
   data.table::fwrite(
     x = data.table::rbindlist(list(maf@data, maf@maf.silent), use.names = TRUE, fill = TRUE),
     file = basename,
@@ -19,12 +19,12 @@ write_maf_file <- function(maf, basename = NULL){
   )
 }
 
-#' Write the gene summary of a maf file
+#' Write the gene summary of a MAF file
 #' @description
-#' function that returns the gene summary a maf file
-#' @param maf the maf data
+#' function that returns the gene summary a MAF file
+#' @param maf the MAF data
 #' @param basename the name of the file
-#' @return the gene summary of the maf file
+#' @return the gene summary of the MAF file
 write_gene_summary <- function(maf, basename = NULL){
   if(is.null(basename)){
     stop('Please provide a basename for output file.')
@@ -33,12 +33,12 @@ write_gene_summary <- function(maf, basename = NULL){
   write.table(x = maf, file = basename, sep = '\t', quote = FALSE, row.names = FALSE)
 }
 
-#' Write the sample summary of a maf file
+#' Write the sample summary of a MAF file
 #' @description
-#' function that returns the sample summary a maf file
-#' @param maf the maf data
+#' function that returns the sample summary a MAF file
+#' @param maf the MAF data
 #' @param basename the name of the file
-#' @return the sample summary of the maf file
+#' @return the sample summary of the MAF file
 write_sample_summary <- function(maf, basename = NULL){
   if(is.null(basename)){
     stop('Please provide a basename for output file.')
@@ -47,12 +47,12 @@ write_sample_summary <- function(maf, basename = NULL){
   write.table(x = maf, file = basename, sep = '\t', quote = FALSE, row.names = FALSE)
 }
 
-#' Write the maf summary of a maf file
+#' Write the MAF summary of a MAF file
 #' @description
-#' function that returns the maf summary a maf file
-#' @param maf the maf data
+#' function that returns the MAF summary a MAF file
+#' @param maf the MAF data
 #' @param basename the name of the file
-#' @return the maf summary of the maf file
+#' @return the MAF summary of the MAF file
 write_maf_summary <- function(maf, basename = NULL){
   if(is.null(basename)){
     stop('Please provide a basename for output file.')
@@ -80,7 +80,7 @@ tooltip_inutile <- function() {
 
 #' Check for column names
 #' @description
-#' check for accepted maf column names
+#' check for accepted MAF column names
 #' @param name the column name to check
 #' @return
 #' the correct name or NULL
@@ -224,19 +224,7 @@ filter_var <- function(x, val) {
   }
   #CARACTER VECTORS AND ARRAYS
   else if (is.array(x) || is.character(x)) {
-    filtered_vector <- c()
-    for(value in x){
-      if(value %in% val){
-        filtered_vector <- append(filtered_vector, T)
-      }
-      else if (is.na(value) && "NA" %in% val){
-        filtered_vector <- append(filtered_vector, T)
-      }
-      else{
-        filtered_vector <- append(filtered_vector, F)
-      }
-    }
-    filtered_vector
+    x %in% val
   }
   #LOGICAL VECTORS
   else if (is.logical(x)) {T}
@@ -268,19 +256,7 @@ filter_var_multi <- function(x, val) {
   }
   #CARACTER VECTORS AND ARRAYS
   else if (is.array(x) || is.character(x)) {
-    filtered_vector <- c()
-    for(value in x){
-      if(value %in% val){
-        filtered_vector <- append(filtered_vector, T)
-      }
-      else if (is.na(value) && "NA" %in% val){
-        filtered_vector <- append(filtered_vector, T)
-      }
-      else{
-        filtered_vector <- append(filtered_vector, F)
-      }
-    }
-    filtered_vector
+    x %in% val
   }
   #LOGICAL VECTORS
   else if (is.logical(x)) {T}

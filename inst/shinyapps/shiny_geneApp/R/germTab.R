@@ -33,7 +33,7 @@ germTab_ui_sidebar <- function(id){
             label = htmltools::HTML(
               'Upload a file: </label>
               <span data-toggle = "tooltip" style = "float: right" data-placement = "right"
-              title = "" data-original-title = "From the sidebar you are able to upload genetic data in various formats or chose it from the datasets stored on the server. \n \n After the data has loaded you will be able to explore it with all the tools that geneApp has to offer. \n \n If you want more details on how to operate the app or if you are experiencing problems, check out the Help page.">
+              title = "" data-original-title = "From the sidebar you are able to upload genetic data in various formats or choose it from the datasets stored on the server. \n \n After the data has loaded you will be able to explore it with all the tools that geneApp has to offer. \n \n If you want more details on how to operate the app or if you are experiencing problems, check out the Help page.">
               <i class = "far fa-circle-question" role = "presentation"
               aria-label = "circle-question icon"></i></span>'),
             # LIST HERE THE ALLOWED FILE FORMATS
@@ -145,7 +145,7 @@ germTab_server <- function(id){
 
       # REACTIVE TITLES
       germ_file_title1 <- shiny::reactiveVal("")
-      germ_file_title_start <- shiny::reactiveVal("\n Upload a Germline sample \n \n  or \n \n Chose it from the available ones \n ")
+      germ_file_title_start <- shiny::reactiveVal("\n Upload a Germline sample \n \n  or \n \n Choose it from the available ones \n ")
       germ_file_title2 <- shiny::reactiveVal("")
 
       # REACTIVE DATA VALUES
@@ -177,7 +177,7 @@ germTab_server <- function(id){
           data.table::fread(
             input$germ_file_input_client$datapath,
             data.table = FALSE,
-            na.strings = base::getOption("NA")
+            na.strings = NULL #base::getOption("NA")
           ),
           silent = T
         )
@@ -218,7 +218,7 @@ germTab_server <- function(id){
               data.table::fread(
                 as.character(inFile$datapath),
                 data.table = F,
-                na.strings = base::getOption("NA")
+                na.strings = NULL #base::getOption("NA")
               ),
               silent = T
             )
@@ -268,11 +268,11 @@ germTab_server <- function(id){
         processing_maf_data <- NULL
 
         #lists of accepted values
-        #maf required names by us
+        #MAF required names by us
         maf_col_list <- c("Gene","Hugo_Symbol","Chromosome","VAF","Variant_Classification","Variant_Type","VARIANT_CLASS","CLIN_SIG","t_depth","Reference_Allele","Tumor_Seq_Allele2","Start_Position","End_Position","Existing_Variation","HGVSp","EXON","Tumor_Sample_Barcode")
         #starting filters
         filter_names <- c("Chromosome","VAF","Classification","VariantType","VariantClass","Clinvar","Depth","Start","End")
-        #maf required names in general
+        #MAF required names in general
         maf_required_cols <- c("Hugo_Symbol","Chromosome","Variant_Classification","Variant_Type","VARIANT_CLASS","Reference_Allele","Tumor_Seq_Allele2","Start_Position","End_Position","Tumor_Sample_Barcode")
         #general names that we agreed on
         final_names_cols <- c("Gene","HugoSymbol","Chromosome","VAF","Classification","VariantType","VariantClass","Clinvar","Depth","Ref","Alt","Start","End","Variation","HGVSp","Exon")
@@ -419,7 +419,7 @@ germTab_server <- function(id){
           initial_data$Variant_Classification <- var_class
         }
 
-        #Initialize the new data sets starting from the maf found columns
+        #Initialize the new data sets starting from the MAF found columns
         for (maf_name in maf_col_list){
 
           col_i <- which(col_names_found_maf == maf_name)
@@ -462,7 +462,7 @@ germTab_server <- function(id){
           }
         }
 
-        #Adapt the types of the data to maf standard types
+        #Adapt the types of the data to MAF standard types
         if ("Chromosome" %in% col_names_found_maf && is.numeric(processing_maf_data[["Chromosome"]])){
           processing_data[["Chromosome"]] <- as.character(processing_data[["Chromosome"]])
           processing_maf_data[["Chromosome"]] <- as.character(processing_maf_data[["Chromosome"]])
@@ -491,7 +491,7 @@ germTab_server <- function(id){
           germ_filter_names_initial(c())
           germ_column_names(c())
         }
-
+        print(germ_column_names())
         #missing required columns warning
         missing_names <- setdiff(final_names_cols, names(processing_data))
         if (length(missing_names) > 0){
@@ -501,14 +501,14 @@ germTab_server <- function(id){
           germ_missing_columns("There are no missing columns")
         }
 
-        #if the maf data set works then send it to the reactive
+        #if the MAF data set works then send it to the reactive
         if (length(setdiff(maf_required_cols, names(processing_maf_data))) == 0){
           t <- try(
             maftools::read.maf(processing_maf_data),
             silent = T
           )
           if (inherits(t, "try-error")){
-            germ_missing_columns("Can't generate maf associated data")
+            germ_missing_columns("Can't generate MAF associated data")
             germ_maf_data(NULL)
           }
           else{
@@ -516,7 +516,7 @@ germTab_server <- function(id){
           }
         }
         else{
-          germ_missing_columns("Can't generate maf associated data")
+          germ_missing_columns("Can't generate MAF associated data")
           germ_maf_data(NULL)
         }
         initial_rows(nrow(processing_data))
@@ -644,7 +644,12 @@ germTab_server <- function(id){
                     #check if you can get this to be more efficient
                     if (all(filter_value)){
                       if (germ_filter_name %in% names(germ_filter_result_list$l)){
-                        germ_filter_result_list$l[[germ_filter_name]] <- filter_value
+                        if (length(filter_value) == nrow(germ_filter_name())){
+                          germ_filter_result_list$l[[germ_filter_name]] <- NULL
+                        }
+                        else{
+                          germ_filter_result_list$l[[germ_filter_name]] <- filter_value
+                        }
                       }
                     }
                     else if (!all(filter_value)){
@@ -698,7 +703,7 @@ germTab_server <- function(id){
           shiny::tags$div(
             id = "pdf_export_cont_germ",
             class = "pdf_export_cont",
-            #chose the templates
+            #choose the templates
             shinyWidgets::pickerInput(
               paste("GSP-", shiny::NS(id,"pdf_export_options_germ"), sep=""),
               "",
@@ -761,7 +766,7 @@ germTab_server <- function(id){
         file_export_error(e)
         if (is.null(germ_maf_data())){
           ok <- F
-          e <- "data set is not maf compatible"
+          e <- "data set is not MAF compatible"
         }
         else{
           #DIFFERENT SETS OF RECORDS TO GENERATE THE REPORT ON
@@ -842,7 +847,7 @@ germTab_server <- function(id){
         file_export_error(e)
         if (is.null(germ_maf_data())){
           ok <- F
-          e <- "data set is not maf compatible"
+          e <- "data set is not MAF compatible"
         }
         else{
           #DIFFERENT SETS OF RECORDS TO GENERATE THE REPORT ON
@@ -923,7 +928,7 @@ germTab_server <- function(id){
         file_export_error(e)
         if (is.null(germ_maf_data())){
           ok <- F
-          e <- "data set is not maf compatible"
+          e <- "data set is not MAF compatible"
         }
         else{
           #DIFFERENT SETS OF RECORDS TO GENERATE THE REPORT ON
@@ -933,7 +938,7 @@ germTab_server <- function(id){
               silent = T
             )
             if (inherits(t, "try-error")){
-              e <- "Can't create maf summary"
+              e <- "Can't create MAF summary"
               ok <- F
             }
             else{
@@ -946,7 +951,7 @@ germTab_server <- function(id){
               silent = T
             )
             if (inherits(t, "try-error")){
-              e <- "Can't create maf summary"
+              e <- "Can't create MAF summary"
               ok <- F
             }
             else{
@@ -959,7 +964,7 @@ germTab_server <- function(id){
               silent = T
             )
             if (inherits(t, "try-error")){
-              e <- "Can't create maf summary"
+              e <- "Can't create MAF summary"
               ok <- F
             }
             else{
@@ -1058,7 +1063,7 @@ germTab_server <- function(id){
         #MAF EXPORT SELECTED
         if (input$germ_table_export_types == "maf"){
           if(is.null(germ_maf_data())){
-            e <- "data set is not maf compatible"
+            e <- "data set is not MAF compatible"
             ok <- F
           }
           else{
@@ -1069,7 +1074,7 @@ germTab_server <- function(id){
                 silent = T
               )
               if (inherits(t, "try-error")){
-                e <- "data set is not maf compatible"
+                e <- "data set is not MAF compatible"
                 ok <- F
               }
               else{
@@ -1082,7 +1087,7 @@ germTab_server <- function(id){
                 silent = T
               )
               if (inherits(t, "try-error")){
-                e <- "data set is not maf compatible"
+                e <- "data set is not MAF compatible"
                 ok <- F
               }
               else{
@@ -1095,7 +1100,7 @@ germTab_server <- function(id){
                 silent = T
               )
               if (inherits(t, "try-error")){
-                e <- "data set is not maf compatible"
+                e <- "data set is not MAF compatible"
                 ok <- F
               }
               else{
@@ -1310,11 +1315,13 @@ germTab_server <- function(id){
       #PLOT SUMMARY DATA
       maf_for_plot_germ <- shiny::reactiveVal(NULL)
       maf_for_plot_germ_df <- shiny::reactiveVal(NULL)
+      last_graph_opt <- shiny::reactiveVal("germ_overview_chart")
 
       #SUMMARY PLOT OUTPUT
       output$germ_plot_maf <- shiny::renderPlot({
         shiny::req(maf_for_plot_germ())
-        if (!is.null(maf_for_plot_germ())){
+        if (!is.null(maf_for_plot_germ()) && input$germline_well_selection == "germ_mafsummary_chart"){
+          last_graph_opt("germ_mafsummary_chart")
           try(
             maftools::plotmafSummary(maf_for_plot_germ(), fs = 1.10),
             silent = T
@@ -1324,7 +1331,8 @@ germTab_server <- function(id){
 
       output$germ_plot_clusters <- shiny::renderPlot({
         shiny::req(maf_for_plot_germ())
-        if (!is.null(maf_for_plot_germ())){
+        if (!is.null(maf_for_plot_germ()) && input$germline_well_selection == "germ_vaf_chart"){
+          last_graph_opt("germ_vaf_chart")
           try(
             maftools::plotClusters(maftools::inferHeterogeneity(maf_for_plot_germ(), vafCol = "VAF")),
             silent = T
@@ -1334,7 +1342,8 @@ germTab_server <- function(id){
 
       output$germ_plot_vaf <- shiny::renderPlot({
         shiny::req(maf_for_plot_germ())
-        if (!is.null(maf_for_plot_germ())){
+        if (!is.null(maf_for_plot_germ()) && input$germline_well_selection == "germ_vaf_chart"){
+          last_graph_opt("germ_vaf_chart")
           try(
             maftools::plotVaf(maf_for_plot_germ(), vafCol = "VAF", top = 10),
             silent = T
@@ -1346,7 +1355,7 @@ germTab_server <- function(id){
         shiny::req(input$germline_well_selection)
         if (!is.null(input$germline_well_selection)){
           if (input$germline_well_selection == "germ_overview_chart"){
-
+            last_graph_opt("germ_overview_chart")
             shiny::tags$div(
               id = "germline_charts_container",
               class = "charts_container",
@@ -1362,7 +1371,7 @@ germTab_server <- function(id){
                 shiny::tags$div(
                   class = "panel-body",
                   shiny::tags$p(shiny::tags$b("Initial")),
-                  shiny::tags$p("Mutations")
+                  shiny::tags$p("Variants")
                 )
               ),
 
@@ -1377,7 +1386,7 @@ germTab_server <- function(id){
                 shiny::tags$div(
                   class = "panel-body",
                   shiny::tags$p(shiny::tags$b("Filtered")),
-                  shiny::tags$p("Mutations")
+                  shiny::tags$p("Variants")
                 )
               )
             )
@@ -1436,8 +1445,9 @@ germTab_server <- function(id){
                 shinyWidgets::radioGroupButtons(
                   inputId = "GSP-GERM-germline_well_selection",
                   label = "",
-                  choices = c(`<p>Overview<i class='fa fa-pie-chart' style = "margin-left: 6px;"></i></p>` = "germ_overview_chart", `<p>Vaf<i class='fa fa-line-chart' style = "margin-left: 6px;"></i></p>` = "germ_vaf_chart",
-                              `<p>Maf Summary<i class='fa fa-bar-chart' style = "margin-left: 6px;"></i></p>` = "germ_mafsummary_chart"),
+                  selected = last_graph_opt(),
+                  choices = c(`<p>Overview<i class='fa fa-pie-chart' style = "margin-left: 6px;"></i></p>` = "germ_overview_chart", `<p>VAF<i class='fa fa-line-chart' style = "margin-left: 6px;"></i></p>` = "germ_vaf_chart",
+                              `<p>MAF Summary<i class='fa fa-bar-chart' style = "margin-left: 6px;"></i></p>` = "germ_mafsummary_chart"),
                   justified = TRUE
                 ),
               ),
@@ -1518,13 +1528,17 @@ germTab_server <- function(id){
         shiny::req(germ_processed_data())
         shiny::req(germ_filter_result_list$l)
         gfrl <- germ_filter_result_list$l
-        if (is.data.frame(germ_processed_data())){
+        if (is.data.frame(germ_processed_data()) && length(gfrl) > 0){
           # THE FOLLOWING IS EXECUTED ONLY WHEN TRANSITIONING BETWEEN DATASETS TO PREVENT ERRORS
-          if (length(germ_filter_result_list$l) != 0 && !identical(length(germ_filter_result_list$l[[1]]), nrow(germ_processed_data()))){gfrl <- list()}
+          if (!identical(length(germ_filter_result_list$l[[1]]), nrow(germ_processed_data()))){gfrl <- list()}
           #REPLACE THE ORIGINAL TABLE'S DATA WITH THE FILTERED ONE
           germ_filtered_df$df <<- germ_processed_data() %>% dplyr::filter(purrr::reduce(gfrl, `&`, .init = TRUE))
           germ_proxy %>% DT::replaceData(germ_filtered_df$df, resetPaging = T, rownames = FALSE)
         }
+        else if (is.data.frame(germ_processed_data()) && length(gfrl) == 0){
+          germ_proxy %>% DT::replaceData(germ_processed_data(), resetPaging = T, rownames = FALSE)
+        }
+
       })
 
       ### REPOSITION THE SCROLLER WHEN THE ORDER OF COLUMNS CHANGES ###
@@ -1545,7 +1559,10 @@ germTab_server <- function(id){
         col_chk_res <- input$germ_column_select
         if (!is.null(col_chk_res) && is.data.frame(germ_processed_data())){
           # THE FOLLOWING IS EXECUTED ONLY WHEN TRANSITIONING BETWEEN DATASETS TO PREVENT ERRORS
-          if (!identical(union(names(germ_processed_data()), input$germ_column_select), names(germ_processed_data()))){col_chk_res <- names(germ_processed_data())}
+          if (!identical(union(names(germ_processed_data()), input$germ_column_select), names(germ_processed_data()))){
+            if (length(germ_column_names()) > 0){col_chk_res <- germ_column_names()}
+            else if (length(germ_column_names()) == 0) {col_chk_res <- names(germ_processed_data())}
+          }
           #HIDE AND SHOW THE SELECTED COLUMNS AND ADDRESS THE CHANGING OF THE INDEXES WHEN REORDERING THE COLUMNS
           col_indexes <- c()
           final_indexes <- c()

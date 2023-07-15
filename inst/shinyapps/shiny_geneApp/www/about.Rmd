@@ -5,23 +5,79 @@ output:
   html_fragment
 fontsize: 8pt
 ---
-# ABOUT the project
+# About the GeneApp project
 
 ---
 
-## development
+### Development
 
+This web application is written using the R Shiny web framework. It makes use of custom HTML, CSS and JS, \
+It also demonstrates the use various Rmarkdown templates, all in order to create a fancy user experience. \
+It is also encapsulated inside a Docker container for better portability and control. \
+The app was developed with best Shiny practices in mind, as the use of Shiny modules, reactivity and fast server side processing, 
+to name a few. In total about 5000 lines of code were written for this app in a few months. \
+This time included app design and development but also all the required research to program in R, a language that was foreign to me. 
+Here are listed just some of the invaluable sources I used to gather all this knowledge:\
+
+  + [R for Data Science](https://r4ds.had.co.nz/index.html)\
+  + [Advanced R](http://adv-r.had.co.nz/)\
+  + [Mastering Shiny](https://mastering-shiny.org/index.html) \
+  + [Engineering Shiny](https://engineering-shiny.org/index.html) \
+  + [R Packages (2e)](https://r-pkgs.org/)\
+  + [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/)\
+
+Other key R packages that were used for this project are DT, data.tables, shinyWidgets, shinyFiles, knitr, maftools for all the genetic analysis needs and the tidyverse packages for the handling of the data.
   
 ---
 
-## Rules
+### Issues
 
+Please use the GitHub issue tracker at <a href="https://github.com/FilippoMazzara/Progetto_IFO/issues" target="_blank">github.com/FilippoMazzara/Progetto_IFO/issues</a> if you are experiencing issues using GeneApp or if you want to contribute to the project. Also feel free to share the specifics of other genetic standards if you want the app to be able to handle them in the future.
+For other questions and comments please contact the author Filippo Mazzara.
   
 ---
 
-## Contact information
+### Contact information
 
++ GitHub: [PROGETTOIFO - Github](https://github.com/FilippoMazzara/Progetto_IFO)
++ University "La Sapienza": [Professor Andrea Sterbini](https://www.di.uniroma1.it/it/docenti/sterbini)
++ Istituti Fisioterapici Ospitalieri: [IFO](https://www.ifo.it/)
++ Linkedin: [Matteo Pallocca](https://it.linkedin.com/in/matteo-pallocca-b38742142)
++ EMail: mazzara.1742740@studenti.uniroma1.it
 
 ---
 
-## License
+### Acknowledgements
+
+This app was developed by Filippo Mazzara an informatics student from the university "La Sapienza" in Rome, 
+with the supervision of the esteemed professor Andrea Sterbini. The patronage and the constant assistance 
+from the team of researchers from the highly regarded "Hospital Physiotherapy Institutes" (IFO) were essential and 
+defined the shape of this project. Special thanks go to doctor Matteo Pallocca and doctor Martina Betti 
+from IFO whose help was crucial.\
+
+---
+
+### License
+
+GeneApp is licensed under AGPL3 (see https://tldrlegal.com/license/gnu-affero-general-public-license-v3-(agpl-3.0) and https://www.r-project.org/Licenses/AGPL-3). The AGPLv3 license requires, attribution, including copyright and license information in copies of the software, stating changes if the code is modified, and disclosure of all source code.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+The documentation, the help files and images for the `GeneApp` package are licensed under the creative commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0) <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">BY-NC-ND</a>.
+        
+If you are interested in using the package please feel free to email me at mazzara.1742740@studenti.uniroma1.it
+
+&copy; Filippo Mazzara (2023) <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a>
+
+Copyright 2023 Filippo Mazzara. All rights reserved.

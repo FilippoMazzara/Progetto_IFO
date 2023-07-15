@@ -24,11 +24,10 @@ homePanel_ui <- function(id) {
       id="home_title_cont",
       shiny::tags$h1(
         id = "home_title",
-        htmltools::HTML("BENVENUTI NELLA <strong>GENEAPP</strong>")
+        htmltools::HTML("Welcome to <strong>GENEAPP</strong>")
       )
     ),
 
-    shiny::tags$br(),
     shiny::tags$br(),
 
     ## FIRST WELL PANEL
@@ -36,7 +35,7 @@ homePanel_ui <- function(id) {
       class="home_wellpanel",
       shiny::tags$br(),
       shiny::wellPanel(
-        style = "margin-bottom: 0; width: 100%",
+        style = "margin-bottom: 0; width: 80%; text-align: center; font-size: medium;",
         shiny::includeHTML(rmarkdown::render('www/homepage_insert1.Rmd'))
       ),
       shiny::tags$br()
@@ -45,25 +44,19 @@ homePanel_ui <- function(id) {
     shiny::tags$br(),
 
     #LINK TO SECOND PAGE
-    shiny::actionLink("linkapp", shiny::tags$span(("> > > VAI ALL'APP < < <"))),
+    shiny::actionLink("linkapp", shiny::tags$span(("> > > Start the App < < <"))),
 
     shiny::tags$br(),
-    shiny::tags$br(),
-
-    ## SECOND WELL PANEL
     shiny::fluidRow(
       class="home_wellpanel",
       shiny::tags$br(),
       shiny::wellPanel(
-        style = "margin-bottom: 0; width: 100%;",
+        style = "margin-bottom: 0; width: 80%; text-align: left; font-size: medium;",
         shiny::includeHTML(rmarkdown::render('www/homepage_insert2.Rmd'))
       ),
       shiny::tags$br()
     ),
-
-    shiny::tags$br(),
     shiny::tags$br()
-
   )
 }
 

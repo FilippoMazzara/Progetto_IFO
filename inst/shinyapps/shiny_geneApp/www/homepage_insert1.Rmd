@@ -6,17 +6,9 @@ output:
 fontsize: 8pt
 ---
 
-## INFO
-  - Sono state escluse mutazioni che non hanno effetto sulla sequenza amminoacidica o sullo splicing
-  
-  - La VAF è da essere considerata su una scala scala 0-100 che rappresenta la percentuale. Valori della VAF aggiustata         superiori a 100 sono da interpretarsi come un'incoerenza con la cellularità segnalata per il campione.
-  
-  - Sono state escluse mutazioni somatiche con vaf non aggiustata < 5 %  
-  
-  - Sono state escluse le mutazioni in geni problematici:
-  
-    - Iperpolimorfici (HLA, RECQL4)
-    - Rumorosi (Mucine)
-    
-  - Sono state considerate per il germinale solo i geni elencati nelle 4 tabelle dei geni rilevanti per lo studio
-  - Le azionabilità riportate sono relative all'annotazione disponibile sul database civic
+GeneApp is a browser-based interface for interactive exploratory analysis of genomic data in [R](https://www.r-project.org/). \
+
+The ultimate goal of the project is to provide an intuitive interface, with a comprehensive set of tools, \
+that will help researchers to import, explore and visualize mutational data of large cancer genomics studies. \
+Users also have the opportunity to download summaries and reports in various formats to best reflect their analysis. \
+All the details about the app are listed in the help section.\

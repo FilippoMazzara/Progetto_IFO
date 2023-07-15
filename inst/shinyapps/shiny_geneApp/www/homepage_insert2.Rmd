@@ -6,8 +6,10 @@ output:
 fontsize: 8pt
 ---
 
-## ALTRE INFO
-  - L'applicazione può visualizzare campioni di diversi soggetti provenienti da diversi dataset
-  - I campioni possono contenere mutazioni somatiche o germinali oppure entrambe
-  - I campioni provengono da tessuti tumorali estratti da OVAIO, MAMMELLA e COLON
-  
+- This is the **Home Page** of the app.
+
+- The **Overview** page contains the main interface to explore your data, you can access it either by clicking on **Start the App** above or on **Overview** in the top navigation tab.
+
+- In the **Help** page you will find the guide on how to use the app and all the information on how the app works.
+
+- In the **About** section you will find all the contact information, the licenses and the useful links.

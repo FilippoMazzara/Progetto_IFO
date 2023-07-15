@@ -21,49 +21,41 @@ help_page_ui <- function(id) {
         shiny::sidebarPanel(
           style = "align-self: center;",
           width = 3,
-          shiny::HTML(
-          '<div class="links">
-            <h2 data-toc-skip>Links</h2>
-            <ul class="list-unstyled">
-            <li><a target="_blank" href="https://github.com/FilippoMazzara/Progetto_IFO" class="external-link">Browse source code</a></li>
-            <li><a target="_blank" href="https://github.com/FilippoMazzara/Progetto_IFO/issues" class="external-link">Report a bug</a></li>
-            </ul>
-            </div>
-            <div class="license">
-            <h2 data-toc-skip>License</h2>
-            <ul class="list-unstyled">
-            <li><a target="_blank" href="LICENSE.md">Full license</a></li>
-            <li><small><a target="_blank" href="https://tldrlegal.com/license/gnu-affero-general-public-license-v3-(agpl-3.0)" class="external-link">AGPL</a> + file <a target="_blank" href="LICENSE.html">LICENSE</a></small></li>
-            </ul>
-            </div>
-            <div class="developers">
-            <h2 data-toc-skip>Developers</h2>
-            <ul class="list-unstyled">
-            <li>
-            <a target="_blank" href="https://github.com/FilippoMazzara/Progetto_IFO" class="external-link">Filippo Mazzara</a> <br><small class="roles"> Author, maintainer </small> </li>
-            <li>
-            <a target="_blank" href="https://www.rstudio.com" class="external-link"><img src="https://www.tidyverse.org/rstudio-logo.svg" alt="RStudio" width="72"></a> <br><small class="roles"> Copyright holder, funder </small>  </li>
-            </ul>
-          </div>
-            <hr>
-            <nav id="toc" data-toggle="toc"><h2>On this page</h2>
-          <div class = "navlinks_help_container">
-            <a class="nav-link" href="#home-page">Home page
-            </a>
-          <a class="nav-link" href="#reference">Reference
-            </a>
-          <a class="nav-link" href="#articles">Articles
-            </a>
-          <a class="nav-link" href="#news">News
-            </a>
-          <a class="nav-link" href="#publishing">Publishing
-            </a>
-          <a class="nav-link" href="#promoting">Promoting
-            </a>
-            </div>
-          </nav>
-            '
-          )
+          shiny::tags$nav(
+            id = "help_nav",
+            `data-toggle` = "help_nav",
+            shiny::tags$h2(
+              "Page contents"
+            ),
+            shiny::tags$ul(
+              class = "nav navbar-nav shiny-tab-input shiny-bound-input",
+              id = "help_nav_ul",
+              shiny::tags$li(
+                class = "",
+                shiny::tags$a(
+                  class = "nav-link",
+                  href = "#home-page",
+                  "Home page"
+                )
+              ),
+              shiny::tags$li(
+                class = "",
+                shiny::tags$a(
+                  class = "nav-link",
+                  href = "#reference",
+                  "Reference"
+                )
+              ),
+              shiny::tags$li(
+                class = "",
+                shiny::tags$a(
+                  class = "nav-link",
+                  href = "#publishing",
+                  "Publishing"
+                )
+              ),
+            ),
+          ),
         ),
         shiny::mainPanel(
           width = 9,

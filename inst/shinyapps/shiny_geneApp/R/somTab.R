@@ -33,7 +33,7 @@ somTab_ui_sidebar <- function(id){
             label = htmltools::HTML(
               'Upload a file: </label>
               <span data-toggle = "tooltip" style = "float: right" data-placement = "right"
-              title = "" data-original-title = "From the sidebar you are able to upload genetic data in various formats or chose it from the datasets stored on the server. \n \n After the data has loaded you will be able to explore it with all the tools that geneApp has to offer. \n \n If you want more details on how to operate the app or if you are experiencing problems, check out the Help page.">
+              title = "" data-original-title = "From the sidebar you are able to upload genetic data in various formats or choose it from the datasets stored on the server. \n \n After the data has loaded you will be able to explore it with all the tools that geneApp has to offer. \n \n If you want more details on how to operate the app or if you are experiencing problems, check out the Help page.">
               <i class = "far fa-circle-question" role = "presentation"
               aria-label = "circle-question icon"></i></span>'),
             # LIST HERE THE ALLOWED FILE FORMATS
@@ -151,7 +151,7 @@ somTab_server <- function(id){
 
       # REACTIVE TITLES
       som_file_title1 <- shiny::reactiveVal("")
-      som_file_title_start <- shiny::reactiveVal("\n Upload a Somatic sample \n \n  or \n \n Chose it from the available ones \n ")
+      som_file_title_start <- shiny::reactiveVal("\n Upload a Somatic sample \n \n  or \n \n Choose it from the available ones \n ")
       som_file_title2 <- shiny::reactiveVal("")
 
       # REACTIVE DATA VALUES
@@ -183,7 +183,7 @@ somTab_server <- function(id){
           data.table::fread(
             input$som_file_input_client$datapath,
             data.table = FALSE,
-            na.strings = base::getOption("NA")
+            na.strings = NULL #base::getOption("NA")
           ),
           silent = T
         )
@@ -224,7 +224,7 @@ somTab_server <- function(id){
               data.table::fread(
                 as.character(inFile$datapath),
                 data.table = F,
-                na.strings = base::getOption("NA")
+                na.strings = NULL #base::getOption("NA")
               ),
               silent = T
             )
@@ -274,11 +274,11 @@ somTab_server <- function(id){
         processing_maf_data <- NULL
 
         #lists of accepted values
-        #maf required names by us
+        #MAF required names by us
         maf_col_list <- c("Gene","Hugo_Symbol","Chromosome","VAF","Variant_Classification","Variant_Type","VARIANT_CLASS","CLIN_SIG","t_depth","Reference_Allele","Tumor_Seq_Allele2","Start_Position","End_Position","Existing_Variation","HGVSp","EXON","Tumor_Sample_Barcode")
         #starting filters
         filter_names <- c("Chromosome","VAF","Classification","VariantType","VariantClass","Clinvar","Depth","Start","End")
-        #maf required names in general
+        #MAF required names in general
         maf_required_cols <- c("Hugo_Symbol","Chromosome","Variant_Classification","Variant_Type","VARIANT_CLASS","Reference_Allele","Tumor_Seq_Allele2","Start_Position","End_Position","Tumor_Sample_Barcode")
         #general names that we agreed on
         final_names_cols <- c("Gene","HugoSymbol","Chromosome","VAF","Classification","VariantType","VariantClass","Clinvar","Depth","Ref","Alt","Start","End","Variation","HGVSp","Exon")
@@ -425,7 +425,7 @@ somTab_server <- function(id){
           initial_data$Variant_Classification <- var_class
         }
 
-        #Initialize the new data sets starting from the maf found columns
+        #Initialize the new data sets starting from the MAF found columns
         for (maf_name in maf_col_list){
 
           col_i <- which(col_names_found_maf == maf_name)
@@ -468,7 +468,7 @@ somTab_server <- function(id){
           }
         }
 
-        #Adapt the types of the data to maf standard types
+        #Adapt the types of the data to MAF standard types
         if ("Chromosome" %in% col_names_found_maf && is.numeric(processing_maf_data[["Chromosome"]])){
           processing_data[["Chromosome"]] <- as.character(processing_data[["Chromosome"]])
           processing_maf_data[["Chromosome"]] <- as.character(processing_maf_data[["Chromosome"]])
@@ -507,14 +507,14 @@ somTab_server <- function(id){
           som_missing_columns("There are no missing columns")
         }
 
-        #if the maf data set works then send it to the reactive
+        #if the MAF data set works then send it to the reactive
         if (length(setdiff(maf_required_cols, names(processing_maf_data))) == 0){
           t <- try(
             maftools::read.maf(processing_maf_data),
             silent = T
           )
           if (inherits(t, "try-error")){
-            som_missing_columns("Can't generate maf associated data")
+            som_missing_columns("Can't generate MAF associated data")
             som_maf_data(NULL)
           }
           else{
@@ -523,7 +523,7 @@ somTab_server <- function(id){
           }
         }
         else{
-          som_missing_columns("Can't generate maf associated data")
+          som_missing_columns("Can't generate MAF associated data")
           som_maf_data(NULL)
         }
 
@@ -652,7 +652,12 @@ somTab_server <- function(id){
                     #check if you can get this to be more efficent
                     if (all(filter_value)){
                       if (som_filter_name %in% names(som_filter_result_list$l)){
-                        som_filter_result_list$l[[som_filter_name]] <- filter_value
+                        if (length(filter_value) == nrow(som_processed_data())){
+                          som_filter_result_list$l[[som_filter_name]] <- NULL
+                        }
+                        else{
+                          som_filter_result_list$l[[som_filter_name]] <- filter_value
+                        }
                       }
                     }
                     else if (!all(filter_value)){
@@ -706,7 +711,7 @@ somTab_server <- function(id){
           shiny::tags$div(
             id = "pdf_export_cont_som",
             class = "pdf_export_cont",
-            #chose the templates
+            #Choose the templates
             shinyWidgets::pickerInput(
               paste("GSP-", shiny::NS(id,"pdf_export_options_som"), sep=""),
               "",
@@ -769,7 +774,7 @@ somTab_server <- function(id){
         file_export_error(e)
         if (is.null(som_maf_data())){
           ok <- F
-          e <- "data set is not maf compatible"
+          e <- "data set is not MAF compatible"
         }
         else{
           #DIFFERENT SETS OF RECORDS TO GENERATE THE REPORT ON
@@ -850,7 +855,7 @@ somTab_server <- function(id){
         file_export_error(e)
         if (is.null(som_maf_data())){
           ok <- F
-          e <- "data set is not maf compatible"
+          e <- "data set is not MAF compatible"
         }
         else{
           #DIFFERENT SETS OF RECORDS TO GENERATE THE REPORT ON
@@ -931,7 +936,7 @@ somTab_server <- function(id){
         file_export_error(e)
         if (is.null(som_maf_data())){
           ok <- F
-          e <- "data set is not maf compatible"
+          e <- "data set is not MAF compatible"
         }
         else{
           #DIFFERENT SETS OF RECORDS TO GENERATE THE REPORT ON
@@ -941,7 +946,7 @@ somTab_server <- function(id){
               silent = T
             )
             if (inherits(t, "try-error")){
-              e <- "Can't create maf summary"
+              e <- "Can't create MAF summary"
               ok <- F
             }
             else{
@@ -954,7 +959,7 @@ somTab_server <- function(id){
               silent = T
             )
             if (inherits(t, "try-error")){
-              e <- "Can't create maf summary"
+              e <- "Can't create MAF summary"
               ok <- F
             }
             else{
@@ -967,7 +972,7 @@ somTab_server <- function(id){
               silent = T
             )
             if (inherits(t, "try-error")){
-              e <- "Can't create maf summary"
+              e <- "Can't create MAF summary"
               ok <- F
             }
             else{
@@ -1066,7 +1071,7 @@ somTab_server <- function(id){
         #MAF EXPORT SELECTED
         if (input$som_table_export_types == "maf"){
           if(is.null(som_maf_data())){
-            e <- "data set is not maf compatible"
+            e <- "data set is not MAF compatible"
             ok <- F
           }
           else{
@@ -1077,7 +1082,7 @@ somTab_server <- function(id){
                 silent = T
               )
               if (inherits(t, "try-error")){
-                e <- "data set is not maf compatible"
+                e <- "data set is not MAF compatible"
                 ok <- F
               }
               else{
@@ -1090,7 +1095,7 @@ somTab_server <- function(id){
                 silent = T
               )
               if (inherits(t, "try-error")){
-                e <- "data set is not maf compatible"
+                e <- "data set is not MAF compatible"
                 ok <- F
               }
               else{
@@ -1103,7 +1108,7 @@ somTab_server <- function(id){
                 silent = T
               )
               if (inherits(t, "try-error")){
-                e <- "data set is not maf compatible"
+                e <- "data set is not MAF compatible"
                 ok <- F
               }
               else{
@@ -1319,11 +1324,13 @@ somTab_server <- function(id){
       #PLOT SUMMARY DATA
       maf_for_plot_som <- shiny::reactiveVal(NULL)
       maf_for_plot_som_df <- shiny::reactiveVal(NULL)
+      last_graph_opt <- shiny::reactiveVal("som_overview_chart")
 
       #SUMMARY PLOT OUTPUT
       output$som_plot_maf <- shiny::renderPlot({
         shiny::req(maf_for_plot_som())
-        if (!is.null(maf_for_plot_som())){
+        if (!is.null(maf_for_plot_som()) && input$somatic_well_selection == "som_mafsummary_chart"){
+          last_graph_opt("som_mafsummary_chart")
           try(
             maftools::plotmafSummary(maf_for_plot_som(), fs = 1.10),
             silent = T
@@ -1333,7 +1340,8 @@ somTab_server <- function(id){
 
       output$som_plot_clusters <- shiny::renderPlot({
         shiny::req(maf_for_plot_som())
-        if (!is.null(maf_for_plot_som())){
+        if (!is.null(maf_for_plot_som()) && input$somatic_well_selection == "som_vaf_chart"){
+          last_graph_opt("som_vaf_chart")
           try(
             maftools::plotClusters(maftools::inferHeterogeneity(maf_for_plot_som(), vafCol = "VAF")),
             silent = T
@@ -1343,7 +1351,8 @@ somTab_server <- function(id){
 
       output$som_plot_vaf <- shiny::renderPlot({
         shiny::req(maf_for_plot_som())
-        if (!is.null(maf_for_plot_som())){
+        if (!is.null(maf_for_plot_som()) && input$somatic_well_selection == "som_vaf_chart"){
+          last_graph_opt("som_vaf_chart")
           try(
             maftools::plotVaf(maf_for_plot_som(), vafCol = "VAF", top = 10),
             silent = T
@@ -1355,7 +1364,7 @@ somTab_server <- function(id){
         shiny::req(input$somatic_well_selection)
         if (!is.null(input$somatic_well_selection)){
           if (input$somatic_well_selection == "som_overview_chart"){
-
+            last_graph_opt("som_overview_chart")
             shiny::tags$div(
               id = "somatic_charts_container",
               class = "charts_container",
@@ -1445,8 +1454,9 @@ somTab_server <- function(id){
                 shinyWidgets::radioGroupButtons(
                   inputId = "GSP-SOM-somatic_well_selection",
                   label = "",
-                  choices = c(`<p>Overview<i class='fa fa-pie-chart' style = "margin-left: 6px;"></i></p>` = "som_overview_chart", `<p>Vaf<i class='fa fa-line-chart' style = "margin-left: 6px;"></i></p>` = "som_vaf_chart",
-                              `<p>Maf Summary<i class='fa fa-bar-chart' style = "margin-left: 6px;"></i></p>` = "som_mafsummary_chart"),
+                  selected = last_graph_opt(),
+                  choices = c(`<p>Overview<i class='fa fa-pie-chart' style = "margin-left: 6px;"></i></p>` = "som_overview_chart", `<p>VAF<i class='fa fa-line-chart' style = "margin-left: 6px;"></i></p>` = "som_vaf_chart",
+                              `<p>MAF Summary<i class='fa fa-bar-chart' style = "margin-left: 6px;"></i></p>` = "som_mafsummary_chart"),
                   justified = TRUE
                 ),
               ),
@@ -1527,12 +1537,15 @@ somTab_server <- function(id){
         shiny::req(som_processed_data())
         shiny::req(som_filter_result_list$l)
         gfrl <- som_filter_result_list$l
-        if (is.data.frame(som_processed_data())){
+        if (is.data.frame(som_processed_data()) && length(gfrl) > 0){
           # THE FOLLOWING IS EXECUTED ONLY WHEN TRANSITIONING BETWEEN DATASETS TO PREVENT ERRORS
-          if (length(som_filter_result_list$l) != 0 && !identical(length(som_filter_result_list$l[[1]]), nrow(som_processed_data()))){gfrl <- list()}
+          if (!identical(length(som_filter_result_list$l[[1]]), nrow(som_processed_data()))){gfrl <- list()}
           #REPLACE THE ORIGINAL TABLE'S DATA WITH THE FILTERED ONE
           som_filtered_df$df <<- som_processed_data() %>% dplyr::filter(purrr::reduce(gfrl, `&`, .init = TRUE))
           som_proxy %>% DT::replaceData(som_filtered_df$df, resetPaging = T, rownames = FALSE)
+        }
+        else if (is.data.frame(som_processed_data()) && length(gfrl) == 0){
+          som_proxy %>% DT::replaceData(som_processed_data(), resetPaging = T, rownames = FALSE)
         }
       })
 
@@ -1554,7 +1567,10 @@ somTab_server <- function(id){
         col_chk_res <- input$som_column_select
         if (!is.null(col_chk_res) && is.data.frame(som_processed_data())){
           # THE FOLLOWING IS EXECUTED ONLY WHEN TRANSITIONING BETWEEN DATASETS TO PREVENT ERRORS
-          if (!identical(union(names(som_processed_data()), input$som_column_select), names(som_processed_data()))){col_chk_res <- names(som_processed_data())}
+          if (!identical(union(names(som_processed_data()), input$som_column_select), names(som_processed_data()))){
+            if (length(som_column_names()) > 0){col_chk_res <- som_column_names()}
+            else if (length(som_column_names()) == 0) {col_chk_res <- names(som_processed_data())}
+          }
           #HIDE AND SHOW THE SELECTED COLUMNS AND ADDRESS THE CHANGING OF THE INDEXES WHEN REORDERING THE COLUMNS
           col_indexes <- c()
           final_indexes <- c()

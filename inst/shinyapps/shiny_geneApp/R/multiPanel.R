@@ -50,7 +50,7 @@ multiTab_page_ui <- function(id){
                     label = htmltools::HTML(
                       'Upload a file: </label>
                       <span data-toggle = "tooltip" style = "float: right;" data-placement = "right"
-                      title = "" data-original-title = " From the sidebar you are able to upload genetic data in various formats or chose it from the datasets stored on the server. \n \n After the data has loaded you will be able to explore it with all the tools that geneApp has to offer. \n \n If you want more details on how to operate the app or if you are experiencing problems, check out the Help page.">
+                      title = "" data-original-title = " From the sidebar you are able to upload genetic data in various formats or choose it from the datasets stored on the server. \n \n After the data has loaded you will be able to explore it with all the tools that geneApp has to offer. \n \n If you want more details on how to operate the app or if you are experiencing problems, check out the Help page.">
                       <i class = "far fa-circle-question" role = "presentation"
                       aria-label = "circle-question icon"></i></span>'
                     ),
@@ -143,7 +143,7 @@ multiTab_page_ui <- function(id){
                   htmltools::HTML(
 
                     '<span data-toggle = "tooltip" style = "float: left; margin-left: 15px; margin-top: 15px;" data-placement = "left"
-                    title = "" data-original-title = " When you select a dataset all the stats will be shown on this page. \n \n If too much information is displayed you can minimize some of the visualization panels. \n \n If some charts do not show up there is probably a problem with your dataset, check the help section for more information or on the error messages displayed on screen.">
+                    title = "" data-original-title = " When you select a dataset all the stats will be shown on this page. \n \n If too much information is displayed you can minimize some of the visualization panels. \n \n If some charts do not show up there is probably a problem with your dataset, check the help section for more information or the error messages displayed on screen.">
                     <i class = "far fa-circle-question" role = "presentation"
                     aria-label = "circle-question icon"></i></span>'
 
@@ -178,7 +178,7 @@ multiTab_page_server <- function(id) {
 
       # REACTIVE TITLES
       multi_file_title1 <- shiny::reactiveVal("")
-      multi_file_title_start <- shiny::reactiveVal("\n Upload multiple samples \n \n  or \n \n Chose them from the available ones \n ")
+      multi_file_title_start <- shiny::reactiveVal("\n Upload multiple samples \n \n  or \n \n Choose them from the available ones \n ")
       multi_titles <- shiny::reactiveVal()
       missing_multi_titles <- shiny::reactiveVal(list())
       multi_stats_message <- shiny::reactiveVal("\n Here will be displayed the samples stats once available")
@@ -216,7 +216,8 @@ multiTab_page_server <- function(id) {
           t <- try(
             data.table::fread(
               input$multi_file_input_client$datapath[[i]],
-              data.table = FALSE
+              data.table = FALSE,
+              na.strings = NULL
             ),
             silent = T
           )
@@ -241,6 +242,9 @@ multiTab_page_server <- function(id) {
           missing_multi_titles(unlist(error_files_names))
           multi_file_title_start("")
           multi_initial_data(read_files)
+          if(length(error_files_names > 0)){
+            multi_file_error("There was an error reading some files")
+          }
         }
       })
 
@@ -294,6 +298,9 @@ multiTab_page_server <- function(id) {
               missing_multi_titles(unlist(error_files_names))
               multi_file_title_start("")
               multi_initial_data(read_files)
+              if(length(error_files_names > 0)){
+                multi_file_error("There was an error reading some files")
+              }
             }
           }
         }
@@ -327,11 +334,11 @@ multiTab_page_server <- function(id) {
         }
 
         #lists of accepted values
-        #maf required names by us
+        #MAF required names by us
         maf_col_list <- c("Gene","Hugo_Symbol","Chromosome","VAF","Variant_Classification","Variant_Type","VARIANT_CLASS","CLIN_SIG","t_depth","Reference_Allele","Tumor_Seq_Allele2","Start_Position","End_Position","Existing_Variation","HGVSp","EXON","Tumor_Sample_Barcode")
         #starting filters
         filter_names <- c("SampleBarcode","Chromosome","VAF","Classification","VariantType","VariantClass","Clinvar","Depth","Start","End")
-        #maf required names in general
+        #MAF required names in general
         maf_required_cols <- c("Hugo_Symbol","Chromosome","Variant_Classification","Variant_Type","VARIANT_CLASS","Reference_Allele","Tumor_Seq_Allele2","Start_Position","End_Position","Tumor_Sample_Barcode")
         #general names that we agreed on
         final_names_cols <- c("Gene","HugoSymbol","Chromosome","VAF","Classification","VariantType","VariantClass","Clinvar","Depth","Ref","Alt","Start","End","Variation","HGVSp","Exon")
@@ -499,7 +506,7 @@ multiTab_page_server <- function(id) {
             initial_data$Variant_Classification <- var_class
           }
 
-          #Initialize the new data sets starting from the maf found columns
+          #Initialize the new data sets starting from the MAF found columns
           for (maf_name in maf_col_list){
 
             col_i <- which(col_names_found_maf == maf_name)
@@ -542,7 +549,7 @@ multiTab_page_server <- function(id) {
             }
           }
 
-          #Adapt the types of the data to maf standard types
+          #Adapt the types of the data to MAF standard types
           if ("Chromosome" %in% col_names_found_maf && is.numeric(processing_maf_data[["Chromosome"]])){
             processing_data[["Chromosome"]] <- as.character(processing_data[["Chromosome"]])
             processing_maf_data[["Chromosome"]] <- as.character(processing_maf_data[["Chromosome"]])
@@ -666,7 +673,6 @@ multiTab_page_server <- function(id) {
           multi_formatted_columns(unlist(intersect(cols_to_post_format, names(total_data))))
           multi_filter_names_initial(unlist(intersect(filter_names, names(total_data))))
           multi_column_names(unlist(intersect(final_names_cols, names(total_data))))
-          print(multi_column_names())
         }
         else{
           multi_formatted_columns(c())
@@ -678,11 +684,12 @@ multiTab_page_server <- function(id) {
         missing_names <- setdiff(final_names_cols, names(total_data))
         if (length(missing_names) > 0 || length(missing_each) > 0){
           message <- ""
+          count <- 0
           for (c in names(missing_each)){
             if (length(missing_each[[c]]) > 0){
               if(length(missing_each[[c]]) == length(final_names_cols)){
-                message <- paste("File ", c, "\n is missing all maf required columns" , "\n", "\n", sep = "")
-                multi_file_error("There was an error reading the files, \n check file info for more information")
+                message <- paste("File ", c, "\n is missing all MAF required columns" , "\n", "\n", sep = "")
+                count <- count + 1
               }
               else{
                 message <- paste("File ", c, "\n missing columns: ", paste(missing_each[[c]], "", collapse = ", "), "\n", "\n", sep = "")
@@ -700,7 +707,6 @@ multiTab_page_server <- function(id) {
             l <- multi_missing_columns()
             l <- append(l, message)
             multi_missing_columns(l)
-            multi_file_error("There was an error reading the files, \n check file info for more information")
           }
           if (length(missing_names) == 0){
             l <- multi_missing_columns()
@@ -713,27 +719,34 @@ multiTab_page_server <- function(id) {
             l <- append(l, message)
             multi_missing_columns(l)
           }
+          if (count > 0){
+            multi_file_error("There was an error reading the files, \n check file info for more information")
+          }
+          else{
+            if(length(missing_multi_titles()) == 0){multi_file_error(NULL)}
+          }
         }
         else {
           multi_missing_columns("There are no missing columns")
         }
 
-        #if the maf data set works then send it to the reactive
+        #if the MAF data set works then send it to the reactive
         if (!is.null(total_maf) && length(setdiff(maf_required_cols, names(total_maf))) == 0){
           t <- try(
             maftools::read.maf(total_maf),
             silent = T
           )
           if (inherits(t, "try-error")){
-            multi_file_error("Can't generate maf associated data")
+            multi_file_error("Can't generate MAF associated data")
             multi_maf_data(NULL)
           }
           else{
+            #multi_file_error(NULL)
             multi_maf_data(total_maf)
           }
         }
         else{
-          multi_file_error("Can't generate maf associated data")
+          multi_file_error("Can't generate MAF associated data")
           multi_maf_data(NULL)
         }
 
@@ -862,7 +875,12 @@ multiTab_page_server <- function(id) {
                     #check if you can get this to be more efficient
                     if (all(filter_value)){
                       if (multi_filter_name %in% names(multi_filter_result_list$l)){
-                        multi_filter_result_list$l[[multi_filter_name]] <- filter_value
+                        if (length(filter_value) == nrow(multi_processed_data())){
+                          multi_filter_result_list$l[[multi_filter_name]] <- NULL
+                        }
+                        else{
+                          multi_filter_result_list$l[[multi_filter_name]] <- filter_value
+                        }
                       }
                     }
                     else if (!all(filter_value)){
@@ -917,7 +935,7 @@ multiTab_page_server <- function(id) {
           shiny::tags$div(
             id = "pdf_export_cont_multi",
             class = "pdf_export_cont",
-            #chose the templates
+            #choose the templates
             shinyWidgets::pickerInput(
               paste(shiny::NS(id,"pdf_export_options_multi"), sep=""),
               "",
@@ -980,7 +998,7 @@ multiTab_page_server <- function(id) {
         file_export_error(e)
         if (is.null(multi_maf_data())){
           ok <- F
-          e <- "data set is not maf compatible"
+          e <- "data set is not MAF compatible"
         }
         else{
           #DIFFERENT SETS OF RECORDS TO GENERATE THE REPORT ON
@@ -1061,7 +1079,7 @@ multiTab_page_server <- function(id) {
         file_export_error(e)
         if (is.null(multi_maf_data())){
           ok <- F
-          e <- "data set is not maf compatible"
+          e <- "data set is not MAF compatible"
         }
         else{
           #DIFFERENT SETS OF RECORDS TO GENERATE THE REPORT ON
@@ -1142,7 +1160,7 @@ multiTab_page_server <- function(id) {
         file_export_error(e)
         if (is.null(multi_maf_data())){
           ok <- F
-          e <- "data set is not maf compatible"
+          e <- "data set is not MAF compatible"
         }
         else{
           #DIFFERENT SETS OF RECORDS TO GENERATE THE REPORT ON
@@ -1152,7 +1170,7 @@ multiTab_page_server <- function(id) {
               silent = T
             )
             if (inherits(t, "try-error")){
-              e <- "Can't create maf summary"
+              e <- "Can't create MAF summary"
               ok <- F
             }
             else{
@@ -1165,7 +1183,7 @@ multiTab_page_server <- function(id) {
               silent = T
             )
             if (inherits(t, "try-error")){
-              e <- "Can't create maf summary"
+              e <- "Can't create MAF summary"
               ok <- F
             }
             else{
@@ -1178,7 +1196,7 @@ multiTab_page_server <- function(id) {
               silent = T
             )
             if (inherits(t, "try-error")){
-              e <- "Can't create maf summary"
+              e <- "Can't create MAF summary"
               ok <- F
             }
             else{
@@ -1277,7 +1295,7 @@ multiTab_page_server <- function(id) {
         #MAF EXPORT SELECTED
         if (input$multi_table_export_types == "maf"){
           if(is.null(multi_maf_data())){
-            e <- "data set is not maf compatible"
+            e <- "data set is not MAF compatible"
             ok <- F
           }
           else{
@@ -1288,7 +1306,7 @@ multiTab_page_server <- function(id) {
                 silent = T
               )
               if (inherits(t, "try-error")){
-                e <- "data set is not maf compatible"
+                e <- "data set is not MAF compatible"
                 ok <- F
               }
               else{
@@ -1301,7 +1319,7 @@ multiTab_page_server <- function(id) {
                 silent = T
               )
               if (inherits(t, "try-error")){
-                e <- "data set is not maf compatible"
+                e <- "data set is not MAF compatible"
                 ok <- F
               }
               else{
@@ -1314,7 +1332,7 @@ multiTab_page_server <- function(id) {
                 silent = T
               )
               if (inherits(t, "try-error")){
-                e <- "data set is not maf compatible"
+                e <- "data set is not MAF compatible"
                 ok <- F
               }
               else{
@@ -1495,7 +1513,6 @@ multiTab_page_server <- function(id) {
       # RENDER OF ERRORS
       output$multi_file_error_total <- shiny::renderUI({
         shiny::req(missing_multi_titles())
-        multi_file_error("There was an error reading the files, \n check file info for more information")
         lapply(missing_multi_titles(), function(mes){
           shiny::tags$div(
             style = "text-align: center; color: red; font-size: initial; margin-bottom: 5px;",
@@ -1515,7 +1532,7 @@ multiTab_page_server <- function(id) {
               mes
             )
           }
-          else if (substr(mes, nchar(mes) - 37 + 1, nchar(mes) - 2) == "is missing all maf required columns") {
+          else if (substr(mes, nchar(mes) - 37 + 1, nchar(mes) - 2) == "is missing all MAF required columns") {
 
             shiny::tags$div(
               style = "text-align: center; color: red; font-size: initial; margin-bottom: 10px;",
@@ -1677,11 +1694,13 @@ multiTab_page_server <- function(id) {
       #PLOT SUMMARY DATA
       maf_for_plot_multi <- shiny::reactiveVal(NULL)
       maf_for_plot_multi_df <- shiny::reactiveVal(NULL)
+      last_graph_opt <- shiny::reactiveVal("multi_oncoplot_chart")
 
       #SUMMARY PLOT OUTPUT
       output$multi_plot_oncoplot <- shiny::renderPlot({
         shiny::req(maf_for_plot_multi())
-        if (!is.null(maf_for_plot_multi())){
+        if (!is.null(maf_for_plot_multi()) && input$multi_well_selection == "multi_oncoplot_chart"){
+          last_graph_opt("multi_oncoplot_chart")
           try(
             maftools::oncoplot(maf_for_plot_multi()),
             silent = T
@@ -1691,7 +1710,8 @@ multiTab_page_server <- function(id) {
 
       output$multi_plot_maf <- shiny::renderPlot({
         shiny::req(maf_for_plot_multi())
-        if (!is.null(maf_for_plot_multi())){
+        if (!is.null(maf_for_plot_multi()) && input$multi_well_selection == "multi_mafsummary_chart"){
+          last_graph_opt("multi_mafsummary_chart")
           try(
             maftools::plotmafSummary(maf_for_plot_multi(), fs = 1.10),
             silent = T
@@ -1701,7 +1721,8 @@ multiTab_page_server <- function(id) {
 
       output$multi_plot_clusters <- shiny::renderPlot({
         shiny::req(maf_for_plot_multi())
-        if (!is.null(maf_for_plot_multi())){
+        if (!is.null(maf_for_plot_multi()) && input$multi_well_selection == "multi_vaf_chart"){
+          last_graph_opt("multi_vaf_chart")
           try(
             maftools::plotClusters(maftools::inferHeterogeneity(maf_for_plot_multi(), vafCol = "VAF")),
             silent = T
@@ -1711,7 +1732,8 @@ multiTab_page_server <- function(id) {
 
       output$multi_plot_vaf <- shiny::renderPlot({
         shiny::req(maf_for_plot_multi())
-        if (!is.null(maf_for_plot_multi())){
+        if (!is.null(maf_for_plot_multi()) && input$multi_well_selection == "multi_vaf_chart"){
+          last_graph_opt("multi_vaf_chart")
           try(
             maftools::plotVaf(maf_for_plot_multi(), vafCol = "VAF", top = 10),
             silent = T
@@ -1721,7 +1743,8 @@ multiTab_page_server <- function(id) {
 
       output$multi_plot_tcga <- shiny::renderPlot({
         shiny::req(maf_for_plot_multi())
-        if (!is.null(maf_for_plot_multi())){
+        if (!is.null(maf_for_plot_multi()) && input$multi_well_selection == "multi_tcga_chart"){
+          last_graph_opt("multi_tcga_chart")
           try(
             maftools::tcgaCompare(maf_for_plot_multi(), capture_size = 50),
             silent = T
@@ -1731,7 +1754,8 @@ multiTab_page_server <- function(id) {
 
       output$multi_plot_interaction <- shiny::renderPlot({
         shiny::req(maf_for_plot_multi())
-        if (!is.null(maf_for_plot_multi())){
+        if (!is.null(maf_for_plot_multi()) && input$multi_well_selection == "multi_inter_chart"){
+          last_graph_opt("multi_inter_chart")
           t <- try(
             maftools::somaticInteractions(maf_for_plot_multi()),
             silent = T
@@ -1851,10 +1875,11 @@ multiTab_page_server <- function(id) {
                   shinyWidgets::radioGroupButtons(
                     inputId = "MULTI-multi_well_selection",
                     label = "",
+                    selected = last_graph_opt(),
                     choices = c(
                       `<p>Oncoplot<i class='fa fa-table' style = "margin-left: 6px;"></i></p>` = "multi_oncoplot_chart",
-                      `<p>Vaf<i class='fa fa-line-chart' style = "margin-left: 6px;"></i></p>` = "multi_vaf_chart",
-                      `<p>Maf Summary<i class='fa fa-bar-chart' style = "margin-left: 6px;"></i></p>` = "multi_mafsummary_chart",
+                      `<p>VAF<i class='fa fa-line-chart' style = "margin-left: 6px;"></i></p>` = "multi_vaf_chart",
+                      `<p>MAF Summary<i class='fa fa-bar-chart' style = "margin-left: 6px;"></i></p>` = "multi_mafsummary_chart",
                       `<p>TGCA<i class='fa fa-area-chart' style = "margin-left: 6px;"></i></p>` = "multi_tcga_chart",
                       `<p>Interaction<i class='fa fa-th' style = "margin-left: 6px;"></i></p>` = "multi_inter_chart"
                     ),
@@ -1941,12 +1966,15 @@ multiTab_page_server <- function(id) {
         shiny::req(multi_processed_data())
         shiny::req(multi_filter_result_list$l)
         gfrl <- multi_filter_result_list$l
-        if (is.data.frame(multi_processed_data())){
+        if (is.data.frame(multi_processed_data()) && length(gfrl) > 0){
           # THE FOLLOWING IS EXECUTED ONLY WHEN TRANSITIONING BETWEEN DATASETS TO PREVENT ERRORS
-          if (length(multi_filter_result_list$l) != 0 && !identical(length(multi_filter_result_list$l[[1]]), nrow(multi_processed_data()))){gfrl <- list()}
+          if (!identical(length(multi_filter_result_list$l[[1]]), nrow(multi_processed_data()))){gfrl <- list()}
           #REPLACE THE ORIGINAL TABLE'S DATA WITH THE FILTERED ONE
           multi_filtered_df$df <<- multi_processed_data() %>% dplyr::filter(purrr::reduce(gfrl, `&`, .init = TRUE))
           multi_proxy %>% DT::replaceData(multi_filtered_df$df, resetPaging = T, rownames = FALSE)
+        }
+        else if (is.data.frame(multi_processed_data()) && length(gfrl) == 0){
+          multi_proxy %>% DT::replaceData(multi_processed_data(), resetPaging = T, rownames = FALSE)
         }
       })
 
@@ -1968,7 +1996,10 @@ multiTab_page_server <- function(id) {
         col_chk_res <- input$multi_column_select
         if (!is.null(col_chk_res) && is.data.frame(multi_processed_data())){
           # THE FOLLOWING IS EXECUTED ONLY WHEN TRANSITIONING BETWEEN DATASETS TO PREVENT ERRORS
-          if (!identical(union(names(multi_processed_data()), input$multi_column_select), names(multi_processed_data()))){col_chk_res <- names(multi_processed_data())}
+          if (!identical(union(names(multi_processed_data()), input$multi_column_select), names(multi_processed_data()))){
+            if (length(multi_column_names()) > 0){col_chk_res <- multi_column_names()}
+            else if (length(multi_column_names()) == 0) {col_chk_res <- names(multi_processed_data())}
+          }
           #HIDE AND SHOW THE SELECTED COLUMNS AND ADDRESS THE CHANGING OF THE INDEXES WHEN REORDERING THE COLUMNS
           col_indexes <- c()
           final_indexes <- c()

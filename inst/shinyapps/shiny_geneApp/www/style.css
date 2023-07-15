@@ -248,11 +248,13 @@ div.navbar-header > span.navbar-brand {
 }
 
 #linkapp:hover {
-  text-decoration: underline !important;
+  text-decoration: none !important;
+  letter-spacing: 0px;
 }
 
 #linkapp:active {
-  text-decoration: underline !important;
+  text-decoration: none !important;
+  letter-spacing: 0px;
 }
 
 #linkapp {
@@ -1404,21 +1406,96 @@ tfoot > tr {
 .topchoice_help > div {
   display: flex;
   justify-content: center;
+  height: 100%;
 }
 
 .topchoice_help > div > div{
   display: flex;
   flex-direction: row-reverse;
   height: 100%;
-  max-width: 75%;
+  max-width: 80%;
+  width: 100%;
 }
 
 .topchoice_help .col-sm-3{
+  max-height: 50%;
   min-width: 220px;
   margin-top: 40px;
 }
 
+#help_nav_ul {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+}
+
+#help_nav_ul a {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  color: #777;
+  font-size: large;
+}
+
+#help_nav_ul a:focus {
+  color: black !important;
+  border-radius: 20px;
+}
+
+#help_nav_ul a:hover {
+  color: black !important;
+  border-radius: 20px;
+}
+
+.topchoice_about > div {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+}
+
+.topchoice_about > div > div{
+  display: flex;
+  flex-direction: row-reverse;
+  height: 100%;
+  max-width: 80%;
+  width: 100%;
+}
+
+.topchoice_about .col-sm-3{
+  max-height: 70%;
+  min-width: 220px;
+  margin-top: 40px;
+}
+
+#MULTI-export_error_multi{
+  text-align: center;
+  margin-top: 5px;
+}
+
+#GSP-SOM-export_error_som{
+  text-align: center;
+  margin-top: 5px;
+}
+
+#GSP-GERM-export_error_germ{
+  text-align: center;
+  margin-top: 5px;
+}
+
+#about-the-geneapp-project{
+  font-size: medium;
+}
+
+
 /* SCREEN OPTIONS*/
+
+
+@media screen and (max-width: 1200px) {
+
+  .home_wellpanel > div {
+    width: 95% !important;
+  }
+
+}
 
 @media screen and (max-width: 900px) {
 
@@ -1530,6 +1607,14 @@ tfoot > tr {
 
   #nav_cont_2 > nav > div > div.navbar-header > span.navbar-brand {
     padding-left: 0;
+  }
+
+  #home_title{
+   font-size: 6vw;
+  }
+
+  #linkapp{
+   font-size: 6vw;
   }
 
   .navbar-nav .open .dropdown-menu {
