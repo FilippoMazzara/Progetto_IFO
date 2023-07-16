@@ -8,7 +8,9 @@ fontsize: 8pt
 
 GeneApp is a browser-based interface for interactive exploratory analysis of genomic data in [R](https://www.r-project.org/). \
 
-The ultimate goal of the project is to provide an intuitive interface, with a comprehensive set of tools, \
-that will help researchers to import, explore and visualize mutational data of large cancer genomics studies. \
+An intuitive interface that will help researchers to import, explore and visualize mutational data of large cancer genomics studies. \
 Users also have the opportunity to download summaries and reports in various formats to best reflect their analysis. \
-All the details about the app are listed in the help section.\
+
+---
+
+Supply samples containing mutational data, coerce it to the MAF standard, explore your data and then share you discoveries!

@@ -40,7 +40,7 @@ ui <- shiny::fluidPage( #bslib::page_fluid(
         href = "/",
         shiny::tags$img(
           id = "logo1",
-          src = "img/logo.jpg"
+          src = "img/logo1.jpg"
         )
       )
     ),

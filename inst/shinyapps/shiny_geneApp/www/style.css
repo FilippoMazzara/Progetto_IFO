@@ -114,6 +114,8 @@ div.navbar-header > span.navbar-brand {
 }
 
 #logo1 {
+  margin-top: 5px;
+  margin-bottom: 5px;
   height: 5em;
 }
 
@@ -260,7 +262,7 @@ div.navbar-header > span.navbar-brand {
 #linkapp {
   font-weight: 500;
   letter-spacing: 2px;
-  font-size: 3.5vw !important;
+  font-size: 4vw !important;
   display: flex;
   justify-content: center;
   line-height: 1.5 !important;
@@ -283,7 +285,7 @@ div.navbar-header > span.navbar-brand {
 
 /* MAIN FOOTER STYLING */
 
-#footertxt {
+.footertxt {
   color: #777;
 }
 
@@ -316,7 +318,9 @@ div.navbar-header > span.navbar-brand {
 }
 
 #footertxt_cont {
-  width: 40%;
+  margin-right: 10%;
+  display: flex;
+  flex-direction: column;
 }
 
 .logoContainerFooter {
@@ -852,7 +856,9 @@ div.row_b > div.dt-buttons {
 }
 
 /*TABLE CONTAINERS*/
+
 /*SOM table styling*/
+
 #GSP-SOM-som_table {
   width: 100%;
   height: 100%;
@@ -885,6 +891,7 @@ div.row_b > div.dt-buttons {
 }
 
 /*GERM table styling*/
+
 #GSP-GERM-germ_table > div > table {
   padding-right: 30px;
 }
@@ -917,6 +924,7 @@ div.row_b > div.dt-buttons {
 }
 
 /*MULTI table styling*/
+
 #MULTI-multi_table {
   width: 100%;
   height: 100%;
@@ -1019,7 +1027,7 @@ tfoot > tr {
 }
 
 .img_footer {
-  padding-left: 30px;
+  padding-left: 10%;
 }
 
 /*SIDEBAR EXPORT*/
@@ -1107,6 +1115,7 @@ tfoot > tr {
 }
 
 /* MAIN TITLES */
+
 .file_title1:hover{
   white-space: normal;
   overflow: visible !important;
@@ -1140,6 +1149,9 @@ tfoot > tr {
   align-items: center;
   justify-content: center;
 }
+
+
+/* COMPARISON MULTI PANEL */
 
 #well_plot_container_comparison_1.collapse{
     display: none;
@@ -1200,13 +1212,8 @@ tfoot > tr {
   display: flex;
   flex-wrap: wrap;
 }
-/*
-.navbar:not(.fixed-bottom):not(.navbar-fixed-bottom):not(.navbar-fixed-bottom)+div>.tab-content>.tab-pane {
-    --bslib-navbar-margin: 0 !important;
-    margin-top: var(--bslib-navbar-margin);
-}
-*/
 
+/* STATS CARDS */
 .panel-heading {
   font-size: xxx-large;
   display: flex;
@@ -1258,6 +1265,8 @@ tfoot > tr {
   font-size: x-large;
   text-align: center;
 }
+
+/* MAIN PLOTS */
 
 .chart_controls_cont {
   width: 100%;
@@ -1329,10 +1338,26 @@ tfoot > tr {
   margin-top: 20px;
 }
 
+#MULTI-export_error_multi{
+  text-align: center;
+  margin-top: 5px;
+}
+
+#GSP-SOM-export_error_som{
+  text-align: center;
+  margin-top: 5px;
+}
+
+#GSP-GERM-export_error_germ{
+  text-align: center;
+  margin-top: 5px;
+}
+
+/* MULTI CUSTOMIZATION */
+
 #multi_main_charts_container > .panel-primary {
   border: 2px solid #2C5F2D !important;
 }
-/*forestgreen*/
 
 #multi_main_charts_container > .panel-primary > .panel-heading {
   background-color: #2C5F2D;
@@ -1403,6 +1428,8 @@ tfoot > tr {
   box-shadow: inset 0 0 0 9999px rgb(44 95 45 / 90%) !important;
 }
 
+/* MORE HELP AND ABOUT */
+
 .topchoice_help > div {
   display: flex;
   justify-content: center;
@@ -1418,9 +1445,11 @@ tfoot > tr {
 }
 
 .topchoice_help .col-sm-3{
-  max-height: 50%;
+  max-height: 500px;
   min-width: 220px;
   margin-top: 40px;
+  position: sticky;
+  top: 35px;
 }
 
 #help_nav_ul {
@@ -1439,6 +1468,12 @@ tfoot > tr {
 #help_nav_ul a:focus {
   color: black !important;
   border-radius: 20px;
+}
+
+#help_nav_ul a:active {
+  color: black !important;
+  border-radius: 20px;
+
 }
 
 #help_nav_ul a:hover {
@@ -1461,30 +1496,20 @@ tfoot > tr {
 }
 
 .topchoice_about .col-sm-3{
-  max-height: 70%;
+  max-height: 500px;
   min-width: 220px;
   margin-top: 40px;
-}
-
-#MULTI-export_error_multi{
-  text-align: center;
-  margin-top: 5px;
-}
-
-#GSP-SOM-export_error_som{
-  text-align: center;
-  margin-top: 5px;
-}
-
-#GSP-GERM-export_error_germ{
-  text-align: center;
-  margin-top: 5px;
+  position: sticky;
+  top: 35px;
 }
 
 #about-the-geneapp-project{
   font-size: medium;
 }
 
+#geneapp-interactively-explore-genetic-data{
+  font-size: medium;
+}
 
 /* SCREEN OPTIONS*/
 
@@ -1508,6 +1533,26 @@ tfoot > tr {
 /*MOBILE WIDTH*/
 @media screen and (max-width: 767px) {
 
+  .topchoice_about .col-sm-3 {
+    position: relative !important;
+    margin-top: 0;
+    margin-bottom: 30px;
+  }
+
+  .topchoice_about > div > div{
+    flex-direction: column !important;
+  }
+
+  .topchoice_help .col-sm-3 {
+    position: relative !important;
+    margin-bottom: 30px;
+    margin-top: 0;
+  }
+
+  .topchoice_help > div > div{
+    flex-direction: column !important;
+  }
+
   .file_title1{
     max-width: 95vw !important;
   }
@@ -1519,7 +1564,7 @@ tfoot > tr {
   }
 
   .tooltip {
-    z-index: 2000;
+    z-index: 2000 !important;
   }
 
   .tooltip-inner {
@@ -1556,15 +1601,15 @@ tfoot > tr {
   }
 
   .dataTables_paginate {
-    left: 0;
+    left: 0 !important;
   }
 
   .dataTables_filter {
-    left: 0;
+    left: 0 !important;
   }
 
   #mainpage > nav > div.container-fluid {
-    flex-direction: column;
+    flex-direction: column !important;
   }
 
   .row_i {
@@ -1581,40 +1626,40 @@ tfoot > tr {
   }
 
   #nav_cont_2 > nav > div {
-    justify-content: space-around;
+    justify-content: space-around !important;
   }
 
   #nav_cont_2 > nav > div > div.navbar-header {
-    justify-content: flex-start;
+    justify-content: flex-start !important;
     min-width: 100px !important;
   }
 
   #nav_cont_2 > nav > div > div.navbar-header > button {
-    margin-left: 10px;
+    margin-left: 10px !important;
   }
 
   #overview_container > div.row {
-    flex-direction: column;
+    flex-direction: column !important;
   }
 
   #multi_container > div.row {
-    flex-direction: column;
+    flex-direction: column !important;
   }
 
   #mainpage > nav > div.container-fluid {
-    justify-content: flex-start;
+    justify-content: flex-start !important;
   }
 
   #nav_cont_2 > nav > div > div.navbar-header > span.navbar-brand {
-    padding-left: 0;
+    padding-left: 0 !important;
   }
 
   #home_title{
-   font-size: 6vw;
+   font-size: 6vw !important;
   }
 
   #linkapp{
-   font-size: 6vw;
+   font-size: 6vw !important;
   }
 
   .navbar-nav .open .dropdown-menu {

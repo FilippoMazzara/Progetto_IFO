@@ -14,22 +14,223 @@ vignette: >
 
 ---
 
-The ultimate goal of the project is to provide an intuitive interface, with a comprehensive set of tools, 
-that will help researchers to import, explore and visualize large cancer genomics studies. \
+This is the help page of the GeneApp project
 
-```{r, eval = FALSE}
-# Run once to start the app
-geneApp::run_geneApp()
+---
+
+## Overview
+
+GeneApp is a browser-based interface for interactive exploratory analysis of genomic data in [R](https://www.r-project.org/). 
+The application is based on the [Shiny](https://shiny.rstudio.com/) package and can be run locally or on a server. 
+
+GeneApp is designed to provide an intuitive interface, with a comprehensive set of tools, 
+that will help researchers to import, explore and visualize mutational data of large cancer genomics studies. \
+Users also have the opportunity to download summaries and reports in various formats to best reflect their analysis. \
+Due to the heterogeneous nature of genomic data there are some restrictions on the formatting of the files and 
+data sets that the app can handle, all the details are listed in the [Advanced Usage](#advanced-usage) section.\
+
+---
+
+## Key Features
+
+GeneApp has two main purposes: \
+
+  - Provide a fast way to researchers to explore and confront somatic and germline mutational data with different metrics.\
+  - Enable users to combine data from multiple data sets to make meaningful analyses and summaries of large \
+    cancer genetic studies.\
+
+#### Supply samples
+Submit data from your local machine or select it from the samples stored remotely on the app's server.
+
+#### Convert your data
+GeneApp can be used to view different kinds of data, it can act as a simple file reader for generic relational data but if it's supplied with specific genetic data, it will recognize it and process it according to the MAF format, even if the starting data was using another genetic standard. 
+
+#### Explore Interactively
+GeneApp is interactive. Results and plots update immediately when inputs are changed. This allow for fast exploration and visualization to better understand the data you are working with.
+
+#### Share your discoveries
+Generate a wide array of file outputs and reports to better reflect the results of your analysis and to share more meaningful data.
+
+#### Context
+GeneApp is a tool made with the aim of making life easier to genetics researchers, so I am hopeful that it will 
+be particularly helpful in assisting in the genetic research effort.\
+
+---
+
+## Installation 
+If you are in to test GeneApp from within R, run the following in your R session to install the GeneApp package current development version from Github. (not in a docker container) \
+
+GeneApp works on Windows, Mac, or Linux. It can run locally, even without an Internet connection or you can also run the app as a web application on a server.
+
+- Required: [R](https://cran.r-project.org/) version 4.2.0 or later
+
+``` 
+
+if (!require("devtools")) {
+  install.packages("devtools")
+}
+
+install.packages(c("data.table", "dplyr", "DT", "kableExtra", 
+"mclust", "kit", "knitr", "magrittr", "purrr", 
+"shiny", "BiocManager", "shinyFiles", "shinyjs", "shinyWidgets", "stringr", "writexl"))
+
+BiocManager::install("maftools")
+
+devtools::install_github("FilippoMazzara/Progetto_IFO")
+
+library("geneApp") 
+
+devtools::load_all(".")
+
 ```
+then to run the app simply call the launcher function `geneApp::run_geneApp()` from the console.
 
-## Home page
+unfortunately there is not yet a release available on CRAN.\
 
+The development environment of this project will be encapsulated in a Docker container. \
+This will be the steps required to set it up.\
 
+1. Install Docker. Follow the instructions on [https://docs.docker.com/install/](https://docs.docker.com/install/)\
 
-## Reference
+2. Make docker run without sudo\
 
+    ```
+    sudo groupadd docker
+    sudo usermod -aG docker $USER
+    ```  
+  \
+Log out and log back in so that your group membership is re-evaluated\
+    
+3. Clone the GIT repository \
 
+    ```
+    git clone https://github.com/FilippoMazzara/Progetto_IFO.git
+    ```
+   \
+4. Setup development Docker container \
 
-## Publishing
+    ```
+    cd Progetto_IFO
+    bin/setup-environment.sh
+    ```
+\
+You should see lots of container build messages\
+
+5. Spin up the container \
+
+    ```
+    bin/start_rstudio.sh
+    ```
+  \
+6. Open [http://localhost:8787](http://localhost:8787) in your browser to start a new RStudio session \
+
+7. Install R packages required for this app. Run the following in your R session to install all the dependencies: \
+
+    ```
+    install.packages(c("data.table", "dplyr", "DT", "kableExtra", 
+    "kit", "knitr", "maftools", "magrittr", "purrr", "shiny",     
+    "shinydashboard", "shinyFiles", "shinyjs", "shinyWidgets", "stringr", "writexl"))
+     ```
+\
+The installation will take a few minutes. \
+    
+8. Open the file `app.R` and hit the "Run app" button in the toolbar of the script editor (or type `geneApp::run_geneApp()` in the R session window). The Shiny app should open in a new window. You may need to instruct your browser to not block popup windows for this URL.\
+
+---
+
+## Basic Usage
+When GeneApp starts you are greeted by the home page from where you can start navigating the app. 
+The main section of the app is the overview page, this is where the users can find all the important functions, you can navigate there by clicking the link on the home page or by clicking 'Overview' on the top navigation bar.\
+The two main services are the comparison between somatic and germline data sets and the combining of multiple different genetic samples. 
+They mainly differ in their purposes and in the way the data is presented but both work with very similar UI elements and workflows, 
+so I will quickly go over them. 
+   
+   - From the sidebar a user can decide whether to upload a file/s from it's local filesystem, 
+     or to choose from a set of files that are hosted on the server. In the 'Combine' view you are able to upload multiple files at once.
+     In the [Advanced Usage](#advanced-usage) section you can find all the details about the formatting of files 
+     and the inner workings of the conversions. 
+     
+     After a brief loading, if everything worked out, the chosen data should be ready to explore 
+     and you should have a few tools at your disposal, in particular:
+     
+   - In the main panel of the selected view you will have the table containing your data in the center, 
+     you can navigate it and you are also able to select rows and copying them to your clipboard by clicking the apposite button. 
+     You can also reorder the columns by dragging and dropping on the column names in the table's header and filter the records                through the filters present on top of the table and in the sidebar.
+     There are individual text search boxes for each column and a main search prompt for all the table's records.
+     
+   - On top of the table you will have a collapsible box containing some of the possible statistics and plots. These follow the changes in      your data and are rendered in real time.  
+   
+   - In the sidebar you will then have multiple boxes you can interact with, they are all positioned below the file upload box and they        are all collapsible. From them, in order, you can choose to hide and show columns of the corresponding table, toggle various filters      and apply them to your data. Lastly you can export the final explored data in various formats with a wide array of options.
+   
+   - There is also a statistics panel containing the collapsible box with more plots and stats about your data.
+
+If there are errors with the reading of the data or its exploration, warning and error messages will be displayed on the top part of sidebar and along side the interested plots and tables.
+All the UI elements should be pretty friendly and intuitive to use, if you find yourself having problems 
+there are some useful tool tips sprinkled along the UI. 
+In the Help page you can find more helpful tips and the app's user guide.
+In the About page there are all the useful links, licenses and contact information. 
+
+To close the application close the browser window and then click `Stop`. The GeneApp process will stop and the browser window will close (Chrome) or gray-out.
+
+---
+  
+## Advanced Usage
+For security and performance reasons the user uploaded files will only be processed but not saved 
+on the server that's running the app. File uploads are limited to a total of 120Mb. The supported formats are the same on both the client and server sides, 
+they are: .csv .tsv .xls .xlsx .maf
+
+When a file that is not already in MAF standard is chosen the app will try to turn it the closest it can to MAF 
+standard in order to understand the data more easily. If the transformation is not possible then the app will still 
+show the file but display a warning and many of the funcionalities will not be available. 
+If the file is not readable at all it will show an error.  \
+
+If you are having problems visualizing your file you should check whether they are MAF compatible [here](https://www.bioconductor.org/packages/devel/bioc/vignettes/maftools/inst/doc/maftools.html#1_Introduction). \
+There is a possibility that with a few tweaks your file can also be adapted to work fine in the app, 
+still in many cases if your file is using another genetic standard is very likely that you do not need 
+this because the app will handle all the conversions for you! \
+
+If you are still having problems or if you just want to make a contribution for the project here 
+are some of the inner workings of the conversion:
+
+   All the column names in your files are tried to be matched with the MAF standard 
+    column names through these case insensitive pairing lists:
+    
+      ```
+      Gene <- c("gene.refgene", "gene")
+      Hugo_Symbol <- c("hugo_symbol") 
+      Chromosome <- c("chr", "chrom", "chromosome")
+      Reference_Allele <- c("reference_allele", "ref")
+      Tumor_Seq_Allele2 <- c("tumor_seq_allele2", "alt")
+      VAF <- c("vaf", "t_vaf")
+      Variant_Classification <- c("variant_classification", "func.refgene")
+      Variant_Type <- c("variant_type", "exonicfunc.refgene")
+      VARIANT_CLASS <- c("variant_class")
+      CLIN_SIG <- c("clin_sig", "clinvar")
+      t_depth <- c("depth", "t_depth")
+      Start_Position <- c("start_position", "start")
+      End_Position <- c("end_position", "end")
+      Existing_Variation <- c("existing_variation", "aachange.refgene", "variation", "var")
+      HGVSp <- c("hgvsp") 
+      EXON <- c("exon") 
+      Tumor_Sample_Barcode <- c("tumor_sample_barcode")
+      ```
+   If these do not work a second round of conversion starts where other pairings are applied 
+   in order to address different possible standards and the missing columns that can be inferred
+   from the other data are computed like so:
+   
+      ```
+      Hugo_Symbol <- c("symbol")
+      Reference_Allele <- c("tumor_seq_allele1")
+      HGVSp <- c("hgvsp_Short")
+      EXON <- c("exon_number")
+      ```
+   If not present the following will be tried to be computed using values from other columns, if they exist:\
+   
+  - Tumor_Sample_Barcode is inferred from the file or the data set names, if a unique barcode is not supplied an identifier will be           added to the value to avoid confusion. Samples that share a barcode will be treated as one by maftools. \
+  - VAF is calculated dividing t_depth for t_alt_count, it's in a 0-100 scale and values higher than 100 are to be considered as              inconsistent with the cellularity reported for the sample.  \
+  - Variant_Type is inferred from VARIANT_CLASS, Reference_Allele and Tumor_Seq_Allele2\
+  - Variant_Classification is inferred using Consequence and Variant_Type\
+  - Most of the column types are reduced to the ones that correspond to the MAF standard and values formatting 
+    errors are tried to be fixed as well, this is most significant when merging multiple data sets\
 
 

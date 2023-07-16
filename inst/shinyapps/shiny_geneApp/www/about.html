@@ -4,6 +4,20 @@
 <div id="about-the-geneapp-project" class="section level1">
 <h1>About the GeneApp project</h1>
 <hr />
+<ul>
+<li>Provide a fast way to researchers to explore and confront somatic
+and germline mutational data with different metrics.<br />
+</li>
+<li>Enable users to combine data from multiple data sets to make
+meaningful analyses and summaries of large<br />
+cancer genetic studies.<br />
+</li>
+</ul>
+<p>GeneApp is a tool made with the aim of making life easier to genetics
+researchers, so I am hopeful that it will be particularly helpful in
+assisting in the genetic research effort.<br />
+</p>
+<hr />
 <div id="development" class="section level3">
 <h3>Development</h3>
 <p>This web application is written using the R Shiny web framework. It
@@ -12,10 +26,13 @@ It also demonstrates the use various Rmarkdown templates, all in order
 to create a fancy user experience.<br />
 It is also encapsulated inside a Docker container for better portability
 and control.<br />
-The app was developed with best Shiny practices in mind, as the use of
-Shiny modules, reactivity and fast server side processing, to name a
-few. In total about 5000 lines of code were written for this app in a
-few months.<br />
+The UI was mainly made using the bootstrap 3 library in order to make it
+fully compatible with shiny. The interface is tested to work on all
+major browsers and on almost any mobile device. The app was developed
+with best Shiny practices in mind, as the use of Shiny modules,
+reactivity and fast server side processing, to name a few. In total
+about 5000 lines of code were written for this app in a few
+months.<br />
 This time included app design and development but also all the required
 research to program in R, a language that was foreign to me. Here are
 listed just some of the invaluable sources I used to gather all this
@@ -39,10 +56,15 @@ Shiny</a><br />
 Definitive Guide</a><br />
 </li>
 </ul>
-<p>Other key R packages that were used for this project are DT,
-data.tables, shinyWidgets, shinyFiles, knitr, maftools for all the
-genetic analysis needs and the tidyverse packages for the handling of
-the data.</p>
+<p>Here are listed all the useful packages I used to make the app:<br />
+shiny, R.utils DT, data.table, knitr, kableExtra, shinyWidgets, kit,
+shinyFiles, writexl, magrittr, stringr, shinyjs, purrr, dplyr.<br />
+For the benchmarking profvis and reactlog were extensively used.<br />
+For the evaluation and processing of the genetic data I used maftools
+and mclust.<br />
+I also got inspiration from the bslib and pkgdown packages, but they
+were not used directly.<br />
+</p>
 <hr />
 </div>
 <div id="issues" class="section level3">

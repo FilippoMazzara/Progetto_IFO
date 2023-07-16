@@ -14,7 +14,8 @@ and can be run locally or on a server.
 
 The ultimate goal of the project is to provide an intuitive interface,
 with a comprehensive set of tools, that will help researchers to import,
-explore and visualize large cancer genomics studies.  
+explore and visualize mutational data of large cancer genomics
+studies.  
 Users also have the opportunity to download summaries and reports in
 various formats to best reflect their analysis.  
 Due to the heterogeneous nature of genomic data there are some
@@ -25,11 +26,12 @@ Usage](#advanced-usage) section.
 ## Key Features
 
 GeneApp has two main purposes:  
+
 - Provide a fast way to researchers to explore and confront somatic and
-germline data with different metrics.  
+  germline mutational data with different metrics.  
 - Enable users to combine data from multiple data sets to make
-meaningful analyses and summaries of large  
-cancer genetic studies.  
+  meaningful analyses and summaries of large  
+  cancer genetic studies.  
 
 #### Supply samples
 
@@ -41,7 +43,7 @@ remotely on the app’s server.
 GeneApp can be used to view different kinds of data, it can act as a
 simple file reader for generic relational data but if it’s supplied with
 specific genetic data, it will recognize it and process it according to
-the maf format, even if the starting data was using another genetic
+the MAF format, even if the starting data was using another genetic
 standard.
 
 #### Explore Interactively
@@ -83,8 +85,11 @@ application on a server.
       install.packages("devtools")
     }
 
-    install.packages(c("data.table", "dplyr", "DT", "kableExtra", "mclust", "kit", "knitr", "maftools", "magrittr", 
-    "purrr", "shiny", "shinydashboard", "shinyFiles", "shinyjs", "shinyWidgets", "stringr", "writexl"))
+    install.packages(c("data.table", "dplyr", "DT", "kableExtra", 
+    "mclust", "kit", "knitr", "magrittr", "purrr", 
+    "shiny", "BiocManager", "shinyFiles", "shinyjs", "shinyWidgets", "stringr", "writexl"))
+
+    BiocManager::install("maftools")
 
     devtools::install_github("FilippoMazzara/Progetto_IFO")
 
@@ -153,47 +158,46 @@ This will be the steps required to set it up.
 
 ## Basic Usage
 
-When GeneApp starts you will see the blank overview page where you can
-upload your data. To close the application close the browser window and
-then click `Stop`. The GeneApp process will stop and the browser window
-will close (Chrome) or gray-out. The main section of the app is the
-overview page, this is where the users will find all the important
-functions.  
+When GeneApp starts you will be greeted by the home page from where you
+can start navigating the app. To close the application close the browser
+window and then click `Stop`. The GeneApp process will stop and the
+browser window will close (Chrome) or gray-out. The main section of the
+app is the overview page, this is where the users will find all the
+important functions.  
 The two main services are the comparison between somatic and germline
 data sets and the combining of multiple different data sets. They mainly
 differ in their purposes and in the way the data is presented but both
-work with very similar UI elements and workflows, so I’ll quickly go
+work with very similar UI elements and workflows, so I will quickly go
 over them.
 
 - From the sidebar a user can decide whether to upload a file/s from
-  it’s local filesystem, or to chose from a set of files that are hosted
-  on the server. In the [Advanced Usage](#advanced-usage) section you
-  can find all the details about the formatting of files and the inner
-  workings of the conversions.
+  it’s local filesystem, or to choose from a set of files that are
+  hosted on the server. In the [Advanced Usage](#advanced-usage) section
+  you can find all the details about the formatting of files and the
+  inner workings of the conversions.
 
   After a brief loading, if everything worked out, the chosen data
   should be ready to explore and you should have a few tools at your
-  disposal, let’s see them:
+  disposal, in particular:
 
-- In the main panel of the selected view you’ll have the table
+- In the main panel of the selected view you will have the table
   containing your data in the center, you can navigate it and you are
   also able to select rows to copy, reorder the columns through a drag
   and drop and filter the records through the filters present on top of
   the table and in the sidebar.
 
-- Both in the main panel and in the statistics panel you’ll find some
+- Both in the main panel and in the statistics panel you will find some
   useful and interactive stats and plots.
 
-- From the sidebar you can chose to hide and show columns, show and then
-  apply various filters and to export the explored data in various
+- From the sidebar you can choose to hide and show columns, show and
+  then apply various filters and to export the explored data in various
   formats with a wide array of options.
 
 All the UI elements should be pretty friendly and intuitive to use, if
 you find yourself having problems there are some useful tool tips
-sprinkled along the UI. In the Help page you’ll find more helpful tips
-and all the useful links and contact information. The app should also be
-working perfectly on mobile but there could be some quirks that are not
-yet addressed.  
+sprinkled along the UI. In the Help page you will find more helpful tips
+and the app’s guide. In the About page there are all the useful links,
+licenses and contact information.
 
 ## Advanced Usage
 
@@ -203,26 +207,26 @@ uploads are limited to a total of 120Mb. The supported formats are the
 same on both the client and server sides, they are: .csv .tsv .xls .xlsx
 .maf
 
-When a file that is not already in maf standard is chosen the app will
-try to turn it the closest it can to maf standard in order to understand
+When a file that is not already in MAF standard is chosen the app will
+try to turn it the closest it can to MAF standard in order to understand
 the data more easily. If the transformation is not possible then the app
 will still show the file but display a warning and many of the
 funcionalities will not be available. If the file is not readable at all
 it will show an error.  
 
 If you are having problems visualizing your file you should check
-whether they are maf compatible
+whether they are MAF compatible
 [here](https://www.bioconductor.org/packages/devel/bioc/vignettes/maftools/inst/doc/maftools.html#1_Introduction).  
 There is a possibility that with a few tweaks your file can also be
 adapted to work fine in the app, still in many cases if your file is
-using another genetic standard is very likely that you don’t need this
+using another genetic standard is very likely that you do not need this
 because the app will handle all the conversions for you!  
 
 If you are still having problems or if you just want to make a
 contribution for the project here are some of the inner workings of the
 conversion:
 
-All the column names in your files are tried to be matched with the maf
+All the column names in your files are tried to be matched with the MAF
 standard column names through these case insensitive pairing lists:
 
       ```
@@ -245,7 +249,7 @@ standard column names through these case insensitive pairing lists:
       Tumor_Sample_Barcode <- c("tumor_sample_barcode")
       ```
 
-If these don’t work a second round of conversion starts where other
+If these do not work a second round of conversion starts where other
 pairings are applied in order to address different possible standards
 and the missing columns that can be inferred from the other data are
 computed like so:
@@ -259,14 +263,16 @@ computed like so:
 
 If not present the following will be tried to be computed using values
 from other columns, if they exist:  
+
 - Tumor_Sample_Barcode is inferred from the file or the data set names  
-- Vaf is calculated dividing t_depth for t_alt_count   - Variant_Type is
-inferred from VARIANT_CLASS, Reference_Allele and Tumor_Seq_Allele2  
+- VAF is calculated dividing t_depth for t_alt_count  
+- Variant_Type is inferred from VARIANT_CLASS, Reference_Allele and
+  Tumor_Seq_Allele2  
 - Variant_Classification is inferred using Consequence and
-Variant_Type  
+  Variant_Type  
 - Most of the column types are reduced to the ones that correspond to
-the maf standard and values formatting errors are tried to be fixed as
-well, this is most significant when merging multiple data sets  
+  the MAF standard and values formatting errors are tried to be fixed as
+  well, this is most significant when merging multiple data sets  
 
 Check out the help page in the app if you want to know even more about
 the inner workings of the package.
@@ -289,10 +295,12 @@ It also demonstrates the use various Rmarkdown templates, all in order
 to create a fancy user experience.  
 It is also encapsulated inside a Docker container for better portability
 and control.  
-The app was developed with best Shiny practices in mind, as the use of
-Shiny modules, reactivity and fast server side processing, to name a
-few. In total about 5000 lines of code were written for this app in a
-few months.  
+The UI was mainly made using the bootstrap 3 library in order to make it
+fully compatible with shiny. The interface is tested to work on all
+major browsers and on almost any mobile device. The app was developed
+with best Shiny practices in mind, as the use of Shiny modules,
+reactivity and fast server side processing, to name a few. In total
+about 5000 lines of code were written for this app in a few months.  
 This time included app design and development but also all the required
 research to program in R, a language that was foreign to me. Here are
 listed just some of the invaluable sources I used to gather all this
@@ -309,7 +317,9 @@ knowledge:
 Other key R packages that were used for this project are DT,
 data.tables, shinyWidgets, shinyFiles, knitr, maftools for all the
 genetic analysis needs and the tidyverse packages for the handling of
-the data.
+the data. I also got inspiration from the bslib and pkgdown packages,
+but they were not used directly. A list of all the libraries and
+packages used will be available on the about page of the app.
 
 ## Further Information
 

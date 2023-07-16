@@ -17,9 +17,9 @@ about_ui <- function(id) {
     id = "about",
     class = "topchoice_about",
 
-    # CONTENTS OF ABOUT PAGE
     shiny::fluidRow(
       shiny::sidebarLayout(
+        # ABOUT PAGE SIDEBAR
         shiny::sidebarPanel(
           style = "align-self: center;",
           width = 3,
@@ -111,6 +111,7 @@ about_ui <- function(id) {
         ),
         shiny::mainPanel(
           width = 9,
+          # CONTENTS OF ABOUT PAGE
           shiny::includeHTML(rmarkdown::render('www/about.Rmd')),
           shiny::tags$br()
         )

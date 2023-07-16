@@ -17,7 +17,10 @@ help_page_ui <- function(id) {
     id = "help_page",
     class = "topchoice_help",
     shiny::fluidRow(
+
       shiny::sidebarLayout(
+
+        ### HELP SIDEBAR ###
         shiny::sidebarPanel(
           style = "align-self: center;",
           width = 3,
@@ -31,36 +34,53 @@ help_page_ui <- function(id) {
               class = "nav navbar-nav shiny-tab-input shiny-bound-input",
               id = "help_nav_ul",
               shiny::tags$li(
-                class = "",
+                class = "nav-item",
                 shiny::tags$a(
                   class = "nav-link",
-                  href = "#home-page",
-                  "Home page"
+                  href = "#overview",
+                  "Overview"
                 )
               ),
               shiny::tags$li(
-                class = "",
+                class = "nav-item",
                 shiny::tags$a(
                   class = "nav-link",
-                  href = "#reference",
-                  "Reference"
+                  href = "#key-features",
+                  "Key Features"
                 )
               ),
               shiny::tags$li(
-                class = "",
+                class = "nav-item",
                 shiny::tags$a(
                   class = "nav-link",
-                  href = "#publishing",
-                  "Publishing"
+                  href = "#installation",
+                  "Installation"
                 )
               ),
+              shiny::tags$li(
+                class = "nav-item",
+                shiny::tags$a(
+                  class = "nav-link",
+                  href = "#basic-usage",
+                  "Basic Usage"
+                )
+              ),
+              shiny::tags$li(
+                class = "nav-item",
+                shiny::tags$a(
+                  class = "nav-link",
+                  href = "#advanced-usage",
+                  "Advanced Usage"
+                )
+              )
             ),
           ),
         ),
         shiny::mainPanel(
           width = 9,
-            shiny::includeHTML(rmarkdown::render('www/help_page.Rmd')),
-            shiny::tags$br()
+          ### HELP CONTENT ###
+          shiny::includeHTML(rmarkdown::render('www/help_page.Rmd')),
+          shiny::tags$br()
         )
       )
     )

@@ -35,7 +35,7 @@ homePanel_ui <- function(id) {
       class="home_wellpanel",
       shiny::tags$br(),
       shiny::wellPanel(
-        style = "margin-bottom: 0; width: 80%; text-align: center; font-size: medium;",
+        style = "margin-bottom: 0; width: 80%; text-align: center; font-size: large;",
         shiny::includeHTML(rmarkdown::render('www/homepage_insert1.Rmd'))
       ),
       shiny::tags$br()
@@ -47,6 +47,8 @@ homePanel_ui <- function(id) {
     shiny::actionLink("linkapp", shiny::tags$span(("> > > Start the App < < <"))),
 
     shiny::tags$br(),
+
+    ## SECOND WELL PANEL
     shiny::fluidRow(
       class="home_wellpanel",
       shiny::tags$br(),

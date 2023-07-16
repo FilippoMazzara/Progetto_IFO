@@ -720,7 +720,7 @@ multiTab_page_server <- function(id) {
             multi_missing_columns(l)
           }
           if (count > 0){
-            multi_file_error("There was an error reading the files, \n check file info for more information")
+            multi_file_error("There was an error reading the files, \n\n check file info for more information")
           }
           else{
             if(length(missing_multi_titles()) == 0){multi_file_error(NULL)}
