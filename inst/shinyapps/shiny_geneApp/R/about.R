@@ -90,17 +90,6 @@ about_ui <- function(id) {
               shiny::tags$br(),
               shiny::tags$span(
                 "Author, maintainer"
-              )
-            ),
-            shiny::tags$div(
-              shiny::tags$a(
-                target = "_blank",
-                href = "https://www.rstudio.com",
-                shiny::tags$img(
-                  src = "https://www.tidyverse.org/rstudio-logo.svg",
-                  alt = "RStudio",
-                  width = "72"
-                ),
               ),
               shiny::tags$br(),
               shiny::tags$span(

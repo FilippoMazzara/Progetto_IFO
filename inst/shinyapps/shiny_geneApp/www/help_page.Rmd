@@ -189,6 +189,21 @@ There is a possibility that with a few tweaks your file can also be adapted to w
 still in many cases if your file is using another genetic standard is very likely that you do not need 
 this because the app will handle all the conversions for you! \
 
+The app will warn you if some of the following columns names are missing from your data set, not all of them are strictly required for the MAF standard.
+
+    ```
+    c("Gene","Hugo_Symbol","Chromosome","VAF","Variant_Classification","Variant_Type",
+    "VARIANT_CLASS","CLIN_SIG","t_depth","Reference_Allele","Tumor_Seq_Allele2","Start_Position",
+    "End_Position","Existing_Variation","HGVSp","EXON","Tumor_Sample_Barcode")
+    ```
+    
+If the following columns are present in the final data set you will be able to select the respective filter from the sidebar:
+
+    ```
+    c("Chromosome","VAF","Variant_Classification","Variant_Type","VARIANT_CLASS",
+    "CLIN_SIG","t_depth","Start_Position","End_Position")
+    ```
+    
 If you are still having problems or if you just want to make a contribution for the project here 
 are some of the inner workings of the conversion:
 

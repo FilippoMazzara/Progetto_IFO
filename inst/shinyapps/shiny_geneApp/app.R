@@ -1,4 +1,4 @@
-ui <- shiny::fluidPage( #bslib::page_fluid(
+ui <- shiny::fluidPage( #bslib::page_fluid( TO ENABLE BOOTSTRAP5
 
   id = "mainpage",
 

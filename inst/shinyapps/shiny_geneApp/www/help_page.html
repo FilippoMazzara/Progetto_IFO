@@ -235,6 +235,20 @@ adapted to work fine in the app, still in many cases if your file is
 using another genetic standard is very likely that you do not need this
 because the app will handle all the conversions for you!<br />
 </p>
+<p>The app will warn you if some of the following columns names are
+missing from your data set, not all of them are strictly required for
+the MAF standard.</p>
+<pre><code>```
+c(&quot;Gene&quot;,&quot;Hugo_Symbol&quot;,&quot;Chromosome&quot;,&quot;VAF&quot;,&quot;Variant_Classification&quot;,&quot;Variant_Type&quot;,
+&quot;VARIANT_CLASS&quot;,&quot;CLIN_SIG&quot;,&quot;t_depth&quot;,&quot;Reference_Allele&quot;,&quot;Tumor_Seq_Allele2&quot;,&quot;Start_Position&quot;,
+&quot;End_Position&quot;,&quot;Existing_Variation&quot;,&quot;HGVSp&quot;,&quot;EXON&quot;,&quot;Tumor_Sample_Barcode&quot;)
+```</code></pre>
+<p>If the following columns are present in the final data set you will
+be able to select the respective filter from the sidebar:</p>
+<pre><code>```
+c(&quot;Chromosome&quot;,&quot;VAF&quot;,&quot;Variant_Classification&quot;,&quot;Variant_Type&quot;,&quot;VARIANT_CLASS&quot;,
+&quot;CLIN_SIG&quot;,&quot;t_depth&quot;,&quot;Start_Position&quot;,&quot;End_Position&quot;)
+```</code></pre>
 <p>If you are still having problems or if you just want to make a
 contribution for the project here are some of the inner workings of the
 conversion:</p>

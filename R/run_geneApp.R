@@ -8,13 +8,14 @@
 #' The only way to first start the app
 #'
 run_geneApp <- function(){
-  appDir <- system.file("shinyapps", "shiny_geneApp", package = "geneApp")
-  print(appDir)
+  appDir <- base::system.file("inst", "shinyapps", "shiny_geneApp", package = "geneApp")
   if (appDir == "") {
     stop("Could not find shiny app. Try re-installing `geneApp`.", call. = FALSE)
   }
-  #aggiungere port, display.mode, quiet, host
-  #profvis benchmark the app
-  profvis::profvis({shiny::runApp(appDir)})
+  else{
+    devtools::load_all(".")
+    shiny::runApp(appDir, host = '0.0.0.0', port = 3838)
+  }
+
 }
 
