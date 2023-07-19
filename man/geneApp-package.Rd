@@ -8,6 +8,14 @@
 \description{
 Package containing geneApp, an application for exploratory data analysis in genetic studies. All the app is self contained, you should launch it using run_geneApp().
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/FilippoMazzara/Progetto_IFO}
+  \item Report bugs at \url{https://github.com/FilippoMazzara/Progetto_IFO/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Filippo Mazzara \email{mazzara.1742740@studenti.uniroma1.it}
 

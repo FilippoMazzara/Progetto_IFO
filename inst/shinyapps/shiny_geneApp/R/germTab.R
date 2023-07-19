@@ -644,7 +644,7 @@ germTab_server <- function(id){
                     #check if you can get this to be more efficient
                     if (all(filter_value)){
                       if (germ_filter_name %in% names(germ_filter_result_list$l)){
-                        if (length(filter_value) == nrow(germ_filter_name())){
+                        if (length(filter_value) == nrow(germ_processed_data())){
                           germ_filter_result_list$l[[germ_filter_name]] <- NULL
                         }
                         else{

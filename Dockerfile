@@ -32,7 +32,6 @@ COPY /GeneApp/renv.lock ./renv.lock
 RUN Rscript -e 'install.packages("renv")'
 RUN Rscript -e 'renv::restore()'
 RUN Rscript -e 'BiocManager::install("maftools")'
-
 ## app folder
 COPY /GeneApp ./GeneApp
 #create user groups
