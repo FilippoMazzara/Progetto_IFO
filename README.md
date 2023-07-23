@@ -63,9 +63,6 @@ GeneApp is a tool made with the aim of making life easier to genetics
 researchers, so I am hopeful that it will be particularly helpful in
 assisting in the genetic research effort.  
 
-If you are interested to see what GeneApp has to offer, click
-here.(link)  
-
 ## Enviroment setup and Installation
 
 If you are in to test GeneApp from within R, run the following in your R
@@ -79,7 +76,6 @@ a server.
 - Required: [R](https://cran.r-project.org/) version 4.2.0 or later
 
 <!-- -->
-
 
     if (!require("devtools")) {
       install.packages("devtools")
@@ -116,7 +112,7 @@ The Dockerfile is located in the root folder of the app.
 
 1.  Install Docker. Follow the instructions on:  
 
-<https://docs.docker.com/install/>  
+    <https://docs.docker.com/install/>  
 
 2.  Verify the correct installation of Docker on your system.  
 
@@ -125,14 +121,12 @@ The Dockerfile is located in the root folder of the app.
 4.  From the console, set your working directory to the geneApp root
     folder:  
 
-
         cd yourPathTo\geneApp
 
       
 
 5.  Build the docker image, executing the following commands, it may
     take a while:
-
 
         docker build . -t $IMAGE
 
@@ -142,7 +136,6 @@ The Dockerfile is located in the root folder of the app.
     You should see lots of container build messages.  
 
 6.  Run the image, typing the following in the console:  
-
 
         docker run -v $pathToServerData:/inst/shinyapps/shiny_geneApp/datasets  -p $PORT:3838 $IMAGE
 
@@ -154,10 +147,8 @@ The Dockerfile is located in the root folder of the app.
 - \$PORT is the port that will be used to access the app. By default it
   is set to 3838.  
 
-7.  Open
-    <a href="http://localhost:$PORT" class="uri">http://localhost:$PORT</a>
-    in your browser to start an instance of the app relative to the
-    corresponding container.  
+7.  Open `http://localhost:$PORT` in your browser to start an instance
+    of the app relative to the corresponding container.  
 
 These last steps can also be done through the Docker app, just remember
 to correctly set the container options.  
@@ -253,19 +244,15 @@ The app will warn you if some of the following columns names are missing
 from your data set, not all of them are strictly required for the MAF
 standard.
 
-    ```
     c("Gene", "Hugo_Symbol", "Chromosome", "VAF", "Variant_Classification", "Variant_Type",
-     "VARIANT_CLASS", "CLIN_SIG", "t_depth", "Reference_Allele", "Tumor_Seq_Allele2", "Start_Position",
-    "End_Position", "Existing_Variation", "HGVSp", "EXON", "Tumor_Sample_Barcode")
-    ```
+      "VARIANT_CLASS", "CLIN_SIG", "t_depth", "Reference_Allele", "Tumor_Seq_Allele2", "Start_Position",
+      "End_Position", "Existing_Variation", "HGVSp", "EXON", "Tumor_Sample_Barcode")
 
 If the following columns are present in the final data set you will be
 able to select the respective filter from the sidebar:
 
-    ```
     c("Chromosome", "VAF", "Variant_Classification", "Variant_Type", "VARIANT_CLASS",
-    "CLIN_SIG", "t_depth", "Start_Position", "End_Position")
-    ```
+      "CLIN_SIG", "t_depth", "Start_Position", "End_Position")
 
 If you are still having problems or if you just want to make a
 contribution for the project here are some of the inner workings of the

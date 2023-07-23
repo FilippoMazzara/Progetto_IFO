@@ -82,11 +82,9 @@ version from Github. (not in a docker container)<br />
 an Internet connection or you can also run the app as a web application
 on a server.</p>
 <ul>
-<li>Required: <a href="https://cran.r-project.org/">R</a> version 4.2.0
-or later</li>
-</ul>
-<pre><code>
-if (!require(&quot;devtools&quot;)) {
+<li><p>Required: <a href="https://cran.r-project.org/">R</a> version
+4.2.0 or later</p>
+<pre><code>if (!require(&quot;devtools&quot;)) {
   install.packages(&quot;devtools&quot;)
 }
 
@@ -99,7 +97,8 @@ BiocManager::install(&quot;maftools&quot;)
 devtools::install_github(&quot;FilippoMazzara/Progetto_IFO&quot;)
 
 library(&quot;geneApp&quot;) 
-</code></pre>
+</code></pre></li>
+</ul>
 <p>Instead of installing it directly from github you could also download
 the repository and install it as a normal R package. In this
 configuration the server stored files must be supplied to the app by
@@ -118,12 +117,10 @@ The same logic applies if you are trying it on Linux.<br />
 The Dockerfile is located in the root folder of the app.<br />
 </p>
 <ol style="list-style-type: decimal">
-<li>Install Docker. Follow the instructions on:<br />
-</li>
-</ol>
-<p><a href="https://docs.docker.com/install/">https://docs.docker.com/install/</a><br />
+<li><p>Install Docker. Follow the instructions on:<br />
 </p>
-<ol start="2" style="list-style-type: decimal">
+<p><a href="https://docs.docker.com/install/">https://docs.docker.com/install/</a><br />
+</p></li>
 <li><p>Verify the correct installation of Docker on your system.<br />
 </p></li>
 <li><p>Download the package from the Github repository.<br />
@@ -131,25 +128,19 @@ The Dockerfile is located in the root folder of the app.<br />
 <li><p>From the console, set your working directory to the geneApp root
 folder:<br />
 </p>
-<pre><code>
-cd yourPathTo\geneApp
-</code></pre>
-<p><br />
-</p></li>
+<pre><code>cd yourPathTo\geneApp
+</code></pre></li>
 <li><p>Build the docker image, executing the following commands, it may
 take a while:</p>
-<pre><code>
-docker build . -t $IMAGE
+<pre><code>docker build . -t $IMAGE
 </code></pre>
-<p><br />
-To execute this you’ll need an internet connection and Docker running on
-your system.<br />
+<p>To execute this you’ll need an internet connection and Docker running
+on your system.<br />
 You should see lots of container build messages.<br />
 </p></li>
 <li><p>Run the image, typing the following in the console:<br />
 </p>
-<pre><code>
-docker run -v $pathToServerData:/inst/shinyapps/shiny_geneApp/datasets  -p $PORT:3838 $IMAGE
+<pre><code>docker run -v $pathToServerData:/inst/shinyapps/shiny_geneApp/datasets  -p $PORT:3838 $IMAGE
 </code></pre></li>
 </ol>
 <ul>
@@ -257,17 +248,13 @@ because the app will handle all the conversions for you!<br />
 <p>The app will warn you if some of the following columns names are
 missing from your data set, not all of them are strictly required for
 the MAF standard.</p>
-<pre><code>```
-c(&quot;Gene&quot;, &quot;Hugo_Symbol&quot;, &quot;Chromosome&quot;, &quot;VAF&quot;, &quot;Variant_Classification&quot;, &quot;Variant_Type&quot;,
- &quot;VARIANT_CLASS&quot;, &quot;CLIN_SIG&quot;, &quot;t_depth&quot;, &quot;Reference_Allele&quot;, &quot;Tumor_Seq_Allele2&quot;, &quot;Start_Position&quot;,
-&quot;End_Position&quot;, &quot;Existing_Variation&quot;, &quot;HGVSp&quot;, &quot;EXON&quot;, &quot;Tumor_Sample_Barcode&quot;)
-```</code></pre>
+<pre><code>  c(&quot;Gene&quot;, &quot;Hugo_Symbol&quot;, &quot;Chromosome&quot;, &quot;VAF&quot;, &quot;Variant_Classification&quot;, &quot;Variant_Type&quot;,
+  &quot;VARIANT_CLASS&quot;, &quot;CLIN_SIG&quot;, &quot;t_depth&quot;, &quot;Reference_Allele&quot;, &quot;Tumor_Seq_Allele2&quot;, &quot;Start_Position&quot;,
+  &quot;End_Position&quot;, &quot;Existing_Variation&quot;, &quot;HGVSp&quot;, &quot;EXON&quot;, &quot;Tumor_Sample_Barcode&quot;)</code></pre>
 <p>If the following columns are present in the final data set you will
 be able to select the respective filter from the sidebar:</p>
-<pre><code>```
-c(&quot;Chromosome&quot;, &quot;VAF&quot;, &quot;Variant_Classification&quot;, &quot;Variant_Type&quot;, &quot;VARIANT_CLASS&quot;,
-&quot;CLIN_SIG&quot;, &quot;t_depth&quot;, &quot;Start_Position&quot;, &quot;End_Position&quot;)
-```</code></pre>
+<pre><code>  c(&quot;Chromosome&quot;, &quot;VAF&quot;, &quot;Variant_Classification&quot;, &quot;Variant_Type&quot;, &quot;VARIANT_CLASS&quot;,
+  &quot;CLIN_SIG&quot;, &quot;t_depth&quot;, &quot;Start_Position&quot;, &quot;End_Position&quot;)</code></pre>
 <p>If you are still having problems or if you just want to make a
 contribution for the project here are some of the inner workings of the
 conversion:</p>
@@ -548,7 +535,7 @@ tumor_sample_barcode
 pairings are applied in order to address different possible standards
 and the missing columns that can be inferred from the other data are
 computed like so:</p>
-<table class="table" style="margin-left: auto; margin-right: auto;">
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <tbody>
 <tr>
 <td style="text-align:left;font-weight: bold;text-align: center;">

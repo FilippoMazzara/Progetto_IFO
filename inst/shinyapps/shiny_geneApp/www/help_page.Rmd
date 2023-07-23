@@ -64,23 +64,23 @@ GeneApp works on Windows and Linux. It can run locally, even without an Internet
 
 - Required: [R](https://cran.r-project.org/) version 4.2.0 or later
 
-``` 
+    ``` 
+    if (!require("devtools")) {
+      install.packages("devtools")
+    }
 
-if (!require("devtools")) {
-  install.packages("devtools")
-}
+    install.packages(c("data.table", "dplyr", "DT", "kableExtra", 
+    "mclust", "kit", "knitr", "magrittr", "purrr", 
+    "shiny", "BiocManager", "shinyFiles", "shinyjs", "shinyWidgets", "stringr", "writexl"))
 
-install.packages(c("data.table", "dplyr", "DT", "kableExtra", 
-"mclust", "kit", "knitr", "magrittr", "purrr", 
-"shiny", "BiocManager", "shinyFiles", "shinyjs", "shinyWidgets", "stringr", "writexl"))
+    BiocManager::install("maftools")
 
-BiocManager::install("maftools")
+    devtools::install_github("FilippoMazzara/Progetto_IFO")
 
-devtools::install_github("FilippoMazzara/Progetto_IFO")
+    library("geneApp") 
 
-library("geneApp") 
-
-```
+    ``` 
+    
 Instead of installing it directly from github you could also download the repository and install it as a normal R package.
 In this configuration the server stored files must be supplied to the app by putting them into the datasets folder inside the geneApp directory, the relative path is geneApp/inst/shinyapps/shiny_geneApp/datasets.
 
@@ -95,7 +95,7 @@ The Dockerfile is located in the root folder of the app.\
 
 1. Install Docker. Follow the instructions on:\
 
-[https://docs.docker.com/install/](https://docs.docker.com/install/)\
+    [https://docs.docker.com/install/](https://docs.docker.com/install/)\
     
 2. Verify the correct installation of Docker on your system.\
 
@@ -104,27 +104,22 @@ The Dockerfile is located in the root folder of the app.\
 4. From the console, set your working directory to the geneApp root folder:\
 
     ```
-    
     cd yourPathTo\geneApp
     
     ```
-  \
 5. Build the docker image, executing the following commands, it may take a while:
 
     ```
-  
     docker build . -t $IMAGE
     
     ```
-  \
-    To execute this you'll need an internet connection and Docker running on your system.\
-    You should see lots of container build messages. \
+  To execute this you'll need an internet connection and Docker running on your system.\
+  You should see lots of container build messages. \
   
 
 6. Run the image, typing the following in the console: \
 
     ```
-    
     docker run -v $pathToServerData:/inst/shinyapps/shiny_geneApp/datasets  -p $PORT:3838 $IMAGE
     
     ```
@@ -194,18 +189,13 @@ this because the app will handle all the conversions for you! \
 
 The app will warn you if some of the following columns names are missing from your data set, not all of them are strictly required for the MAF standard.
 
-    ```
-    c("Gene", "Hugo_Symbol", "Chromosome", "VAF", "Variant_Classification", "Variant_Type",
-     "VARIANT_CLASS", "CLIN_SIG", "t_depth", "Reference_Allele", "Tumor_Seq_Allele2", "Start_Position",
-    "End_Position", "Existing_Variation", "HGVSp", "EXON", "Tumor_Sample_Barcode")
-    ```
-    
+      c("Gene", "Hugo_Symbol", "Chromosome", "VAF", "Variant_Classification", "Variant_Type",
+      "VARIANT_CLASS", "CLIN_SIG", "t_depth", "Reference_Allele", "Tumor_Seq_Allele2", "Start_Position",
+      "End_Position", "Existing_Variation", "HGVSp", "EXON", "Tumor_Sample_Barcode")
 If the following columns are present in the final data set you will be able to select the respective filter from the sidebar:
 
-    ```
-    c("Chromosome", "VAF", "Variant_Classification", "Variant_Type", "VARIANT_CLASS",
-    "CLIN_SIG", "t_depth", "Start_Position", "End_Position")
-    ```
+      c("Chromosome", "VAF", "Variant_Classification", "Variant_Type", "VARIANT_CLASS",
+      "CLIN_SIG", "t_depth", "Start_Position", "End_Position")
     
 If you are still having problems or if you just want to make a contribution for the project here 
 are some of the inner workings of the conversion:
@@ -216,7 +206,6 @@ are some of the inner workings of the conversion:
 ```{r, message = FALSE, results = 'asis', echo = FALSE, warning = FALSE}
 library("knitr")
 library("kableExtra")
-## --- SOLUTION WITH SPLIT SCALED DOWN TABLES, 100% WIDTH --- 
 
 df <- base::data.frame(
   names = c("MAF", "Gene", "Hugo_Symbol", "Chromosome", "Reference_Allele", "Tumor_Seq_Allele2", "VAF", "Variant_Classification", "Variant_Type", "VARIANT_CLASS", "CLIN_SIG", "t_depth", "Start_Position", "End_Position", "Existing_Variation", "HGVSp", "EXON", "Tumor_Sample_Barcode"),
@@ -239,7 +228,6 @@ kableExtra::kbl(df, align = 'l', col.names = NULL) %>%
 ```{r, message = FALSE, results = 'asis', echo = FALSE, warning = FALSE}
 library("knitr")
 library("kableExtra")
-## --- SOLUTION WITH SPLIT SCALED DOWN TABLES, 100% WIDTH --- 
 
 df <- base::data.frame(
   MAF = c("MAF", "Hugo_Symbol", "Reference_Allele", "HGVSp", "EXON"),
@@ -249,7 +237,7 @@ df <- base::data.frame(
 kableExtra::kbl(df, align = 'l', col.names = NULL) %>%
   kableExtra::column_spec(1, bold = TRUE) %>%
     kableExtra::row_spec(1, align = "c") %>%
-      kableExtra::kable_styling()
+      kableExtra::kable_styling(full_width = F)
 
 ```   
    If not present the following will be tried to be computed using values from other columns, if they exist:\
