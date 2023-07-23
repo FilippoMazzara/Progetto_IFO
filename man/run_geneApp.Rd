@@ -10,10 +10,5 @@ run_geneApp()
 The running application
 }
 \description{
-This is the launcher function to the geneApp package
-}
-\examples{
-run_geneApp
-The only way to first start the app
-
+This is the launcher function to the geneApp package, The only way to first start the app
 }

@@ -23,7 +23,7 @@ be particularly helpful in assisting in the genetic research effort.\
 
 This web application is written using the R Shiny web framework. It makes use of custom HTML, CSS and JS, \
 It also demonstrates the use various Rmarkdown templates, all in order to create a fancy user experience. \
-It is also encapsulated inside a Docker container for better portability and control. \
+It can also be encapsulated inside a Docker container for better portability and control. \
 The UI was mainly made using the bootstrap 3 library in order to make it fully compatible with shiny.
 The interface is tested to work on all major browsers and on almost any mobile device.
 The app was developed with best Shiny practices in mind, as the use of Shiny modules, reactivity and fast server side processing, 
@@ -39,7 +39,7 @@ Here are listed just some of the invaluable sources I used to gather all this kn
   + [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/)\
 
 Here are listed all the useful packages I used to make the app: \
-shiny, R.utils DT, data.table, knitr, kableExtra, shinyWidgets, kit, shinyFiles, writexl, magrittr, stringr, shinyjs, purrr, dplyr.   
+shiny, R.utils DT, renv, data.table, knitr, kableExtra, shinyWidgets, kit, shinyFiles, writexl, magrittr, stringr, shinyjs, purrr, dplyr.   
 For the benchmarking profvis and reactlog were extensively used.\
 For the evaluation and processing of the genetic data I used maftools and mclust.\
 I also got inspiration from the bslib and pkgdown packages, but they were not used directly.\

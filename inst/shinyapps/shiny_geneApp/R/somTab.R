@@ -140,6 +140,7 @@ somTab_ui_table <- function(id){
 #' The module containing the server-side of the som page
 #' @param id the id assigned to the module
 #' @return the server instance
+#' @importFrom magrittr "%>%"
 #' @examples somTab_server("SOM")
 somTab_server <- function(id){
 
@@ -206,15 +207,16 @@ somTab_server <- function(id){
         input = input,
         id = "som_file_input_server",
         session = session,
-        roots = c(wd = "C:/Users/facke/Desktop/datasets"),
-        defaultPath = "/"
+        #roots = c(wd = "C:/dataset folder on the client"), only for local use
+        roots = c('wd' = './datasets'),
+        defaultPath = "/",
+        filetypes = c("tsv", "csv", "maf", "xlsx", "xls")
       )
 
       # ------ FILE INPUT SERVER -------
       shiny::observeEvent(input$som_file_input_server, {
         if (!is.null(input$som_file_input_server)){
-
-          inFile <- shinyFiles::parseFilePaths(roots = c(wd = "C:/Users/facke/Desktop/datasets"), input$som_file_input_server)
+          inFile <- shinyFiles::parseFilePaths(roots = c(wd = "/inst/shinyapps/shiny_geneApp/datasets"), input$som_file_input_server)
 
           if (length(inFile$datapath) != 0 ){
             som_file_error(NULL) #RESET ERROR STATUS

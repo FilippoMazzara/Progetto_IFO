@@ -72,9 +72,9 @@ If you are in to test GeneApp from within R, run the following in your R
 session to install the GeneApp package current development version from
 Github. (not in a docker container)  
 
-GeneApp works on Windows, Mac, or Linux. It can run locally, even
-without an Internet connection or you can also run the app as a web
-application on a server.
+GeneApp works on Windows and Linux. It can run locally, even without an
+Internet connection or you can also run the app as a web application on
+a server.
 
 - Required: [R](https://cran.r-project.org/) version 4.2.0 or later
 
@@ -95,86 +95,95 @@ application on a server.
 
     library("geneApp") 
 
-    devtools::load_all(".")
+Instead of installing it directly from github you could also download
+the repository and install it as a normal R package. In this
+configuration the server stored files must be supplied to the app by
+putting them into the datasets folder inside the geneApp directory, the
+relative path is geneApp/inst/shinyapps/shiny_geneApp/datasets.
 
 then to run the app simply call the launcher function
-`geneApp::run_geneApp()` from the console.
+`geneApp::run_geneApp()` from the console. unfortunately there is not
+yet a release available on CRAN.  
 
-unfortunately there is not yet a release available on CRAN.  
+The development environment of this project can also be encapsulated in
+a Docker container.  
+If you have already downloaded a pre built Docker image of the app just
+follow steps 6 and 7 of this guide.
 
-The development environment of this project will be encapsulated in a
-Docker container.  
-This will be the steps required to set it up.  
+Here are the steps required to set up the Docker image on Windows. The
+same logic applies if you are trying it on Linux.  
+The Dockerfile is located in the root folder of the app.  
 
-1.  Install Docker. Follow the instructions on
-    <https://docs.docker.com/install/>  
+1.  Install Docker. Follow the instructions on:  
 
-2.  Make docker run without sudo  
+<https://docs.docker.com/install/>  
 
-        sudo groupadd docker
-        sudo usermod -aG docker $USER
+2.  Verify the correct installation of Docker on your system.  
 
-      
-    Log out and log back in so that your group membership is
-    re-evaluated  
+3.  Download the package from the Github repository.  
 
-3.  Clone the GIT repository  
+4.  From the console, set your working directory to the geneApp root
+    folder:  
 
-        git clone https://github.com/FilippoMazzara/Progetto_IFO.git
 
-      
-
-4.  Setup development Docker container  
-
-        cd Progetto_IFO
-        bin/setup-environment.sh
-
-      
-    You should see lots of container build messages  
-
-5.  Spin up the container  
-
-        bin/start_rstudio.sh
+        cd yourPathTo\geneApp
 
       
 
-6.  Open <http://localhost:8787> in your browser to start a new RStudio
-    session  
+5.  Build the docker image, executing the following commands, it may
+    take a while:
 
-7.  Install R packages required for this app. Run the following in your
-    R session to install all the dependencies:  
 
-        install.packages(c("data.table", "dplyr", "DT", "kableExtra", 
-        "kit", "knitr", "maftools", "magrittr", "purrr", "shiny",     
-        "shinydashboard", "shinyFiles", "shinyjs", "shinyWidgets", "stringr", "writexl"))
+        docker build . -t $IMAGE
 
       
-    The installation will take a few minutes.  
+    To execute this you’ll need an internet connection and Docker
+    running on your system.  
+    You should see lots of container build messages.  
 
-8.  Open the file `app.R` and hit the “Run app” button in the toolbar of
-    the script editor (or type `geneApp::run_geneApp()` in the R session
-    window). The Shiny app should open in a new window. You may need to
-    instruct your browser to not block popup windows for this URL.  
+6.  Run the image, typing the following in the console:  
+
+
+        docker run -v $pathToServerData:/inst/shinyapps/shiny_geneApp/datasets  -p $PORT:3838 $IMAGE
+
+      
+
+- \$IMAGE is the name you are giving to the image.  
+- \$pathToServerData is the path to the directory containing the data
+  sets that the app will be accessing.  
+- \$PORT is the port that will be used to access the app. By default it
+  is set to 3838.  
+
+7.  Open
+    <a href="http://localhost:$PORT" class="uri">http://localhost:$PORT</a>
+    in your browser to start an instance of the app relative to the
+    corresponding container.  
+
+These last steps can also be done through the Docker app, just remember
+to correctly set the container options.  
+
+Once geneApp will be released to CRAN these steps will be significantly
+easier.  
 
 ## Basic Usage
 
-When GeneApp starts you will be greeted by the home page from where you
-can start navigating the app. To close the application close the browser
-window and then click `Stop`. The GeneApp process will stop and the
-browser window will close (Chrome) or gray-out. The main section of the
-app is the overview page, this is where the users will find all the
-important functions.  
+When GeneApp starts you are greeted by the home page from where you can
+start navigating the app. The main section of the app is the overview
+page, this is where the users can find all the important functions, you
+can navigate there by clicking the link on the home page or by clicking
+‘Overview’ on the top navigation bar.  
 The two main services are the comparison between somatic and germline
-data sets and the combining of multiple different data sets. They mainly
-differ in their purposes and in the way the data is presented but both
-work with very similar UI elements and workflows, so I will quickly go
-over them.
+data sets and the combining of multiple different genetic samples. They
+mainly differ in their purposes and in the way the data is presented but
+both work with very similar UI elements and workflows, so I will quickly
+go over them.
 
 - From the sidebar a user can decide whether to upload a file/s from
   it’s local filesystem, or to choose from a set of files that are
-  hosted on the server. In the [Advanced Usage](#advanced-usage) section
-  you can find all the details about the formatting of files and the
-  inner workings of the conversions.
+  hosted on the server. In the ‘Combine’ view you are able to upload
+  multiple files at once. In the [Advanced Usage](#advanced-usage)
+  section you can find all the details about the formatting of files and
+  the inner workings of the conversions.
 
   After a brief loading, if everything worked out, the chosen data
   should be ready to explore and you should have a few tools at your
@@ -182,22 +191,40 @@ over them.
 
 - In the main panel of the selected view you will have the table
   containing your data in the center, you can navigate it and you are
-  also able to select rows to copy, reorder the columns through a drag
-  and drop and filter the records through the filters present on top of
-  the table and in the sidebar.
+  also able to select rows and copying them to your clipboard by
+  clicking the apposite button. You can also reorder the columns by
+  dragging and dropping on the column names in the table’s header and
+  filter the records through the filters present on top of the table and
+  in the sidebar. There are individual text search boxes for each column
+  and a main search prompt for all the table’s records.
 
-- Both in the main panel and in the statistics panel you will find some
-  useful and interactive stats and plots.
+- On top of the table you will have a collapsible box containing some of
+  the possible statistics and plots. These follow the changes in your
+  data and are rendered in real time.
 
-- From the sidebar you can choose to hide and show columns, show and
-  then apply various filters and to export the explored data in various
-  formats with a wide array of options.
+- In the sidebar you will then have multiple boxes you can interact
+  with, they are all positioned below the file upload box and they are
+  all collapsible. From them, in order, you can choose to hide and show
+  columns of the corresponding table, toggle various filters and apply
+  them to your data. Lastly you can export the final explored data in
+  various formats with a wide array of options.
 
-All the UI elements should be pretty friendly and intuitive to use, if
-you find yourself having problems there are some useful tool tips
-sprinkled along the UI. In the Help page you will find more helpful tips
-and the app’s guide. In the About page there are all the useful links,
-licenses and contact information.
+- There is also a statistics panel containing the collapsible box with
+  more plots and stats about your data.
+
+If there are errors with the reading of the data or its exploration,
+warning and error messages will be displayed on the top part of sidebar
+and along side the interested plots and tables. All the UI elements
+should be pretty friendly and intuitive to use, if you find yourself
+having problems there are some useful tool tips sprinkled along the UI.
+In the Help page you can find more helpful tips and the app’s user
+guide. In the About page there are all the useful links, licenses and
+contact information.
+
+To close the application close the browser window and then click `Stop`.
+The GeneApp process will stop and the browser window will close (Chrome)
+or gray-out. If the app is running inside a container you’ll just have
+to exit the app and then stop the container.  
 
 ## Advanced Usage
 
@@ -222,6 +249,24 @@ adapted to work fine in the app, still in many cases if your file is
 using another genetic standard is very likely that you do not need this
 because the app will handle all the conversions for you!  
 
+The app will warn you if some of the following columns names are missing
+from your data set, not all of them are strictly required for the MAF
+standard.
+
+    ```
+    c("Gene", "Hugo_Symbol", "Chromosome", "VAF", "Variant_Classification", "Variant_Type",
+     "VARIANT_CLASS", "CLIN_SIG", "t_depth", "Reference_Allele", "Tumor_Seq_Allele2", "Start_Position",
+    "End_Position", "Existing_Variation", "HGVSp", "EXON", "Tumor_Sample_Barcode")
+    ```
+
+If the following columns are present in the final data set you will be
+able to select the respective filter from the sidebar:
+
+    ```
+    c("Chromosome", "VAF", "Variant_Classification", "Variant_Type", "VARIANT_CLASS",
+    "CLIN_SIG", "t_depth", "Start_Position", "End_Position")
+    ```
+
 If you are still having problems or if you just want to make a
 contribution for the project here are some of the inner workings of the
 conversion:
@@ -229,43 +274,336 @@ conversion:
 All the column names in your files are tried to be matched with the MAF
 standard column names through these case insensitive pairing lists:
 
-      ```
-      Gene <- c("gene.refgene", "gene")
-      Hugo_Symbol <- c("hugo_symbol") 
-      Chromosome <- c("chr", "chrom", "chromosome")
-      Reference_Allele <- c("reference_allele", "ref")
-      Tumor_Seq_Allele2 <- c("tumor_seq_allele2", "alt")
-      VAF <- c("vaf", "t_vaf")
-      Variant_Classification <- c("variant_classification", "func.refgene")
-      Variant_Type <- c("variant_type", "exonicfunc.refgene")
-      VARIANT_CLASS <- c("variant_class")
-      CLIN_SIG <- c("clin_sig", "clinvar")
-      t_depth <- c("depth", "t_depth")
-      Start_Position <- c("start_position", "start")
-      End_Position <- c("end_position", "end")
-      Existing_Variation <- c("existing_variation", "aachange.refgene", "variation", "var")
-      HGVSp <- c("hgvsp") 
-      EXON <- c("exon") 
-      Tumor_Sample_Barcode <- c("tumor_sample_barcode")
-      ```
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<tbody>
+<tr>
+<td style="text-align:left;font-weight: bold;text-align: center;">
+MAF
+</td>
+<td style="text-align:left;text-align: center;">
+</td>
+<td style="text-align:left;text-align: center;">
+</td>
+<td style="text-align:left;text-align: center;">
+</td>
+<td style="text-align:left;text-align: center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Gene
+</td>
+<td style="text-align:left;">
+gene.refgene
+</td>
+<td style="text-align:left;">
+gene
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Hugo_Symbol
+</td>
+<td style="text-align:left;">
+hugo_symbol
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Chromosome
+</td>
+<td style="text-align:left;">
+chr
+</td>
+<td style="text-align:left;">
+chrom
+</td>
+<td style="text-align:left;">
+chromosome
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Reference_Allele
+</td>
+<td style="text-align:left;">
+reference_allele
+</td>
+<td style="text-align:left;">
+ref
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Tumor_Seq_Allele2
+</td>
+<td style="text-align:left;">
+tumor_seq_allele2
+</td>
+<td style="text-align:left;">
+alt
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+VAF
+</td>
+<td style="text-align:left;">
+vaf
+</td>
+<td style="text-align:left;">
+t_vaf
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Variant_Classification
+</td>
+<td style="text-align:left;">
+variant_classification
+</td>
+<td style="text-align:left;">
+func.refgene
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Variant_Type
+</td>
+<td style="text-align:left;">
+variant_type
+</td>
+<td style="text-align:left;">
+exonicfunc.refgene
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+VARIANT_CLASS
+</td>
+<td style="text-align:left;">
+variant_class
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+CLIN_SIG
+</td>
+<td style="text-align:left;">
+clin_sig
+</td>
+<td style="text-align:left;">
+clinvar
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+t_depth
+</td>
+<td style="text-align:left;">
+depth
+</td>
+<td style="text-align:left;">
+t_depth
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Start_Position
+</td>
+<td style="text-align:left;">
+start_position
+</td>
+<td style="text-align:left;">
+start
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+End_Position
+</td>
+<td style="text-align:left;">
+end_position
+</td>
+<td style="text-align:left;">
+end
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Existing_Variation
+</td>
+<td style="text-align:left;">
+existing_variation
+</td>
+<td style="text-align:left;">
+aachange.refgene
+</td>
+<td style="text-align:left;">
+variation
+</td>
+<td style="text-align:left;">
+var
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+HGVSp
+</td>
+<td style="text-align:left;">
+hgvsp
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+EXON
+</td>
+<td style="text-align:left;">
+exon
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Tumor_Sample_Barcode
+</td>
+<td style="text-align:left;">
+tumor_sample_barcode
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+</tbody>
+</table>
 
 If these do not work a second round of conversion starts where other
 pairings are applied in order to address different possible standards
 and the missing columns that can be inferred from the other data are
 computed like so:
 
-      ```
-      Hugo_Symbol <- c("symbol")
-      Reference_Allele <- c("tumor_seq_allele1")
-      HGVSp <- c("hgvsp_Short")
-      EXON <- c("exon_number")
-      ```
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<tbody>
+<tr>
+<td style="text-align:left;font-weight: bold;text-align: center;">
+MAF
+</td>
+<td style="text-align:left;text-align: center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Hugo_Symbol
+</td>
+<td style="text-align:left;">
+symbol
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Reference_Allele
+</td>
+<td style="text-align:left;">
+tumor_seq_allele1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+HGVSp
+</td>
+<td style="text-align:left;">
+hgvsp_Short
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+EXON
+</td>
+<td style="text-align:left;">
+exon_number
+</td>
+</tr>
+</tbody>
+</table>
 
 If not present the following will be tried to be computed using values
 from other columns, if they exist:  
 
-- Tumor_Sample_Barcode is inferred from the file or the data set names  
-- VAF is calculated dividing t_depth for t_alt_count  
+- Tumor_Sample_Barcode is inferred from the file or the data set names,
+  if a unique barcode is not supplied an identifier will be added to the
+  value to avoid confusion. Samples that share a barcode will be treated
+  as one by maftools.  
+- VAF is calculated dividing t_depth for t_alt_count, it’s in a 0-100
+  scale and values higher than 100 are to be considered as inconsistent
+  with the cellularity reported for the sample.  
 - Variant_Type is inferred from VARIANT_CLASS, Reference_Allele and
   Tumor_Seq_Allele2  
 - Variant_Classification is inferred using Consequence and
@@ -293,8 +631,8 @@ This web application is written using the R Shiny web framework. It
 makes use of custom HTML, CSS and JS,  
 It also demonstrates the use various Rmarkdown templates, all in order
 to create a fancy user experience.  
-It is also encapsulated inside a Docker container for better portability
-and control.  
+It can also be encapsulated inside a Docker container for better
+portability and control.  
 The UI was mainly made using the bootstrap 3 library in order to make it
 fully compatible with shiny. The interface is tested to work on all
 major browsers and on almost any mobile device. The app was developed

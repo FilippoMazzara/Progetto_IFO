@@ -78,9 +78,9 @@ assisting in the genetic research effort.<br />
 your R session to install the GeneApp package current development
 version from Github. (not in a docker container)<br />
 </p>
-<p>GeneApp works on Windows, Mac, or Linux. It can run locally, even
-without an Internet connection or you can also run the app as a web
-application on a server.</p>
+<p>GeneApp works on Windows and Linux. It can run locally, even without
+an Internet connection or you can also run the app as a web application
+on a server.</p>
 <ul>
 <li>Required: <a href="https://cran.r-project.org/">R</a> version 4.2.0
 or later</li>
@@ -99,64 +99,80 @@ BiocManager::install(&quot;maftools&quot;)
 devtools::install_github(&quot;FilippoMazzara/Progetto_IFO&quot;)
 
 library(&quot;geneApp&quot;) 
-
-devtools::load_all(&quot;.&quot;)
 </code></pre>
+<p>Instead of installing it directly from github you could also download
+the repository and install it as a normal R package. In this
+configuration the server stored files must be supplied to the app by
+putting them into the datasets folder inside the geneApp directory, the
+relative path is geneApp/inst/shinyapps/shiny_geneApp/datasets.</p>
 <p>then to run the app simply call the launcher function
-<code>geneApp::run_geneApp()</code> from the console.</p>
-<p>unfortunately there is not yet a release available on CRAN.<br />
+<code>geneApp::run_geneApp()</code> from the console. unfortunately
+there is not yet a release available on CRAN.<br />
 </p>
-<p>The development environment of this project will be encapsulated in a
-Docker container.<br />
-This will be the steps required to set it up.<br />
+<p>The development environment of this project can also be encapsulated
+in a Docker container.<br />
+If you have already downloaded a pre built Docker image of the app just
+follow steps 6 and 7 of this guide.</p>
+<p>Here are the steps required to set up the Docker image on Windows.
+The same logic applies if you are trying it on Linux.<br />
+The Dockerfile is located in the root folder of the app.<br />
 </p>
 <ol style="list-style-type: decimal">
-<li><p>Install Docker. Follow the instructions on <a href="https://docs.docker.com/install/">https://docs.docker.com/install/</a><br />
-</p></li>
-<li><p>Make docker run without sudo<br />
-</p>
-<pre><code>sudo groupadd docker
-sudo usermod -aG docker $USER</code></pre>
-<p><br />
-Log out and log back in so that your group membership is
-re-evaluated<br />
-</p></li>
-<li><p>Clone the GIT repository<br />
-</p>
-<pre><code>git clone https://github.com/FilippoMazzara/Progetto_IFO.git</code></pre>
-<p><br />
-</p></li>
-<li><p>Setup development Docker container<br />
-</p>
-<pre><code>cd Progetto_IFO
-bin/setup-environment.sh</code></pre>
-<p><br />
-You should see lots of container build messages<br />
-</p></li>
-<li><p>Spin up the container<br />
-</p>
-<pre><code>bin/start_rstudio.sh</code></pre>
-<p><br />
-</p></li>
-<li><p>Open <a href="http://localhost:8787">http://localhost:8787</a> in
-your browser to start a new RStudio session<br />
-</p></li>
-<li><p>Install R packages required for this app. Run the following in
-your R session to install all the dependencies:<br />
-</p>
-<pre><code>install.packages(c(&quot;data.table&quot;, &quot;dplyr&quot;, &quot;DT&quot;, &quot;kableExtra&quot;, 
-&quot;kit&quot;, &quot;knitr&quot;, &quot;maftools&quot;, &quot;magrittr&quot;, &quot;purrr&quot;, &quot;shiny&quot;,     
-&quot;shinydashboard&quot;, &quot;shinyFiles&quot;, &quot;shinyjs&quot;, &quot;shinyWidgets&quot;, &quot;stringr&quot;, &quot;writexl&quot;))</code></pre>
-<p><br />
-The installation will take a few minutes.<br />
-</p></li>
-<li><p>Open the file <code>app.R</code> and hit the “Run app” button in
-the toolbar of the script editor (or type
-<code>geneApp::run_geneApp()</code> in the R session window). The Shiny
-app should open in a new window. You may need to instruct your browser
-to not block popup windows for this URL.<br />
-</p></li>
+<li>Install Docker. Follow the instructions on:<br />
+</li>
 </ol>
+<p><a href="https://docs.docker.com/install/">https://docs.docker.com/install/</a><br />
+</p>
+<ol start="2" style="list-style-type: decimal">
+<li><p>Verify the correct installation of Docker on your system.<br />
+</p></li>
+<li><p>Download the package from the Github repository.<br />
+</p></li>
+<li><p>From the console, set your working directory to the geneApp root
+folder:<br />
+</p>
+<pre><code>
+cd yourPathTo\geneApp
+</code></pre>
+<p><br />
+</p></li>
+<li><p>Build the docker image, executing the following commands, it may
+take a while:</p>
+<pre><code>
+docker build . -t $IMAGE
+</code></pre>
+<p><br />
+To execute this you’ll need an internet connection and Docker running on
+your system.<br />
+You should see lots of container build messages.<br />
+</p></li>
+<li><p>Run the image, typing the following in the console:<br />
+</p>
+<pre><code>
+docker run -v $pathToServerData:/inst/shinyapps/shiny_geneApp/datasets  -p $PORT:3838 $IMAGE
+</code></pre></li>
+</ol>
+<ul>
+<li>$IMAGE is the name you are giving to the image.<br />
+</li>
+<li>$pathToServerData is the path to the directory containing the data
+sets that the app will be accessing.<br />
+</li>
+<li>$PORT is the port that will be used to access the app. By default it
+is set to 3838.<br />
+</li>
+</ul>
+<ol start="7" style="list-style-type: decimal">
+<li>Open <a href="http://localhost:$PORT" class="uri">http://localhost:$PORT</a> in your browser to start an
+instance of the app relative to the corresponding container.<br />
+</li>
+</ol>
+<p>These last steps can also be done through the Docker app, just
+remember to correctly set the container options.<br />
+</p>
+<p>Once geneApp will be released to CRAN these steps will be
+significantly easier.<br />
+</p>
 <hr />
 </div>
 <div id="basic-usage" class="section level2">
@@ -211,7 +227,10 @@ guide. In the About page there are all the useful links, licenses and
 contact information.</p>
 <p>To close the application close the browser window and then click
 <code>Stop</code>. The GeneApp process will stop and the browser window
-will close (Chrome) or gray-out.</p>
+will close (Chrome) or gray-out. If the app is running inside a
+container you’ll just have to exit the app and then stop the
+container.<br />
+</p>
 <hr />
 </div>
 <div id="advanced-usage" class="section level2">
@@ -239,15 +258,15 @@ because the app will handle all the conversions for you!<br />
 missing from your data set, not all of them are strictly required for
 the MAF standard.</p>
 <pre><code>```
-c(&quot;Gene&quot;,&quot;Hugo_Symbol&quot;,&quot;Chromosome&quot;,&quot;VAF&quot;,&quot;Variant_Classification&quot;,&quot;Variant_Type&quot;,
-&quot;VARIANT_CLASS&quot;,&quot;CLIN_SIG&quot;,&quot;t_depth&quot;,&quot;Reference_Allele&quot;,&quot;Tumor_Seq_Allele2&quot;,&quot;Start_Position&quot;,
-&quot;End_Position&quot;,&quot;Existing_Variation&quot;,&quot;HGVSp&quot;,&quot;EXON&quot;,&quot;Tumor_Sample_Barcode&quot;)
+c(&quot;Gene&quot;, &quot;Hugo_Symbol&quot;, &quot;Chromosome&quot;, &quot;VAF&quot;, &quot;Variant_Classification&quot;, &quot;Variant_Type&quot;,
+ &quot;VARIANT_CLASS&quot;, &quot;CLIN_SIG&quot;, &quot;t_depth&quot;, &quot;Reference_Allele&quot;, &quot;Tumor_Seq_Allele2&quot;, &quot;Start_Position&quot;,
+&quot;End_Position&quot;, &quot;Existing_Variation&quot;, &quot;HGVSp&quot;, &quot;EXON&quot;, &quot;Tumor_Sample_Barcode&quot;)
 ```</code></pre>
 <p>If the following columns are present in the final data set you will
 be able to select the respective filter from the sidebar:</p>
 <pre><code>```
-c(&quot;Chromosome&quot;,&quot;VAF&quot;,&quot;Variant_Classification&quot;,&quot;Variant_Type&quot;,&quot;VARIANT_CLASS&quot;,
-&quot;CLIN_SIG&quot;,&quot;t_depth&quot;,&quot;Start_Position&quot;,&quot;End_Position&quot;)
+c(&quot;Chromosome&quot;, &quot;VAF&quot;, &quot;Variant_Classification&quot;, &quot;Variant_Type&quot;, &quot;VARIANT_CLASS&quot;,
+&quot;CLIN_SIG&quot;, &quot;t_depth&quot;, &quot;Start_Position&quot;, &quot;End_Position&quot;)
 ```</code></pre>
 <p>If you are still having problems or if you just want to make a
 contribution for the project here are some of the inner workings of the
@@ -255,35 +274,323 @@ conversion:</p>
 <p>All the column names in your files are tried to be matched with the
 MAF standard column names through these case insensitive pairing
 lists:</p>
-<pre><code>  ```
-  Gene &lt;- c(&quot;gene.refgene&quot;, &quot;gene&quot;)
-  Hugo_Symbol &lt;- c(&quot;hugo_symbol&quot;) 
-  Chromosome &lt;- c(&quot;chr&quot;, &quot;chrom&quot;, &quot;chromosome&quot;)
-  Reference_Allele &lt;- c(&quot;reference_allele&quot;, &quot;ref&quot;)
-  Tumor_Seq_Allele2 &lt;- c(&quot;tumor_seq_allele2&quot;, &quot;alt&quot;)
-  VAF &lt;- c(&quot;vaf&quot;, &quot;t_vaf&quot;)
-  Variant_Classification &lt;- c(&quot;variant_classification&quot;, &quot;func.refgene&quot;)
-  Variant_Type &lt;- c(&quot;variant_type&quot;, &quot;exonicfunc.refgene&quot;)
-  VARIANT_CLASS &lt;- c(&quot;variant_class&quot;)
-  CLIN_SIG &lt;- c(&quot;clin_sig&quot;, &quot;clinvar&quot;)
-  t_depth &lt;- c(&quot;depth&quot;, &quot;t_depth&quot;)
-  Start_Position &lt;- c(&quot;start_position&quot;, &quot;start&quot;)
-  End_Position &lt;- c(&quot;end_position&quot;, &quot;end&quot;)
-  Existing_Variation &lt;- c(&quot;existing_variation&quot;, &quot;aachange.refgene&quot;, &quot;variation&quot;, &quot;var&quot;)
-  HGVSp &lt;- c(&quot;hgvsp&quot;) 
-  EXON &lt;- c(&quot;exon&quot;) 
-  Tumor_Sample_Barcode &lt;- c(&quot;tumor_sample_barcode&quot;)
-  ```</code></pre>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<tbody>
+<tr>
+<td style="text-align:left;font-weight: bold;text-align: center;">
+MAF
+</td>
+<td style="text-align:left;text-align: center;">
+</td>
+<td style="text-align:left;text-align: center;">
+</td>
+<td style="text-align:left;text-align: center;">
+</td>
+<td style="text-align:left;text-align: center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Gene
+</td>
+<td style="text-align:left;">
+gene.refgene
+</td>
+<td style="text-align:left;">
+gene
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Hugo_Symbol
+</td>
+<td style="text-align:left;">
+hugo_symbol
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Chromosome
+</td>
+<td style="text-align:left;">
+chr
+</td>
+<td style="text-align:left;">
+chrom
+</td>
+<td style="text-align:left;">
+chromosome
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Reference_Allele
+</td>
+<td style="text-align:left;">
+reference_allele
+</td>
+<td style="text-align:left;">
+ref
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Tumor_Seq_Allele2
+</td>
+<td style="text-align:left;">
+tumor_seq_allele2
+</td>
+<td style="text-align:left;">
+alt
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+VAF
+</td>
+<td style="text-align:left;">
+vaf
+</td>
+<td style="text-align:left;">
+t_vaf
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Variant_Classification
+</td>
+<td style="text-align:left;">
+variant_classification
+</td>
+<td style="text-align:left;">
+func.refgene
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Variant_Type
+</td>
+<td style="text-align:left;">
+variant_type
+</td>
+<td style="text-align:left;">
+exonicfunc.refgene
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+VARIANT_CLASS
+</td>
+<td style="text-align:left;">
+variant_class
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+CLIN_SIG
+</td>
+<td style="text-align:left;">
+clin_sig
+</td>
+<td style="text-align:left;">
+clinvar
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+t_depth
+</td>
+<td style="text-align:left;">
+depth
+</td>
+<td style="text-align:left;">
+t_depth
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Start_Position
+</td>
+<td style="text-align:left;">
+start_position
+</td>
+<td style="text-align:left;">
+start
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+End_Position
+</td>
+<td style="text-align:left;">
+end_position
+</td>
+<td style="text-align:left;">
+end
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Existing_Variation
+</td>
+<td style="text-align:left;">
+existing_variation
+</td>
+<td style="text-align:left;">
+aachange.refgene
+</td>
+<td style="text-align:left;">
+variation
+</td>
+<td style="text-align:left;">
+var
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+HGVSp
+</td>
+<td style="text-align:left;">
+hgvsp
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+EXON
+</td>
+<td style="text-align:left;">
+exon
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Tumor_Sample_Barcode
+</td>
+<td style="text-align:left;">
+tumor_sample_barcode
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+</tbody>
+</table>
 <p>If these do not work a second round of conversion starts where other
 pairings are applied in order to address different possible standards
 and the missing columns that can be inferred from the other data are
 computed like so:</p>
-<pre><code>  ```
-  Hugo_Symbol &lt;- c(&quot;symbol&quot;)
-  Reference_Allele &lt;- c(&quot;tumor_seq_allele1&quot;)
-  HGVSp &lt;- c(&quot;hgvsp_Short&quot;)
-  EXON &lt;- c(&quot;exon_number&quot;)
-  ```</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<tbody>
+<tr>
+<td style="text-align:left;font-weight: bold;text-align: center;">
+MAF
+</td>
+<td style="text-align:left;text-align: center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Hugo_Symbol
+</td>
+<td style="text-align:left;">
+symbol
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Reference_Allele
+</td>
+<td style="text-align:left;">
+tumor_seq_allele1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+HGVSp
+</td>
+<td style="text-align:left;">
+hgvsp_Short
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+EXON
+</td>
+<td style="text-align:left;">
+exon_number
+</td>
+</tr>
+</tbody>
+</table>
 <p>If not present the following will be tried to be computed using
 values from other columns, if they exist:<br />
 </p>

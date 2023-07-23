@@ -132,6 +132,7 @@ germTab_ui_table <- function(id){
 #' Germ page server module
 #' @description
 #' The module containing the server-side of the germ page
+#' @importFrom magrittr "%>%"
 #' @param id the id assigned to the module
 #' @return the server instance
 #' @examples germTab_server("GERM")
@@ -200,15 +201,16 @@ germTab_server <- function(id){
         input = input,
         id = "germ_file_input_server",
         session = session,
-        roots = c(wd = "C:/Users/facke/Desktop/datasets"),
-        defaultPath = "/"
+        roots = c('wd' = './datasets'),
+        defaultPath = "/",
+        filetypes = c("tsv", "csv", "maf", "xlsx", "xls")
       )
 
       # ------ FILE INPUT SERVER -------
       shiny::observeEvent(input$germ_file_input_server, {
         if (!is.null(input$germ_file_input_server)){
 
-          inFile <- shinyFiles::parseFilePaths(roots = c(wd = "C:/Users/facke/Desktop/datasets"), input$germ_file_input_server)
+          inFile <- shinyFiles::parseFilePaths(roots = c(wd = "/inst/shinyapps/shiny_geneApp/datasets"), input$germ_file_input_server)
 
           if (length(inFile$datapath) != 0 ){
             germ_file_error(NULL) #RESET ERROR STATUS

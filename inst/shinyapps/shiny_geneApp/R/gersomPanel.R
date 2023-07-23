@@ -103,6 +103,7 @@ gersomPanel_ui <- function(id){
 #' gersomPanel module server
 #' @description
 #' server module for the comparison of somatic and germ files
+#' @importFrom magrittr "%>%"
 #' @param id the module id
 #' @examples gersomPanel_server("modulename")
 gersomPanel_server <- function(id){

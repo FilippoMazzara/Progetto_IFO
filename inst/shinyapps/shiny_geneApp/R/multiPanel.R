@@ -166,6 +166,7 @@ multiTab_page_ui <- function(id){
 #' @description
 #' The module containing the server-side of the multi page
 #' @param id the id assigned to the module
+#' @importFrom magrittr "%>%"
 #' @return the server instance
 #' @examples multiTab_page_server("MULTI")
 multiTab_page_server <- function(id) {
@@ -254,15 +255,16 @@ multiTab_page_server <- function(id) {
         input = input,
         id = "multi_file_input_server",
         session = session,
-        roots = c(wd = "C:/Users/facke/Desktop/datasets"),
-        defaultPath = "/"
+        roots = c('wd' = './datasets'),
+        defaultPath = "/",
+        filetypes = c("tsv", "csv", "maf", "xlsx", "xls")
       )
 
       # ------ FILE INPUT SERVER -------
       shiny::observeEvent(input$multi_file_input_server, {
 
         if (!is.null(input$multi_file_input_server)){
-          inFile <- shinyFiles::parseFilePaths(roots = c(wd = "C:/Users/facke/Desktop/datasets"), input$multi_file_input_server)
+          inFile <- shinyFiles::parseFilePaths(roots = c(wd = "/inst/shinyapps/shiny_geneApp/datasets"), input$multi_file_input_server)
           if (length(inFile$datapath) != 0 ){
             #multi_file_error("") #RESET ERROR STATUS
             missing_multi_titles(list())

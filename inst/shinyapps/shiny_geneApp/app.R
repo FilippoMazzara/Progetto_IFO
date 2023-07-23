@@ -1,3 +1,5 @@
+library(magrittr)
+
 ui <- shiny::fluidPage( #bslib::page_fluid( TO ENABLE BOOTSTRAP5
 
   id = "mainpage",
