@@ -242,6 +242,13 @@ Check out the help page in the app if you want to know even more about the inner
 Please use the GitHub issue tracker at <a href="https://github.com/FilippoMazzara/Progetto_IFO/issues" target="_blank">github.com/FilippoMazzara/Progetto_IFO/issues</a> if you are experiencing issues using GeneApp or if you want to contribute to the project. Also feel free to share the specifics of other genetic standards if you want the app to be able to handle them in the future.
 For other questions and comments please contact the author Filippo Mazzara.
 
+## Upcoming Features
+The following are known issues and improvements that will be addressed in the upcoming updates of the app:
+
+  - Improving performance, modularity, and package size
+  - Implementing a table formatting interface to deal with misplaced column names
+  - Adding the ability to edit table cells
+
 ## Development
 This web application is written using the R Shiny web framework. It makes use of custom HTML, CSS and JS, \
 It also demonstrates the use various Rmarkdown templates, all in order to create a fancy user experience. \

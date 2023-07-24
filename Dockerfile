@@ -1,6 +1,9 @@
 FROM rocker/shiny:latest
 LABEL maintainer="USER <mazzara.1742740@studenti.uniroma1.it>"
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    texlive-latex-extra \
+    lmodern \
+    pandoc \
     libbz2-dev \
     liblzma-dev \
     libxml2-dev \
@@ -33,6 +36,7 @@ COPY /renv.lock ./renv.lock
 # install renv & restore packages
 RUN Rscript -e 'install.packages("renv")'
 RUN Rscript -e 'renv::restore()'
+
 #RUN Rscript -e 'BiocManager::install("maftools")'
 #RUN Rscript -e 'install.packages("maftools")'
 ## app folder

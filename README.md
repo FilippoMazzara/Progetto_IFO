@@ -612,6 +612,16 @@ other genetic standards if you want the app to be able to handle them in
 the future. For other questions and comments please contact the author
 Filippo Mazzara.
 
+## Upcoming Features
+
+The following are known issues and improvements that will be addressed
+in the upcoming updates of the app:
+
+- Improving performance, modularity, and package size
+- Implementing a table formatting interface to deal with misplaced
+  column names
+- Adding the ability to edit table cells
+
 ## Development
 
 This web application is written using the R Shiny web framework. It
