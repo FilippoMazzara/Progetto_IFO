@@ -439,4 +439,5 @@ server <- function(input, output, session){
 #reactlog::reactlog_enable()
 
 # Run the application
+
 shiny::shinyApp(ui = ui, server = server)
